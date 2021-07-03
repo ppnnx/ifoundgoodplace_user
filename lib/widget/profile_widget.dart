@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ifgpdemo/screen/login/login_screen.dart';
 
-
 class ProfileWidget extends StatelessWidget {
   final username;
 
@@ -35,29 +34,7 @@ class ProfileWidget extends StatelessWidget {
 
             SizedBox(height: 25.0),
 
-            username == "Guest"
-                ? buildEditButton()
-                : OutlinedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginScreen()));
-                      print('login profile button');
-                    },
-                    child: Text(
-                      "Log in",
-                      style: TextStyle(color: Colors.blue.shade900),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(24.0))),
-                      side: BorderSide(
-                        color: Colors.blue.shade900,
-                      ),
-                    ),
-                  ),
+            buildEditButton(),
           ],
         ),
       ),
@@ -83,13 +60,13 @@ class ProfileWidget extends StatelessWidget {
       },
       child: Text(
         "edit profile",
-        style: TextStyle(color: Colors.blue.shade900),
+        style: TextStyle(color: Colors.black),
       ),
       style: OutlinedButton.styleFrom(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(24.0))),
         side: BorderSide(
-          color: Colors.blue.shade900,
+          color: Colors.black,
         ),
       ),
     );

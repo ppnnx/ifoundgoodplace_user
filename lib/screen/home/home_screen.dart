@@ -1,13 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ifgpdemo/model/content_model.dart';
-import 'package:ifgpdemo/screen/create/create_screen.dart';
+import 'package:ifgpdemo/screen/bookmark/bookmark_screen.dart';
 import 'package:ifgpdemo/screen/detail/allcontent_screen.dart';
+import 'package:ifgpdemo/screen/favorite/favorite_screen.dart';
 import 'package:ifgpdemo/screen/login/login_screen.dart';
 import 'package:ifgpdemo/screen/profile/profile_screen.dart';
+import 'package:ifgpdemo/screen/rank/full_chart_author.dart';
 import 'package:ifgpdemo/screen/search/search_screen.dart';
+import 'package:ifgpdemo/widget/home/author_widget.dart';
 import 'package:ifgpdemo/widget/home/categories_widget.dart';
 import 'package:ifgpdemo/widget/home/contents_widget.dart';
+import 'package:ifgpdemo/widget/map_widget.dart';
 import 'package:ifgpdemo/widget/ranking/all_rank_widget.dart';
 import 'package:ifgpdemo/widget/ranking/group_btn_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,7 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    
   }
 
   @override
@@ -95,12 +98,14 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           ],
         ),
+
+        // drawer menu
         drawer: Drawer(
           child: ListView(
             children: <Widget>[
               // header
               Container(
-                color: Colors.white,
+                // color: Colors.white,
                 height: 200,
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 34),
@@ -163,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     )
                   : Container(
                       child: Column(
-                        children: [
+                        children: <Widget>[
                           // ListTile(
                           //   leading: Icon(
                           //     CupertinoIcons.home,
@@ -189,8 +194,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               size: 20,
                             ),
                             title: Text(
-                              'profile',
-                              style: TextStyle(color: Colors.black),
+                              'Profile',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                             onTap: () {
                               Navigator.push(
@@ -205,12 +214,62 @@ class _HomeScreenState extends State<HomeScreen> {
                           SizedBox(height: 5),
                           ListTile(
                             leading: Icon(
-                              CupertinoIcons.flame_fill,
-                              color: Colors.red.shade800,
+                              CupertinoIcons.bookmark,
+                              color: Colors.black,
+                              size: 20,
+                            ),
+                            title: Text('Bookmark',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                )),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => BookmarkScreen()));
+                            },
+                          ),
+                          SizedBox(height: 5),
+                          ListTile(
+                            leading: Icon(
+                              CupertinoIcons.heart,
+                              color: Colors.black,
+                              size: 20,
+                            ),
+                            title: Text('Favorite',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                )),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => FavoriteScreen(
+                                            iduser: widget.iduser,
+                                          )));
+                            },
+                          ),
+
+                          Divider(
+                            color: Colors.black26,
+                          ),
+
+                          ListTile(
+                            leading: Icon(
+                              CupertinoIcons.multiply_circle,
+                              color: Colors.black,
                             ),
                             title: Text(
                               'Logout',
-                              style: TextStyle(color: Colors.red.shade800),
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                             onTap: () {
                               print('logout');
@@ -287,15 +346,23 @@ class _HomeScreenState extends State<HomeScreen> {
         body: ListView(
           children: <Widget>[
             // (head).
-            buildheadwithseeall('.new'),
+            buildheadwithseeall('Latest'),
             SizedBox(height: 16),
             ContentsWidget(
               email: widget.email,
               userid: widget.iduser,
               userimg: widget.image,
             ),
+            // (head). author
+            buildheadwithbtn(),
+            Container(
+              height: 120,
+              width: double.infinity,
+              child: AuthorWidget(),
+            ),
+            SizedBox(height: 14),
             // (head). category
-            buildheadwithline('.category'),
+            buildheadwithline('Category'),
             CategoriesWidget(
               iduser: widget.iduser,
               emailuser: widget.email,
@@ -305,14 +372,16 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Colors.black,
             ),
             SizedBox(height: 8),
+
             // (head). ranking
-            buildheadjusttext('.ranking'),
-            SizedBox(height: 12),
-            AllRankWidget(),
-            GroupButton(),
+            // buildheadjusttext('ranking'),
+            // SizedBox(height: 12),
+            // AllRankWidget(),
+            // GroupButton(),
             SizedBox(height: 14),
             // (head). map
-            buildheadjusttext('.map'),
+            // buildheadjusttext('map'),
+            // MapWidget(),
           ],
         ));
   }
@@ -380,6 +449,56 @@ class _HomeScreenState extends State<HomeScreen> {
                                   iduser: widget.iduser,
                                   emailuser: widget.email,
                                 )));
+                  },
+                ),
+              ],
+            ),
+          ),
+          Divider(
+            color: Colors.black,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildheadwithbtn() {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: EdgeInsets.only(left: 20, top: 30, right: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Popular Author',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                GestureDetector(
+                  child: Row(
+                    children: [
+                      Text(
+                        'see all',
+                        style: TextStyle(color: Colors.black, fontSize: 12),
+                      ),
+                      SizedBox(width: 5),
+                      Icon(
+                        CupertinoIcons.chevron_right,
+                        color: Colors.black,
+                        size: 14,
+                      )
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FullChartAuthor()));
                   },
                 ),
               ],

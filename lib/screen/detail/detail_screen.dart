@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:ifgpdemo/model/content_model.dart';
+import 'package:ifgpdemo/screen/author_profile/author_profile_screen.dart';
 import 'package:ifgpdemo/screen/login/login_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:ifgpdemo/widget/comment_widget.dart';
@@ -31,7 +33,9 @@ class _DetailScreenState extends State<DetailScreen> {
   bool favorited = false;
   bool bookmark = false;
   String favoritedornot = " ";
+  int _current = 0;
 
+  // api add comment to db
   Future addComment() async {
     var url = Uri.parse('http://35.213.159.134/cominsertanddelete.php');
     var response = await http.post(url, body: {
@@ -77,6 +81,7 @@ class _DetailScreenState extends State<DetailScreen> {
     print('delay end');
   }
 
+  // api add favorite content to db
   Future getFavorite() async {
     var url = Uri.parse('http://35.213.159.134/favinsert.php');
 
@@ -97,6 +102,25 @@ class _DetailScreenState extends State<DetailScreen> {
       }
 
       print(response.body);
+    } catch (e) {}
+  }
+
+  // api add report content to db
+  Future getReport() async {
+    var url = Uri.parse('http://35.213.159.134/report.php');
+
+    try {
+      var response = await http.post(url, body: {
+        'iduser': widget.userId.toString(),
+        'report': widget.content.idcontent.toString(),
+      });
+      print(
+          'user id ${widget.userId} report content id ${widget.content.idcontent}');
+      // print('report content id : ${widget.content.idcontent}');
+
+      if (response.statusCode == 200) {
+        print(response.body);
+      }
     } catch (e) {}
   }
 
@@ -127,11 +151,11 @@ class _DetailScreenState extends State<DetailScreen> {
     });
   }
 
-  _bookmark() {
-    setState(() {
-      bookmark = !bookmark;
-    });
-  }
+  // _bookmark() {
+  //   setState(() {
+  //     bookmark = !bookmark;
+  //   });
+  // }
 
   @override
   void initState() {
@@ -188,10 +212,7 @@ class _DetailScreenState extends State<DetailScreen> {
                             color: Colors.black,
                             size: 19,
                           ),
-                          onPressed: () {
-                            _bookmark();
-                            print('bookmark this blog');
-                          }),
+                          onPressed: () {}),
                       IconButton(
                         icon: Icon(
                           CupertinoIcons.ellipsis_vertical,
@@ -229,14 +250,31 @@ class _DetailScreenState extends State<DetailScreen> {
                       ),
 
                       // author (username).
-                      Text(
-                        widget.content.username,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                            fontStyle: FontStyle.italic),
+                      GestureDetector(
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AuthorProfileScreen(
+                                      idauthor: widget.content.iduser,
+                                      profileid: widget.userId,
+                                    ))),
+                        child: Text(
+                          widget.content.username,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              fontStyle: FontStyle.italic),
+                        ),
                       ),
+                      // Text(
+                      //   widget.content.username,
+                      //   style: TextStyle(
+                      //       color: Colors.black,
+                      //       fontSize: 15,
+                      //       fontWeight: FontWeight.w500,
+                      //       fontStyle: FontStyle.italic),
+                      // ),
 
                       // category
                       Container(
@@ -255,9 +293,9 @@ class _DetailScreenState extends State<DetailScreen> {
                   ),
                 ),
 
-                // test email
-                // Text(widget.userEmail),
-                SizedBox(height: 80),
+                // test
+                // Text(widget.userId.toString()),
+                SizedBox(height: 100),
 
                 // title
                 Container(
@@ -270,13 +308,14 @@ class _DetailScreenState extends State<DetailScreen> {
                 // SizedBox(height: 80),
 
                 // image
-                Container(
-                  child: Image.network(
-                    'http://35.213.159.134/uploadimages/${widget.content.image01}',
-                    height: 300,
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                // Container(
+                //   child: Image.network(
+                //     'http://35.213.159.134/uploadimages/${widget.content.image01}',
+                //     height: 300,
+                //     fit: BoxFit.cover,
+                //   ),
+                // ),
+                imageSlide(widget.content),
 
                 // author(username)
                 // Row(
@@ -382,48 +421,47 @@ class _DetailScreenState extends State<DetailScreen> {
                                   TextField(
                                     controller: commentcontroller,
                                     style: TextStyle(
-                                            color: Colors.black, fontSize: 14),
-                                        // maxLines: 3,
-                                        keyboardType: TextInputType.text,
-                                        cursorColor: Colors.black,
-                                        autocorrect: false,
-                                        decoration: InputDecoration(
-                                            fillColor: Colors.white70,
-                                            filled: true,
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(24.0),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.black)),
-                                            focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.black)),
-                                            
-                                            // prefix: widget.userImage == null
-                                            //     ? CircleAvatar(
-                                            //         radius: 21,
-                                            //         backgroundColor:
-                                            //             Colors.grey.shade300,
-                                            //         child: Icon(
-                                            //           Icons.face,
-                                            //           color: Colors.black,
-                                            //           size: 18,
-                                            //         ),
-                                            //       )
-                                            //     : CircleAvatar(
-                                            //       radius: 21,
-                                            //       backgroundImage: NetworkImage(
-                                            //       'http://35.213.159.134/uploadimages/${widget.userImage}'),
-                                            //     ),
-                                                
-                                            hintText: 'type your comment..',
-                                            hintStyle: TextStyle(
-                                                fontSize: 12,
-                                                fontStyle: FontStyle.italic)),
-                                      ),
-                                    
+                                        color: Colors.black, fontSize: 14),
+                                    // maxLines: 3,
+                                    keyboardType: TextInputType.text,
+                                    cursorColor: Colors.black,
+                                    autocorrect: false,
+                                    decoration: InputDecoration(
+                                        fillColor: Colors.white70,
+                                        filled: true,
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(24.0),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.black)),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.black)),
+
+                                        // prefix: widget.userImage == null
+                                        //     ? CircleAvatar(
+                                        //         radius: 21,
+                                        //         backgroundColor:
+                                        //             Colors.grey.shade300,
+                                        //         child: Icon(
+                                        //           Icons.face,
+                                        //           color: Colors.black,
+                                        //           size: 18,
+                                        //         ),
+                                        //       )
+                                        //     : CircleAvatar(
+                                        //       radius: 21,
+                                        //       backgroundImage: NetworkImage(
+                                        //       'http://35.213.159.134/uploadimages/${widget.userImage}'),
+                                        //     ),
+
+                                        hintText: 'type your comment..',
+                                        hintStyle: TextStyle(
+                                            fontSize: 12,
+                                            fontStyle: FontStyle.italic)),
+                                  ),
                                   SizedBox(height: 12),
                                   ElevatedButton(
                                     onPressed: () {
@@ -480,6 +518,7 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
+  // bottom sheet for share + report button
   void showBottomSheet() => showModalBottomSheet(
       enableDrag: false,
       context: context,
@@ -508,12 +547,12 @@ class _DetailScreenState extends State<DetailScreen> {
                 ),
                 ListTile(
                   leading: Icon(
-                    CupertinoIcons.doc_plaintext,
+                    CupertinoIcons.exclamationmark_triangle,
                     color: Colors.black,
                     size: 20,
                   ),
                   title: Text('Report'),
-                  onTap: () {},
+                  onTap: () => _showAlertReport(context),
                 ),
                 // MaterialButton(
                 //   minWidth: 300.0,
@@ -532,5 +571,81 @@ class _DetailScreenState extends State<DetailScreen> {
                 // )
               ],
             ),
+          ));
+
+  // image slide
+  Widget imageSlide(Contents contents) {
+    // list images
+    List imgList = [
+      'http://35.213.159.134/uploadimages/${contents.image01}',
+      'http://35.213.159.134/uploadimages/${contents.image02}',
+      'http://35.213.159.134/uploadimages/${contents.image03}',
+      'http://35.213.159.134/uploadimages/${contents.image04}',
+    ];
+
+    return Container(
+      child: Column(
+        children: [
+          CarouselSlider(
+              items: imgList.map((imgUrl) {
+                return Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Image.network(
+                    imgUrl,
+                    fit: BoxFit.cover,
+                  ),
+                );
+              }).toList(),
+              options: CarouselOptions(
+                height: 300.0,
+                initialPage: 0,
+                viewportFraction: 1.0,
+                enableInfiniteScroll: false,
+                autoPlay: false,
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    _current = index;
+                  });
+                },
+              )),
+          SizedBox(height: 16),
+
+          // dot (indicatior)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: imgList.map((url) {
+              int index = imgList.indexOf(url);
+
+              return Container(
+                width: 8.0,
+                height: 8.0,
+                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 3.0),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color:
+                      _current == index ? Colors.black : Colors.grey.shade400,
+                ),
+              );
+            }).toList(),
+          )
+        ],
+      ),
+    );
+  }
+
+  _showAlertReport(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: Text('Are you sure?'),
+            content: Text('Do you want to report this content'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  getReport();
+                  Navigator.of(context).pop(true);
+                },
+                child: Text('Yes'),
+              )
+            ],
           ));
 }

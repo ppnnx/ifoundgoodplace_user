@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -34,8 +33,6 @@ class _CommentWidgetState extends State<CommentWidget> {
         return comment.map((json) => CommentModel.fromJson(json)).toList();
       } else {
         throw Exception('error');
-        // print(response.body);
-
       }
     } catch (e) {}
 

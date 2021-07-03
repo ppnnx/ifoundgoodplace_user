@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
@@ -29,6 +30,24 @@ class _CreateScreenState extends State<CreateScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController titlecontroller = TextEditingController();
   TextEditingController storycontroller = TextEditingController();
+
+  // for google map
+  static const _initialCameraPosition = CameraPosition(
+    target: LatLng(18.810570, 98.952657),
+    zoom: 16.0,
+  );
+
+  Widget buildmap() {
+    return Container(
+      margin: EdgeInsets.all(12.0),
+      height: 350,
+      child: GoogleMap(
+        myLocationButtonEnabled: false,
+        zoomControlsEnabled: false,
+        initialCameraPosition: _initialCameraPosition,
+      ),
+    );
+  }
 
   Future selectImage1(ImageSource imageSource) async {
     var pickedImage = await picker.getImage(source: imageSource);
@@ -82,16 +101,34 @@ class _CreateScreenState extends State<CreateScreen> {
     request.fields['ID_Category'] = selectedCategory;
     request.fields['ID_Userpost'] = widget.idauthor.toString();
 
-    var photo = await http.MultipartFile.fromPath('Images01', _image1.path,
+    // photo 1
+    var photo01 = await http.MultipartFile.fromPath('Images01', _image1.path,
         filename: _image1.path);
-    request.files.add(photo);
+    request.files.add(photo01);
+    // photo 2
+    var photo02 = await http.MultipartFile.fromPath('Images02', _image2.path,
+        filename: _image2.path);
+    request.files.add(photo02);
+
+    // photo 3
+    var photo03 = await http.MultipartFile.fromPath('Images03', _image3.path,
+        filename: _image3.path);
+    request.files.add(photo03);
+
+    // photo 4
+    var photo04 = await http.MultipartFile.fromPath('Images04', _image4.path,
+        filename: _image4.path);
+    request.files.add(photo04);
 
     var response = await request.send();
-
     if (response.statusCode == 200) {
       print(titlecontroller.text);
       print(widget.idauthor.toString());
       print(selectedCategory);
+      print(photo01);
+      print(photo02);
+      print(photo03);
+      print(photo04);
     }
   }
 
@@ -142,7 +179,9 @@ class _CreateScreenState extends State<CreateScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          addPost();
+          setState(() {
+            addPost();
+          });
           // print('published');
         },
         label: Text('Publish'),
@@ -177,6 +216,17 @@ class _CreateScreenState extends State<CreateScreen> {
                   SizedBox(height: 10),
 
 ////////////////////////////////// category ///////////////////////////////////
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Category',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  SizedBox(height: 8),
                   DropdownButtonHideUnderline(
                       child: ButtonTheme(
                     alignedDropdown: true,
@@ -301,12 +351,22 @@ class _CreateScreenState extends State<CreateScreen> {
 
 //////////////////////////////// image end ///////////////////////////////////
 
-
 ////////////////////////// url ////////////////////////////
                   Container(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'URL Video',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        SizedBox(height: 8),
                         TextField(
                           decoration: InputDecoration(
                             labelText: 'your url',
@@ -318,18 +378,25 @@ class _CreateScreenState extends State<CreateScreen> {
                   SizedBox(height: 28),
 
                   // location
-                  Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextField(
-                          decoration: InputDecoration(
-                            labelText: 'Location',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Container(
+                  //   child: Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                  //       Container(
+                  //         alignment: Alignment.centerLeft,
+                  //         child: Text(
+                  //           'Location',
+                  //           style: TextStyle(
+                  //               color: Colors.black,
+                  //               fontSize: 15,
+                  //               fontWeight: FontWeight.w500),
+                  //         ),
+                  //       ),
+                  //       SizedBox(height: 10),
+                  //       buildmap(),
+                  //     ],
+                  //   ),
+                  // ),
                   SizedBox(height: 60),
 
                   // story
@@ -445,17 +512,16 @@ class _CreateScreenState extends State<CreateScreen> {
           child: Column(
             children: <Widget>[
               ListTile(
-                leading: Icon(
-                  Icons.image,
-                  color: Colors.black,
-                  size: 20,
-                ),
-                title: Text('From Gallery'),
-                onTap: () {
+                  leading: Icon(
+                    Icons.image,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                  title: Text('From Gallery'),
+                  onTap: () {
                     selectImage1(ImageSource.gallery);
                     Navigator.of(context).pop(_image1);
-                }
-              ),
+                  }),
               ListTile(
                   leading: Icon(
                     Icons.camera_alt,
@@ -480,17 +546,16 @@ class _CreateScreenState extends State<CreateScreen> {
           child: Column(
             children: <Widget>[
               ListTile(
-                leading: Icon(
-                  Icons.image,
-                  color: Colors.black,
-                  size: 20,
-                ),
-                title: Text('From Gallery'),
-                onTap: () {
+                  leading: Icon(
+                    Icons.image,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                  title: Text('From Gallery'),
+                  onTap: () {
                     selectImage2(ImageSource.gallery);
                     Navigator.of(context).pop(_image2);
-                }
-              ),
+                  }),
               ListTile(
                   leading: Icon(
                     Icons.camera_alt,
@@ -515,17 +580,16 @@ class _CreateScreenState extends State<CreateScreen> {
           child: Column(
             children: <Widget>[
               ListTile(
-                leading: Icon(
-                  Icons.image,
-                  color: Colors.black,
-                  size: 20,
-                ),
-                title: Text('From Gallery'),
-                onTap: () {
+                  leading: Icon(
+                    Icons.image,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                  title: Text('From Gallery'),
+                  onTap: () {
                     selectImage3(ImageSource.gallery);
                     Navigator.of(context).pop(_image3);
-                }
-              ),
+                  }),
               ListTile(
                   leading: Icon(
                     Icons.camera_alt,
@@ -542,7 +606,6 @@ class _CreateScreenState extends State<CreateScreen> {
         ),
       );
 
-
   // bottom sheet 4
   void showBottomMenu4() => showModalBottomSheet(
         context: context,
@@ -551,17 +614,16 @@ class _CreateScreenState extends State<CreateScreen> {
           child: Column(
             children: <Widget>[
               ListTile(
-                leading: Icon(
-                  Icons.image,
-                  color: Colors.black,
-                  size: 20,
-                ),
-                title: Text('From Gallery'),
-                onTap: () {
+                  leading: Icon(
+                    Icons.image,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                  title: Text('From Gallery'),
+                  onTap: () {
                     selectImage4(ImageSource.gallery);
                     Navigator.of(context).pop(_image4);
-                }
-              ),
+                  }),
               ListTile(
                   leading: Icon(
                     Icons.camera_alt,

@@ -21,7 +21,6 @@ class _FullChartContentState extends State<FullChartContent> {
 
   String selectedCategory;
 
-
   Future getCategory() async {
     var url = Uri.parse('http://35.213.159.134/category.php?plus');
     var response = await http.get(url);
@@ -62,44 +61,43 @@ class _FullChartContentState extends State<FullChartContent> {
             onPressed: () {
               Navigator.pop(context);
             }),
-        actions: <Widget>[
-          PopupMenuButton<String>(
-            itemBuilder: (BuildContext context) {
-              return categoryItem.map((category) {
-                return PopupMenuItem<String>(
-                  child: Text(category['Category']),
-                  value: category['ID_Category'].toString(),
-                );
-              }).toList();
-            },
-            onSelected: (String newValue) {
-              setState(() {
-                selectedCategory = newValue;
-                print(newValue);
-               
-              });
-            },
-          ),
-          // IconButton(
-          //     icon: Icon(
-          //       CupertinoIcons.ellipsis_vertical,
-          //       color: Colors.black,
-          //       size: 21,
-          //     ),
-          //     onPressed: () {
-          //       print('clicked');
-          //       PopupMenuButton<String>(
-          //         itemBuilder: (BuildContext context) {
-          //           return categoryItem.map((category) {
-          //             return PopupMenuItem(
-          //               child: Text(category['Category']),
-          //               value: category['ID_Category'].toString(),
-          //             );
-          //           }).toList();
-          //         }
-          //       );
-          //     })
-        ],
+        // actions: <Widget>[
+        //   PopupMenuButton<String>(
+        //     itemBuilder: (BuildContext context) {
+        //       return categoryItem.map((category) {
+        //         return PopupMenuItem<String>(
+        //           child: Text(category['Category']),
+        //           value: category['ID_Category'].toString(),
+        //         );
+        //       }).toList();
+        //     },
+        //     onSelected: (String newValue) {
+        //       setState(() {
+        //         selectedCategory = newValue;
+        //         print(newValue);
+        //       });
+        //     },
+        //   ),
+        // IconButton(
+        //     icon: Icon(
+        //       CupertinoIcons.ellipsis_vertical,
+        //       color: Colors.black,
+        //       size: 21,
+        //     ),
+        //     onPressed: () {
+        //       print('clicked');
+        //       PopupMenuButton<String>(
+        //         itemBuilder: (BuildContext context) {
+        //           return categoryItem.map((category) {
+        //             return PopupMenuItem(
+        //               child: Text(category['Category']),
+        //               value: category['ID_Category'].toString(),
+        //             );
+        //           }).toList();
+        //         }
+        //       );
+        //     })
+        // ],
       ),
       body: ListView(
         children: <Widget>[
@@ -181,26 +179,26 @@ class _FullChartContentState extends State<FullChartContent> {
           //     }),
 
           FutureBuilder(
-            future: TrendingAPI.getTrendingContent(),
+              future: TrendingAPI.getTrendingContent(),
               builder: (BuildContext context,
-                AsyncSnapshot<List<TrendingModel>> snapshot) {
+                  AsyncSnapshot<List<TrendingModel>> snapshot) {
                 if (snapshot.hasData) {
-                    return ListView.builder(
-                        shrinkWrap: true,
-                        physics: BouncingScrollPhysics(),
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (BuildContext _, int index) {
-                          return FullChartWidget(
-                            rank: index + 1,
-                            data: snapshot.data[index],
-                          );
-                        });
-                  }
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      physics: BouncingScrollPhysics(),
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (BuildContext _, int index) {
+                        return FullChartWidget(
+                          rank: index + 1,
+                          data: snapshot.data[index],
+                        );
+                      });
+                }
 
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }),
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }),
         ],
       ),
     );
@@ -219,7 +217,7 @@ class FullChartWidget extends StatelessWidget {
       height: 150,
       width: 375,
       color: Colors.white,
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       padding: EdgeInsets.only(left: 22, right: 16, top: 10, bottom: 16),
       child: Row(
         children: <Widget>[

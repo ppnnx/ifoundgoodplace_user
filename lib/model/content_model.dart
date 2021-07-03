@@ -1,4 +1,5 @@
 class Contents {
+  int iduser;
   String username;
   String statuspost;
   int idcontent;
@@ -13,6 +14,7 @@ class Contents {
   String image04;
 
   Contents({
+    this.iduser,
     this.username,
     this.statuspost,
     this.idcontent,
@@ -28,6 +30,7 @@ class Contents {
   });
 
   Contents.fromJson(Map<String, dynamic> json) {
+    iduser = json['ID_User'];
     username = json['Username'];
     statuspost = json['Status_Post'];
     idcontent = json['ID_Content'];
@@ -44,7 +47,7 @@ class Contents {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-
+    data['ID_User'] = this.iduser;
     data['Username'] = this.username;
     data['Status_Post'] = this.statuspost;
     data['ID_Content'] = this.idcontent;

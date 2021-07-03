@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ifgpdemo/model/content_model.dart';
 import 'package:ifgpdemo/model/user_model.dart';
 import 'package:ifgpdemo/screen/create/create_screen.dart';
 import 'package:ifgpdemo/screen/login/login_screen.dart';
@@ -11,7 +12,11 @@ class ProfileScreen extends StatefulWidget {
   final name;
   final id;
 
-  const ProfileScreen({Key key, this.name, this.id}) : super(key: key);
+  const ProfileScreen({
+    Key key,
+    this.name,
+    this.id,
+  }) : super(key: key);
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -19,7 +24,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   List<User> users = [];
-  
 
   Future<List<User>> fetchDataUser() async {
     var url =
@@ -35,7 +39,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         return profile.map((users) => User.fromJson(users)).toList();
       }
     } catch (e) {}
-
   }
 
   @override
@@ -115,12 +118,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                           SizedBox(height: 24),
 
-                          // username 
-                          Text(user.username, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                          // username
+                          Text(
+                            user.username,
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500),
+                          ),
                           SizedBox(height: 20),
 
                           // follower + following
-                          buildfollow(user.following.toString(), user.follower.toString()),
+                          buildfollow(user.following.toString(),
+                              user.follower.toString()),
+
+                          SizedBox(height: 20),
+
+                          buildEditButton(),
                         ],
                       ),
                     ),
@@ -223,11 +235,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   //       color: Colors.black,
   //     ),
   //   );
-    // : CircleAvatar(
-    //     radius: 50,
-    //     backgroundImage: NetworkImage(
-    //         'http://35.213.159.134/uploadimages/${users.image}'),
-    //   );
+  // : CircleAvatar(
+  //     radius: 50,
+  //     backgroundImage: NetworkImage(
+  //         'http://35.213.159.134/uploadimages/${users.image}'),
+  //   );
   // }
 
   Widget buildFollowList() {
@@ -278,15 +290,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget buildLoginButton(BuildContext context) {
+  Widget buildFollowButton() {
     return OutlinedButton(
-      onPressed: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginScreen()));
-        print('login profile button');
-      },
+      onPressed: () {},
       child: Text(
-        "Log in",
+        "Follow",
         style: TextStyle(color: Colors.blue.shade900),
       ),
       style: OutlinedButton.styleFrom(

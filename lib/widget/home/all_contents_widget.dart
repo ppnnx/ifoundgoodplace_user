@@ -8,9 +8,9 @@ class AllContentsWidget extends StatelessWidget {
   final emailuser;
   final iduser;
 
-  const AllContentsWidget({Key key, this.emailuser = "Guest", this.iduser}) : super(key: key);
+  const AllContentsWidget({Key key, this.emailuser = "Guest", this.iduser})
+      : super(key: key);
 
-  
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Contents>>(
@@ -31,8 +31,11 @@ class AllContentsWidget extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  DetailScreen(content: snapshot.data[index], userEmail: emailuser, userId: iduser,)));
+                              builder: (context) => DetailScreen(
+                                    content: snapshot.data[index],
+                                    userEmail: emailuser,
+                                    userId: iduser,
+                                  )));
                     },
                   );
                 });
@@ -61,9 +64,8 @@ class AllContentsWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                         image: NetworkImage(
-                          'http://35.213.159.134/uploadimages/${contents.image01}'),
-                          fit: BoxFit.cover
-                    ),
+                            'http://35.213.159.134/uploadimages/${contents.image01}'),
+                        fit: BoxFit.cover),
                   ),
                 ),
                 SizedBox(width: 22),
@@ -90,16 +92,16 @@ class AllContentsWidget extends StatelessWidget {
                       // SizedBox(height: 8),
 
                       // title
-                      Text(
-                        contents.title,
-                        style: TextStyle(color: Colors.black, fontSize: 16),
-                      ),
-                      SizedBox(height: 10),
+                      // Text(
+                      //   contents.title,
+                      //   style: TextStyle(color: Colors.black, fontSize: 16),
+                      // ),
+                      // SizedBox(height: 10),
 
                       // catergory
                       Container(
-                        padding:
-                            EdgeInsets.only(left: 8, right: 8, top: 6, bottom: 6),
+                        padding: EdgeInsets.only(
+                            left: 8, right: 8, top: 6, bottom: 6),
                         decoration: BoxDecoration(
                           color: Colors.black,
                           borderRadius: BorderRadius.circular(14.0),
@@ -112,7 +114,13 @@ class AllContentsWidget extends StatelessWidget {
                       ),
                       SizedBox(height: 8),
 
-                      
+                      // title
+                      Text(
+                        contents.title,
+                        style: TextStyle(color: Colors.black, fontSize: 16),
+                      ),
+                      SizedBox(height: 10),
+
                       // date
                       // Text(
                       //   contents.dateContent,
@@ -134,7 +142,9 @@ class AllContentsWidget extends StatelessWidget {
                                 Text(
                                   contents.username,
                                   style: TextStyle(
-                                      color: Colors.black, fontSize: 14, fontWeight: FontWeight.w500),
+                                      color: Colors.black87,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500),
                                 ),
                               ],
                             ),

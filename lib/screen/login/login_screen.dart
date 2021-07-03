@@ -117,7 +117,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           );
       } else {
-
         // SharedPreferences preferences = await SharedPreferences.getInstance();
         // preferences.setInt('ID_User', userdata['ID_User']);
         // preferences.setString('Email', userdata['Email']);
@@ -270,19 +269,19 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 // back button
-                // Container(
-                //   child: InkWell(
-                //     child: Icon(
-                //       Icons.keyboard_backspace,
-                //       color: Colors.black,
-                //       size: 20,
-                //     ),
-                //     onTap: () {
-                //       print('back');
-                //       // Navigator.pop(context);
-                //     },
-                //   ),
-                // ),
+                Container(
+                  child: InkWell(
+                    child: Icon(
+                      Icons.keyboard_backspace,
+                      color: Colors.black,
+                      size: 20,
+                    ),
+                    onTap: () {
+                      print('back');
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
 
                 // text
                 Container(

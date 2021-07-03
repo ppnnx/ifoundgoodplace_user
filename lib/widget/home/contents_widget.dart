@@ -8,7 +8,9 @@ class ContentsWidget extends StatelessWidget {
   final email;
   final userid;
   final userimg;
-  const ContentsWidget({Key key, this.email, this.userid, this.userimg}) : super(key: key);
+
+  const ContentsWidget({Key key, this.email, this.userid, this.userimg})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,7 @@ class ContentsWidget extends StatelessWidget {
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
                 physics: BouncingScrollPhysics(),
-                itemCount: 3,
+                itemCount: 4,
                 itemBuilder: (context, index) {
                   final listcontent = snapshot.data[index];
 
@@ -76,11 +78,11 @@ class ContentsWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // title
-                      Text(
-                        contents.title,
-                        style: TextStyle(color: Colors.black, fontSize: 16),
-                      ),
-                      SizedBox(height: 10),
+                      // Text(
+                      //   contents.title,
+                      //   style: TextStyle(color: Colors.black, fontSize: 16),
+                      // ),
+                      // SizedBox(height: 10),
 
                       // catergory
                       Container(
@@ -98,6 +100,13 @@ class ContentsWidget extends StatelessWidget {
                       ),
                       SizedBox(height: 8),
 
+                      // title
+                      Text(
+                        contents.title,
+                        style: TextStyle(color: Colors.black, fontSize: 16),
+                      ),
+                      SizedBox(height: 10),
+
                       // date
                       // Text(
                       //   contents.dateContent,
@@ -112,15 +121,15 @@ class ContentsWidget extends StatelessWidget {
                             child: Row(
                               children: [
                                 // CircleAvatar(
-                                //   backgroundColor: Colors.amber,
+                                //   backgroundImage: NetworkImage('http://35.213.159.134/uploadimages/${contents.}'),
                                 //   radius: 13,
                                 // ),
                                 // SizedBox(width: 10),
                                 Text(
                                   contents.username,
                                   style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
+                                      color: Colors.black87,
+                                      fontSize: 12,
                                       fontWeight: FontWeight.w500),
                                 ),
                               ],

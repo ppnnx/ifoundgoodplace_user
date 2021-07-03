@@ -41,21 +41,16 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-
-	<!-- HTTP request allow -->
 	<key>NSAppTransportSecurity</key>
 	<dict>
-    	<key>NSAllowsArbitraryLoads</key>
-    	<true/>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
 	</dict>
-	
-	<!-- image picker -->
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need to upload image</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Need to upload image</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Need to upload image</string>
-
 </dict>
 </plist>
