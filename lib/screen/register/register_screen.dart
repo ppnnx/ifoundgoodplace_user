@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ifgpdemo/model/db_user.dart';
 import 'package:ifgpdemo/screen/login/login_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:ifgpdemo/screen/main/main_screen.dart';
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -48,20 +50,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               // back button
-              Container(
-                child: InkWell(
-                  child: Icon(
-                    Icons.keyboard_backspace,
-                    color: Colors.black,
-                    size: 20,
-                  ),
-                  onTap: () {
-                    print('back');
-                    // Navigator.pop(context);
-                  },
-                ),
-              ),
-
+              // Container(
+              //   child: InkWell(
+              //     child: Icon(
+              //       Icons.keyboard_backspace,
+              //       color: Colors.black,
+              //       size: 20,
+              //     ),
+              //     onTap: () {
+              //       print('back');
+              //       // Navigator.pop(context);
+              //     },
+              //   ),
+              // ),
+              SizedBox(height: 30),
               // text
               Container(
                 height: 70.0,
@@ -353,11 +355,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     SizedBox(height: 32),
 
-                    // login button
+                    // regis button
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState.validate()) {
                           register();
+                          // UserDB userDB = UserDB(
+                          //   email: emailcontroller.text.trim(),
+                          // );
+
+                          // var result =
+                          //     Provider.of<UserProvider>(context, listen: false)
+                          //         .createUser(userDB);
+                          // if (result != 'OK') {
+                          //   print(result);
+                          // } else {
+                          //   print('Successfully');
+                          // }
                         }
 
                         print('register');

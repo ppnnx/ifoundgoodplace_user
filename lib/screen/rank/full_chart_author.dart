@@ -1,8 +1,23 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:ifgpdemo/model/author_trending_model.dart';
+import 'package:ifgpdemo/screen/author_profile/author_profile_screen.dart';
+import 'package:ifgpdemo/screen/profile/profile_screen.dart';
 import 'package:ifgpdemo/service/api/author_ranking_api.dart';
 
-class FullChartAuthor extends StatelessWidget {
+class FullChartAuthor extends StatefulWidget {
+  final useremail;
+  final userid;
+  final userimage;
+
+  const FullChartAuthor({Key key, this.useremail, this.userid, this.userimage})
+      : super(key: key);
+
+  @override
+  _FullChartAuthorState createState() => _FullChartAuthorState();
+}
+
+class _FullChartAuthorState extends State<FullChartAuthor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,8 +51,7 @@ class FullChartAuthor extends StatelessWidget {
                         style: TextStyle(
                             color: Colors.black,
                             fontSize: 21,
-                            fontWeight: FontWeight.bold))
-                ),
+                            fontWeight: FontWeight.bold))),
               ],
             ),
           ),
@@ -51,9 +65,37 @@ class FullChartAuthor extends StatelessWidget {
                       physics: BouncingScrollPhysics(),
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext _, int index) {
-                        return AuthorChartWidget(
-                          rank: index + 1,
-                          data: snapshot.data[index],
+                        return GestureDetector(
+                          onTap: () {
+                            if (widget.userid != snapshot.data[index].iduser) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => AuthorProfileScreen(
+                                            idauthor:
+                                                snapshot.data[index].iduser,
+                                            nameauthor:
+                                                snapshot.data[index].username,
+                                            profileid: widget.userid,
+                                            useremail: widget.useremail,
+                                            userimage: widget.userimage,
+                                          )));
+                            } else if (widget.userid ==
+                                snapshot.data[index].iduser) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ProfileScreen(
+                                            id: widget.userid,
+                                            email: widget.useremail,
+                                            image: widget.userimage,
+                                          )));
+                            }
+                          },
+                          child: AuthorChartWidget(
+                            rank: index + 1,
+                            data: snapshot.data[index],
+                          ),
                         );
                       });
                 }
@@ -139,10 +181,29 @@ class AuthorChartWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  CircleAvatar(
-                    radius: 35,
-                    backgroundImage: NetworkImage(
-                        'http://35.213.159.134/uploadimages/${data.image}'),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10000.0),
+                    child: CachedNetworkImage(
+                      imageUrl: 'http://35.213.159.134/avatar/${data.image}',
+                      width: 70,
+                      height: 70,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                      errorWidget: (context, url, error) {
+                        return CircleAvatar(
+                          radius: 35,
+                          backgroundColor: Colors.black12,
+                          child: Icon(
+                            Icons.error,
+                            color: Colors.red,
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ],
               )),

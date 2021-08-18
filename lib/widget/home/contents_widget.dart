@@ -1,16 +1,38 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ifgpdemo/model/content_model.dart';
+import 'package:ifgpdemo/screen/detail/detail_nd_screen.dart';
 import 'package:ifgpdemo/screen/detail/detail_screen.dart';
 import 'package:ifgpdemo/service/api/content_api.dart';
+import 'package:http/http.dart' as http;
 
-class ContentsWidget extends StatelessWidget {
+class ContentsWidget extends StatefulWidget {
   final email;
   final userid;
   final userimg;
 
   const ContentsWidget({Key key, this.email, this.userid, this.userimg})
       : super(key: key);
+
+  @override
+  _ContentsWidgetState createState() => _ContentsWidgetState();
+}
+
+class _ContentsWidgetState extends State<ContentsWidget> {
+  // api get counter read to db
+  // Future getCounterRead() async {
+  //   try {
+  //     final url = Uri.parse('http://35.213.159.134/counterread.php');
+  //     final response = await http.post(url, body: {
+  //       "ID_Content" : content.idcontent.toString(),
+  //       "Click" : '1',
+  //     });
+  //     if (response.statusCode == 200) {
+  //       print('success');
+  //     }
+  //   } catch (e) {}
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +49,28 @@ class ContentsWidget extends StatelessWidget {
                   final listcontent = snapshot.data[index];
 
                   return GestureDetector(
-                    child: buildContents(listcontent),
+                    child: BuildContents(contents: snapshot.data[index]),
                     onTap: () {
+                      // listcontent.counterread+1;
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => DetailScreen(
+                      //               content: snapshot.data[index],
+                      //               userEmail: widget.email,
+                      //               userId: widget.userid,
+                      //               userImage: widget.userimg,
+                      //               count: listcontent.counterread++,
+                      //             )));
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => DetailScreen(
-                                    content: snapshot.data[index],
-                                    userEmail: email,
-                                    userId: userid,
-                                    userImage: userimg,
+                              builder: (context) => DetailSCRN(
+                                    contents: snapshot.data[index],
+                                    iduser: widget.userid,
+                                    emailuser: widget.email,
+                                    idcontent: listcontent.idcontent,
+                                    count: listcontent.counterread++,
                                   )));
                     },
                   );
@@ -50,8 +84,18 @@ class ContentsWidget extends StatelessWidget {
           );
         });
   }
+}
 
-  Widget buildContents(Contents contents) {
+class BuildContents extends StatelessWidget {
+  const BuildContents({
+    Key key,
+    @required this.contents,
+  }) : super(key: key);
+
+  final Contents contents;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       child: Column(
         children: [
@@ -59,15 +103,29 @@ class ContentsWidget extends StatelessWidget {
             padding: EdgeInsets.only(left: 18, right: 18, top: 10),
             child: Row(
               children: [
-                // image
-                Container(
-                  height: 100,
-                  width: 100,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: NetworkImage(
-                            'http://35.213.159.134/uploadimages/${contents.image01}'),
-                        fit: BoxFit.cover),
+                ClipRRect(
+                  child: CachedNetworkImage(
+                    imageUrl:
+                        'http://35.213.159.134/uploadimages/${contents.image01}',
+                    height: 100,
+                    width: 100,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                    errorWidget: (context, url, error) {
+                      return Container(
+                        height: 100,
+                        width: 100,
+                        color: Colors.black12,
+                        child: Icon(
+                          Icons.error,
+                          color: Colors.red,
+                        ),
+                      );
+                    },
                   ),
                 ),
                 SizedBox(width: 22),

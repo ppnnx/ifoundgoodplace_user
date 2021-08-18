@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ifgpdemo/model/content_model.dart';
+import 'package:ifgpdemo/screen/detail/detail_nd_screen.dart';
 import 'package:ifgpdemo/screen/detail/detail_screen.dart';
 import 'package:ifgpdemo/service/api/content_api.dart';
 
@@ -31,10 +33,12 @@ class AllContentsWidget extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => DetailScreen(
-                                    content: snapshot.data[index],
-                                    userEmail: emailuser,
-                                    userId: iduser,
+                              builder: (context) => DetailSCRN(
+                                    contents: snapshot.data[index],
+                                    emailuser: emailuser,
+                                    iduser: iduser,
+                                    idcontent: listcontent.idcontent,
+                                    count: listcontent.counterread++,
                                   )));
                     },
                   );
@@ -58,14 +62,29 @@ class AllContentsWidget extends StatelessWidget {
             child: Row(
               children: [
                 // image
-                Container(
-                  height: 100,
-                  width: 100,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: NetworkImage(
-                            'http://35.213.159.134/uploadimages/${contents.image01}'),
-                        fit: BoxFit.cover),
+                ClipRRect(
+                  child: CachedNetworkImage(
+                    imageUrl:
+                        'http://35.213.159.134/uploadimages/${contents.image01}',
+                    height: 100,
+                    width: 100,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                    errorWidget: (context, url, error) {
+                      return Container(
+                        height: 100,
+                        width: 100,
+                        color: Colors.black12,
+                        child: Icon(
+                          Icons.error,
+                          color: Colors.red,
+                        ),
+                      );
+                    },
                   ),
                 ),
                 SizedBox(width: 22),

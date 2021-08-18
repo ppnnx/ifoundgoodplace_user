@@ -10,7 +10,7 @@ class SearchScreen extends StatefulWidget {
   final emailuser;
 
   const SearchScreen({Key key, this.iduser, this.emailuser}) : super(key: key);
-  
+
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
@@ -58,13 +58,18 @@ class _SearchScreenState extends State<SearchScreen> {
                             final content = contents[index];
 
                             return GestureDetector(
-                              child: ContentsWidget().buildContents(content),
+                              child: BuildContents(
+                                contents: content,
+                              ),
                               onTap: () {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => DetailScreen(
-                                              content: content, userId: widget.iduser, userEmail: widget.emailuser,
+                                              content: content,
+                                              userId: widget.iduser,
+                                              userEmail: widget.emailuser,
+                                              count: content.counterread++,
                                             )));
                               },
                             );
@@ -105,23 +110,22 @@ class BuildItems extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.only(left: 25, right: 18),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  content.title,
-                  style: TextStyle(fontSize: 16, fontFamily: 'Kanit'),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  content.username,
-                  style: TextStyle(fontSize: 14),
-                ),
-                SizedBox(height: 14),
-              ],
-            )
-          ),
+              padding: EdgeInsets.only(left: 25, right: 18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    content.title,
+                    style: TextStyle(fontSize: 16, fontFamily: 'Kanit'),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    content.username,
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  SizedBox(height: 14),
+                ],
+              )),
           Divider(),
         ],
       ),

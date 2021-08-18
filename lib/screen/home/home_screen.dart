@@ -1,20 +1,24 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ifgpdemo/model/content_model.dart';
 import 'package:ifgpdemo/screen/bookmark/bookmark_screen.dart';
+import 'package:ifgpdemo/screen/bookmark/second_screen.dart';
 import 'package:ifgpdemo/screen/detail/allcontent_screen.dart';
 import 'package:ifgpdemo/screen/favorite/favorite_screen.dart';
+import 'package:ifgpdemo/screen/home/drawer_components/drawer_header.dart';
 import 'package:ifgpdemo/screen/login/login_screen.dart';
+import 'package:ifgpdemo/screen/map/map_nd_scrn.dart';
+import 'package:ifgpdemo/screen/map/map_screen.dart';
 import 'package:ifgpdemo/screen/profile/profile_screen.dart';
 import 'package:ifgpdemo/screen/rank/full_chart_author.dart';
 import 'package:ifgpdemo/screen/search/search_screen.dart';
 import 'package:ifgpdemo/widget/home/author_widget.dart';
 import 'package:ifgpdemo/widget/home/categories_widget.dart';
 import 'package:ifgpdemo/widget/home/contents_widget.dart';
-import 'package:ifgpdemo/widget/map_widget.dart';
-import 'package:ifgpdemo/widget/ranking/all_rank_widget.dart';
-import 'package:ifgpdemo/widget/ranking/group_btn_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'drawer_components/drawer_bottom.dart';
 
 class HomeScreen extends StatefulWidget {
   final email;
@@ -35,22 +39,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // String email = "";
-
-  // Future signInCheck() async {
-  //   SharedPreferences preferences = await SharedPreferences.getInstance();
-  //   // widget.email = preferences.getString('Email');
-  //   // setState(() {
-  //   //   email = preferences.getString('Email');
-  //   //   print(email);
-  //   // });
-  // }
-
-  // Future signout() async {
-  //   SharedPreferences preferences = await SharedPreferences.getInstance();
-  //   preferences.remove('Email');
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -68,16 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
             style: Theme.of(context).textTheme.bodyText1,
           ),
           elevation: 0,
-          // leading: IconButton(
-          //   icon: Icon(
-          //     CupertinoIcons.placemark,
-          //     size: 20,
-          //     color: Colors.black,
-          //   ),
-          //   onPressed: () {
-          //     print('search loction.');
-          //   },
-          // ),
           actions: <Widget>[
             IconButton(
               icon: Icon(
@@ -98,251 +76,83 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           ],
         ),
-
-        // drawer menu
         drawer: Drawer(
           child: ListView(
-            children: <Widget>[
+            children: [
               // header
-              Container(
-                // color: Colors.white,
-                height: 200,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 34),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      widget.email == "Guest" || widget.image == null
-                          ? CircleAvatar(
-                              backgroundColor: Colors.grey.shade100,
-                              child: Icon(
-                                Icons.face,
-                                color: Colors.black,
-                              ),
-                              radius: 40,
-                            )
-                          : CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  'http://35.213.159.134/uploadimages/${widget.image}'),
-                              radius: 40,
+              widget.email == "Guest" ||
+                      widget.image == null ||
+                      widget.image == " "
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 180,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 30),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('assets/second.png'),
+                                  radius: 40,
+                                ),
+                                SizedBox(height: 18),
+                                Container(
+                                  padding: EdgeInsets.only(left: 18),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Guest',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      SizedBox(height: 5),
+                                      // Text(
+                                      //   widget.email,
+                                      //   style: TextStyle(
+                                      //     fontSize: 14,
+                                      //   ),
+                                      // ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                      SizedBox(height: 12),
-                      Container(
-                          padding: EdgeInsets.only(left: 8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.username,
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              SizedBox(height: 5),
-                              Text(widget.email),
-                            ],
-                          )),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-
-              widget.email == "Guest"
-                  ? ListTile(
-                      leading: Icon(
-                        CupertinoIcons.rocket_fill,
-                        color: Colors.black,
-                      ),
-                      title: Text(
-                        'Login',
-                        style: TextStyle(color: Colors.black, fontSize: 14),
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginScreen()));
-                      },
+                          ),
+                        ),
+                        Divider(),
+                        ListTile(
+                          leading: Icon(
+                            CupertinoIcons.person_crop_circle,
+                            color: Colors.black,
+                          ),
+                          title: Text(
+                            'Login',
+                            style: TextStyle(color: Colors.black, fontSize: 14),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen()));
+                          },
+                        )
+                      ],
                     )
-                  : Container(
-                      child: Column(
-                        children: <Widget>[
-                          // ListTile(
-                          //   leading: Icon(
-                          //     CupertinoIcons.home,
-                          //     color: Colors.black,
-                          //     size: 20,
-                          //   ),
-                          //   title: Text(
-                          //     'home',
-                          //     style: TextStyle(color: Colors.black),
-                          //   ),
-                          //   onTap: () {
-                          //     Navigator.push(
-                          //         context,
-                          //         MaterialPageRoute(
-                          //             builder: (context) => HomeScreen()));
-                          //   },
-                          // ),
-                          SizedBox(height: 5),
-                          ListTile(
-                            leading: Icon(
-                              Icons.face,
-                              color: Colors.black,
-                              size: 20,
-                            ),
-                            title: Text(
-                              'Profile',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ProfileScreen(
-                                            name: widget.username,
-                                            id: widget.iduser,
-                                          )));
-                            },
-                          ),
-                          SizedBox(height: 5),
-                          ListTile(
-                            leading: Icon(
-                              CupertinoIcons.bookmark,
-                              color: Colors.black,
-                              size: 20,
-                            ),
-                            title: Text('Bookmark',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w400,
-                                )),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => BookmarkScreen()));
-                            },
-                          ),
-                          SizedBox(height: 5),
-                          ListTile(
-                            leading: Icon(
-                              CupertinoIcons.heart,
-                              color: Colors.black,
-                              size: 20,
-                            ),
-                            title: Text('Favorite',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w400,
-                                )),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => FavoriteScreen(
-                                            iduser: widget.iduser,
-                                          )));
-                            },
-                          ),
-
-                          Divider(
-                            color: Colors.black26,
-                          ),
-
-                          ListTile(
-                            leading: Icon(
-                              CupertinoIcons.multiply_circle,
-                              color: Colors.black,
-                            ),
-                            title: Text(
-                              'Logout',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            onTap: () {
-                              print('logout');
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => HomeScreen()));
-                            },
-                          ),
-                        ],
-                      ),
+                  : Header(
+                      useridlogin: widget.iduser,
                     ),
+              widget.email == "Guest" ? Container() : Bottom(),
             ],
           ),
         ),
-
-        // drawer: Drawer(
-        //   child: ListView(
-        //   children: <Widget>[
-        //     UserAccountsDrawerHeader(
-        //       decoration: BoxDecoration(color: Colors.white),
-        //       accountName: Text(
-        //         widget.username,
-        //         style: TextStyle(color: Colors.black),
-        //       ),
-        //       accountEmail: Text(
-        //         widget.email,
-        //         style: TextStyle(color: Colors.black),
-        //       ),
-        //       currentAccountPicture: CircleAvatar(
-        //         backgroundColor: Colors.amber.shade100,
-        //         child: Icon(Icons.face, color: Colors.black,),
-
-        //       ),
-        //     ),
-        //     widget.email == "Guest"
-        //         ? ListTile(
-        //             leading: Icon(
-        //               CupertinoIcons.rocket_fill,
-        //               color: Colors.black,
-        //             ),
-        //             title: Text(
-        //               'Login',
-        //               style: TextStyle(color: Colors.black, fontSize: 14),
-        //             ),
-        //             onTap: () {
-        //               print('logout');
-        //               Navigator.push(
-        //                   context,
-        //                   MaterialPageRoute(
-        //                       builder: (context) => LoginScreen()));
-        //             },
-        //           )
-        //         : ListTile(
-        //             leading: Icon(
-        //               CupertinoIcons.flame_fill,
-        //               color: Colors.black,
-        //             ),
-        //             title: Text(
-        //               'logout',
-        //               style: TextStyle(color: Colors.black),
-        //             ),
-        //             onTap: () {
-        //               print('logout');
-        //               Navigator.push(
-        //                   context,
-        //                   MaterialPageRoute(
-        //                       builder: (context) => HomeScreen()));
-        //             },
-        //           )
-        //   ],
-        // )),
-
         body: ListView(
           children: <Widget>[
             // (head).
@@ -358,7 +168,11 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               height: 120,
               width: double.infinity,
-              child: AuthorWidget(),
+              child: AuthorWidget(
+                userid: widget.iduser,
+                useremail: widget.email,
+                userimg: widget.image,
+              ),
             ),
             SizedBox(height: 14),
             // (head). category
@@ -371,17 +185,31 @@ class _HomeScreenState extends State<HomeScreen> {
             Divider(
               color: Colors.black,
             ),
-            SizedBox(height: 8),
+            SizedBox(height: 20),
 
-            // (head). ranking
-            // buildheadjusttext('ranking'),
-            // SizedBox(height: 12),
-            // AllRankWidget(),
-            // GroupButton(),
-            SizedBox(height: 14),
-            // (head). map
-            // buildheadjusttext('map'),
-            // MapWidget(),
+            Container(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElevatedButton(
+                    onPressed: () => Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => MapSCRN())),
+                    child: Icon(
+                      CupertinoIcons.map,
+                      color: Colors.black,
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                          side: BorderSide(color: Colors.black)),
+                      elevation: 0.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
           ],
         ));
   }
@@ -498,7 +326,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => FullChartAuthor()));
+                            builder: (context) => FullChartAuthor(
+                                  useremail: widget.email,
+                                  userid: widget.iduser,
+                                  userimage: widget.image,
+                                )));
                   },
                 ),
               ],

@@ -1,4 +1,3 @@
-
 class User {
   int iduser;
   String username;
@@ -43,4 +42,3 @@ class User {
     return data;
   }
 }
-

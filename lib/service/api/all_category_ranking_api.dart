@@ -11,7 +11,9 @@ class TrendingAPI {
     if (response.statusCode == 200) {
       final List trendingcontent = json.decode(response.body);
 
-      return trendingcontent.map((json) => TrendingModel.fromJson(json)).toList();
+      return trendingcontent
+          .map((json) => TrendingModel.fromJson(json))
+          .toList();
     } else {
       throw Exception('request api error');
     }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ifgpdemo/model/category_model.dart';
@@ -48,6 +49,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
             .toList();
       }
     } catch (e) {}
+    return null;
   }
 
   Future<List<TrendingModel>> getTrendingContentbyCategory() async {
@@ -64,6 +66,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
             .toList();
       }
     } catch (e) {}
+    return null;
   }
 
   @override
@@ -161,6 +164,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                 userId: widget.userid,
                                                 userEmail: widget.useremail,
                                                 userImage: widget.userimg,
+                                                count: catecont.counterread++,
                                               )));
                                 },
                               );
@@ -247,14 +251,41 @@ class _CategoryScreenState extends State<CategoryScreen> {
             child: Row(
               children: [
                 // image
-                Container(
-                  height: 80,
-                  width: 80,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: NetworkImage(
-                            'http://35.213.159.134/uploadimages/${contents.image01}'),
-                        fit: BoxFit.cover),
+                // Container(
+                //   height: 80,
+                //   width: 80,
+                //   decoration: BoxDecoration(
+                //     image: DecorationImage(
+                //         image: NetworkImage(
+                //             'http://35.213.159.134/uploadimages/${contents.image01}'),
+                //         fit: BoxFit.cover),
+                //   ),
+                // ),
+
+                // use cached network to check network
+                ClipRRect(
+                  child: CachedNetworkImage(
+                    imageUrl:
+                        'http://35.213.159.134/uploadimages/${contents.image01}',
+                    height: 80,
+                    width: 80,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                    errorWidget: (context, url, error) {
+                      return Container(
+                        height: 100,
+                        width: 100,
+                        color: Colors.black12,
+                        child: Icon(
+                          Icons.error,
+                          color: Colors.red,
+                        ),
+                      );
+                    },
                   ),
                 ),
                 SizedBox(width: 22),
@@ -398,20 +429,6 @@ class TrendingWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  // Container(
-                  //   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                  //   decoration: BoxDecoration(
-                  //       color: Colors.black,
-                  //       borderRadius: BorderRadius.circular(15.0)),
-                  //   child: Text(
-                  //     data.category,
-                  //     style: TextStyle(
-                  //         fontSize: 10,
-                  //         fontWeight: FontWeight.w500,
-                  //         color: Colors.white),
-                  //   ),
-                  // ),
-                  // SizedBox(height: 7),
                   Text(
                     data.title,
                     style: TextStyle(color: Colors.black, fontSize: 14),
@@ -449,14 +466,30 @@ class TrendingWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Container(
-                    height: 80,
-                    width: 80,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: NetworkImage(
-                                'http://35.213.159.134/uploadimages/${data.images01}'),
-                            fit: BoxFit.cover)),
+                  ClipRRect(
+                    child: CachedNetworkImage(
+                      imageUrl:
+                          'http://35.213.159.134/uploadimages/${data.images01}',
+                      height: 80,
+                      width: 80,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                      errorWidget: (context, url, error) {
+                        return Container(
+                          height: 80,
+                          width: 80,
+                          color: Colors.black12,
+                          child: Icon(
+                            Icons.error,
+                            color: Colors.red,
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ],
               )),

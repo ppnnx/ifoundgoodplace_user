@@ -1,8 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -17,10 +21,19 @@ class CreateScreen extends StatefulWidget {
 }
 
 class _CreateScreenState extends State<CreateScreen> {
+  double _lat;
+  double _lng;
+
+  Timer _timer;
+  double _progress;
+
   File _image1;
   File _image2;
   File _image3;
   File _image4;
+
+  List<File> files = [];
+  File file;
 
   final picker = ImagePicker();
 
@@ -30,55 +43,170 @@ class _CreateScreenState extends State<CreateScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController titlecontroller = TextEditingController();
   TextEditingController storycontroller = TextEditingController();
+  TextEditingController urlcontroller = TextEditingController();
 
   // for google map
-  static const _initialCameraPosition = CameraPosition(
-    target: LatLng(18.810570, 98.952657),
-    zoom: 16.0,
-  );
+  Future<Null> checkPermission() async {
+    bool locationService;
+    LocationPermission locationPermission;
 
-  Widget buildmap() {
-    return Container(
-      margin: EdgeInsets.all(12.0),
-      height: 350,
-      child: GoogleMap(
-        myLocationButtonEnabled: false,
-        zoomControlsEnabled: false,
-        initialCameraPosition: _initialCameraPosition,
-      ),
-    );
+    locationService = await Geolocator.isLocationServiceEnabled();
+    if (locationService) {
+      print('Service Location is Open');
+
+      // check permission location
+      locationPermission = await Geolocator.checkPermission();
+      if (locationPermission == LocationPermission.denied) {
+        locationPermission = await Geolocator.requestPermission();
+        if (locationPermission == LocationPermission.deniedForever) {
+          alertLocationService(context, 'Share your location is close',
+              'Please open share your location');
+        } else {
+          // find lat lng
+          findLatLng();
+        }
+      } else {
+        if (locationPermission == LocationPermission.deniedForever) {
+          alertLocationService(context, 'Location Service is not allow',
+              'Please allow location service in setting');
+        } else {
+          // find lat lng
+          findLatLng();
+        }
+      }
+    } else {
+      print('Service Location is Close');
+      alertLocationService(context, 'Location Service is not allow',
+          'Please allow location service in setting');
+    }
   }
 
-  Future selectImage1(ImageSource imageSource) async {
-    var pickedImage = await picker.getImage(source: imageSource);
+  Future<Null> findLatLng() async {
+    print('findLatLng is work!');
+    Position position = await findPosition();
     setState(() {
-      _image1 = File(pickedImage.path);
-
-      // if (_image1 = null) {
-      //   return Text('null');
-      // }
+      _lat = position.latitude;
+      _lng = position.longitude;
+      print('Lat = $_lat , Lng = $_lng');
     });
+  }
+
+  Future<Position> findPosition() async {
+    Position position;
+    try {
+      position = await Geolocator.getCurrentPosition();
+      return position;
+    } catch (e) {}
+    return null;
+  }
+
+  Set<Marker> setMarker() => <Marker>[
+        Marker(
+          markerId: MarkerId('id'),
+          position: LatLng(_lat, _lng),
+          infoWindow: InfoWindow(
+              title: 'you are here.', snippet: 'Lat = $_lat, Lng = $_lng'),
+        ),
+      ].toSet();
+
+  alertLocationService(BuildContext context, String title, String subtitle) =>
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: ListTile(
+            title: Text(title),
+            subtitle: Text(subtitle),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () async {
+                  // Navigator.pop(context);
+                  await Geolocator.openLocationSettings();
+                  exit(0);
+                },
+                child: Text('OK'))
+          ],
+        ),
+      );
+
+  // initial image files = null
+  void initialFile() {
+    for (var i = 0; i < 4; i++) {
+      files.add(null);
+    }
+  }
+
+  // pick image // don't ues !
+  // Future pickedImage(ImageSource source, int index) async {
+  //   try {
+  //     var pickedimage = await picker.getImage(
+  //       source: source,
+  //       imageQuality: 80,
+  //       maxWidth: 800,
+  //       maxHeight: 800,
+  //     );
+  //     setState(() {
+  //       file = File(pickedimage.path);
+  //       // determine to start file image 1 = file[0]
+  //       files[index] = file;
+  //     });
+  //   } catch (e) {}
+  // }
+
+  Future selectImage1(ImageSource imageSource) async {
+    try {
+      var pickedImage = await picker.getImage(
+        source: imageSource,
+        imageQuality: 80,
+        maxWidth: 800,
+        maxHeight: 800,
+      );
+      setState(() {
+        _image1 = File(pickedImage.path);
+      });
+    } catch (e) {}
   }
 
   Future selectImage2(ImageSource imageSource) async {
-    var pickedImage = await picker.getImage(source: imageSource);
-    setState(() {
-      _image2 = File(pickedImage.path);
-    });
+    try {
+      var pickedImage = await picker.getImage(
+        source: imageSource,
+        imageQuality: 80,
+        maxWidth: 800,
+        maxHeight: 800,
+      );
+      setState(() {
+        _image2 = File(pickedImage.path);
+      });
+    } catch (e) {}
   }
 
   Future selectImage3(ImageSource imageSource) async {
-    var pickedImage = await picker.getImage(source: imageSource);
-    setState(() {
-      _image3 = File(pickedImage.path);
-    });
+    try {
+      var pickedImage = await picker.getImage(
+        source: imageSource,
+        imageQuality: 80,
+        maxWidth: 800,
+        maxHeight: 800,
+      );
+      setState(() {
+        _image3 = File(pickedImage.path);
+      });
+    } catch (e) {}
   }
 
   Future selectImage4(ImageSource imageSource) async {
-    var pickedImage = await picker.getImage(source: imageSource);
-    setState(() {
-      _image4 = File(pickedImage.path);
-    });
+    try {
+      var pickedImage = await picker.getImage(
+        source: imageSource,
+        imageQuality: 80,
+        maxWidth: 800,
+        maxHeight: 800,
+      );
+      setState(() {
+        _image4 = File(pickedImage.path);
+      });
+    } catch (e) {}
   }
 
   Future getCategory() async {
@@ -95,40 +223,97 @@ class _CreateScreenState extends State<CreateScreen> {
 
   Future addPost() async {
     var url = Uri.parse('http://35.213.159.134/ctcreate.php');
-    var request = http.MultipartRequest("POST", url);
-    request.fields['Title'] = titlecontroller.text;
-    request.fields['Content'] = storycontroller.text;
-    request.fields['ID_Category'] = selectedCategory;
-    request.fields['ID_Userpost'] = widget.idauthor.toString();
 
-    // photo 1
-    var photo01 = await http.MultipartFile.fromPath('Images01', _image1.path,
-        filename: _image1.path);
-    request.files.add(photo01);
-    // photo 2
-    var photo02 = await http.MultipartFile.fromPath('Images02', _image2.path,
-        filename: _image2.path);
-    request.files.add(photo02);
+    Map<String, String> headers = {
+      "Accept": "*/*",
+      "Connection": "keep-alive",
+    };
 
-    // photo 3
-    var photo03 = await http.MultipartFile.fromPath('Images03', _image3.path,
-        filename: _image3.path);
-    request.files.add(photo03);
+    try {
+      var request = http.MultipartRequest("POST", url);
+      request.fields['ID_Userpost'] = widget.idauthor.toString();
+      request.fields['Title'] = titlecontroller.text;
+      request.fields['Content'] = storycontroller.text;
+      request.fields['Link_VDO'] = urlcontroller.text;
+      request.fields['ID_Category'] = selectedCategory;
+      request.fields['Latitude'] = _lat.toString();
+      request.fields['Longitude'] = _lng.toString();
 
-    // photo 4
-    var photo04 = await http.MultipartFile.fromPath('Images04', _image4.path,
-        filename: _image4.path);
-    request.files.add(photo04);
+      int i = Random().nextInt(1000000);
+      String nameFile = 'image$i.jpg';
 
-    var response = await request.send();
-    if (response.statusCode == 200) {
-      print(titlecontroller.text);
-      print(widget.idauthor.toString());
-      print(selectedCategory);
-      print(photo01);
-      print(photo02);
-      print(photo03);
-      print(photo04);
+      // photo 1
+      var photo01 = await http.MultipartFile.fromPath(
+        'Images01',
+        _image1.path,
+        filename: _image1.path,
+      );
+      request.files.add(photo01);
+      // photo 2
+      var photo02 = await http.MultipartFile.fromPath('Images02', _image2.path,
+          filename: _image2.path);
+      request.files.add(photo02);
+
+      // photo 3
+      var photo03 = await http.MultipartFile.fromPath('Images03', _image3.path,
+          filename: _image3.path);
+      request.files.add(photo03);
+
+      // photo 4
+      var photo04 = await http.MultipartFile.fromPath('Images04', _image4.path,
+          filename: _image4.path);
+      request.files.add(photo04);
+
+      request.headers.addAll(headers);
+
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        print('upload ..');
+        // progress between doing
+        _progress = 0;
+        _timer?.cancel();
+        _timer = Timer.periodic(const Duration(milliseconds: 100),
+            (Timer timer) async {
+          EasyLoading.showProgress(_progress,
+              status: '${(_progress * 100).toStringAsFixed(0)}%');
+          _progress += 0.03;
+
+          if (_progress >= 1) {
+            EasyLoading.showSuccess('Done');
+            _timer?.cancel();
+            EasyLoading.dismiss();
+            await delayprogress();
+            Navigator.of(context).pop(true);
+          }
+
+          // else {
+          //   EasyLoading.showError('Failed');
+          //   _timer?.cancel();
+          //   EasyLoading.dismiss();
+          // }
+        });
+      } else {}
+    } catch (e) {}
+  }
+
+  Future delayprogress() async {
+    await Future.delayed(Duration(milliseconds: 2000));
+  }
+
+  // check validate textfiled + null from image path
+  void processaddstory() {
+    if (_formKey.currentState.validate()) {
+      bool checkFile = true;
+      for (var item in files) {
+        if (item == null) {
+          checkFile = false;
+        }
+      }
+      if (checkFile) {
+        print('_____# choose 4 images success!');
+      } else {
+        _showalertImages();
+      }
     }
   }
 
@@ -136,12 +321,22 @@ class _CreateScreenState extends State<CreateScreen> {
   void initState() {
     super.initState();
     getCategory();
+    EasyLoading.addStatusCallback((status) {
+      print('EasyLoading Status $status');
+      if (status == EasyLoadingStatus.dismiss) {
+        _timer?.cancel();
+      }
+    });
+    initialFile();
+    checkPermission();
   }
 
   @override
   void dispose() {
     titlecontroller.dispose();
     storycontroller.dispose();
+    urlcontroller.dispose();
+
     super.dispose();
   }
 
@@ -159,30 +354,22 @@ class _CreateScreenState extends State<CreateScreen> {
             size: 20,
           ),
           onPressed: () {
-            print('close');
             Navigator.pop(context);
           },
         ),
-        // actions: <Widget>[
-        //   TextButton(
-        //     onPressed: () {
-        //       print('next');
-        //       Navigator.push(context,
-        //           MaterialPageRoute(builder: (context) => WriteScreen()));
-        //     },
-        //     child: Text(
-        //       "next",
-        //       style: TextStyle(color: Colors.black),
-        //     ),
-        //   )
-        // ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          setState(() {
+          // check null of images
+          if (_image1 == null ||
+              _image2 == null ||
+              _image3 == null ||
+              _image4 == null) {
+            // if some of images is null -> show alert box
+            return _showalertImages();
+          } else if (_formKey.currentState.validate()) {
             addPost();
-          });
-          // print('published');
+          }
         },
         label: Text('Publish'),
         backgroundColor: Colors.black,
@@ -212,6 +399,7 @@ class _CreateScreenState extends State<CreateScreen> {
                         hintText: 'Title',
                         hintStyle: TextStyle(fontSize: 18),
                         border: InputBorder.none),
+                    autocorrect: false,
                   ),
                   SizedBox(height: 10),
 
@@ -295,7 +483,7 @@ class _CreateScreenState extends State<CreateScreen> {
                           crossAxisCount: 2,
                           children: <Widget>[
                             GestureDetector(
-                              onTap: showBottomMenu1,
+                              onTap: _chooseimages01,
                               child: Container(
                                 color: Colors.black12,
                                 child: _image1 == null
@@ -307,7 +495,7 @@ class _CreateScreenState extends State<CreateScreen> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: showBottomMenu2,
+                              onTap: _chooseimages02,
                               child: Container(
                                 color: Colors.black12,
                                 child: _image2 == null
@@ -319,7 +507,7 @@ class _CreateScreenState extends State<CreateScreen> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: showBottomMenu3,
+                              onTap: _chooseimages03,
                               child: Container(
                                 color: Colors.black12,
                                 child: _image3 == null
@@ -331,7 +519,7 @@ class _CreateScreenState extends State<CreateScreen> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: showBottomMenu4,
+                              onTap: _chooseimages04,
                               child: Container(
                                 color: Colors.black12,
                                 child: _image4 == null
@@ -351,52 +539,57 @@ class _CreateScreenState extends State<CreateScreen> {
 
 //////////////////////////////// image end ///////////////////////////////////
 
-////////////////////////// url ////////////////////////////
-                  Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'URL Video',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        TextField(
-                          decoration: InputDecoration(
-                            labelText: 'your url',
-                          ),
-                        ),
-                      ],
-                    ),
+                  // url
+                  TextFormField(
+                    controller: urlcontroller,
+                    keyboardType: TextInputType.url,
+                    cursorColor: Colors.black,
+                    decoration: InputDecoration(
+                        hintText: 'youtube.com/yourvideo',
+                        hintStyle: TextStyle(fontSize: 14),
+                        border: InputBorder.none,
+                        prefixIcon: Icon(
+                          CupertinoIcons.arrowtriangle_right_square,
+                          color: Colors.black,
+                          size: 26,
+                        )),
                   ),
-                  SizedBox(height: 28),
+                  SizedBox(height: 30),
 
-                  // location
-                  // Container(
-                  //   child: Column(
-                  //     crossAxisAlignment: CrossAxisAlignment.start,
-                  //     children: [
-                  //       Container(
-                  //         alignment: Alignment.centerLeft,
-                  //         child: Text(
-                  //           'Location',
-                  //           style: TextStyle(
-                  //               color: Colors.black,
-                  //               fontSize: 15,
-                  //               fontWeight: FontWeight.w500),
-                  //         ),
-                  //       ),
-                  //       SizedBox(height: 10),
-                  //       buildmap(),
-                  //     ],
-                  //   ),
-                  // ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(
+                        CupertinoIcons.location,
+                        color: Colors.black,
+                        size: 24,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        'Location',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  Container(
+                    height: 350,
+                    child: _lat == null
+                        ? Center(child: CircularProgressIndicator())
+                        : GoogleMap(
+                            initialCameraPosition: CameraPosition(
+                                target: LatLng(_lat, _lng), zoom: 16.0),
+                            mapType: MapType.normal,
+                            myLocationButtonEnabled: false,
+                            zoomControlsEnabled: false,
+                            onMapCreated: (controller) {},
+                            markers: setMarker(),
+                          ),
+                  ),
+
                   SizedBox(height: 60),
 
                   // story
@@ -411,7 +604,7 @@ class _CreateScreenState extends State<CreateScreen> {
                   SizedBox(height: 12),
                   TextFormField(
                     controller: storycontroller,
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.multiline,
                     validator: (value) {
                       if (value.isEmpty) {
                         showAlertStory();
@@ -421,13 +614,14 @@ class _CreateScreenState extends State<CreateScreen> {
                     style: TextStyle(
                       fontSize: 16,
                     ),
-                    maxLines: 100,
+                    maxLines: null,
                     cursorColor: Colors.black,
                     decoration: InputDecoration(
                         hintText: 'type your story this here . .',
                         hintStyle: TextStyle(fontSize: 16),
                         border: InputBorder.none),
                   ),
+                  SizedBox(height: 30),
                 ],
               ),
             ),
@@ -435,6 +629,41 @@ class _CreateScreenState extends State<CreateScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _showalertImages() async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+            ),
+            title: ListTile(
+              leading: Icon(
+                CupertinoIcons.rectangle_stack_person_crop,
+                color: Colors.black,
+                size: 21,
+              ),
+              title: Text('More images'),
+              subtitle: Text(
+                'Please choose more images.',
+                style: TextStyle(fontSize: 12),
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "OK",
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+            ],
+          );
+        });
   }
 
   Future<void> showAlertTitle() async {
@@ -504,138 +733,158 @@ class _CreateScreenState extends State<CreateScreen> {
 
 //////////////////// bottom sheet for image picker ////////////////////
 
-  // bottom sheet 1
-  void showBottomMenu1() => showModalBottomSheet(
+  // bottom sheet 1 : select image from camera or gallery
+  void _chooseimages01() => showModalBottomSheet(
         context: context,
-        builder: (context) => Container(
-          height: 140,
-          child: Column(
-            children: <Widget>[
-              ListTile(
-                  leading: Icon(
-                    Icons.image,
-                    color: Colors.black,
-                    size: 20,
-                  ),
-                  title: Text('From Gallery'),
-                  onTap: () {
-                    selectImage1(ImageSource.gallery);
-                    Navigator.of(context).pop(_image1);
-                  }),
-              ListTile(
-                  leading: Icon(
-                    Icons.camera_alt,
-                    color: Colors.black,
-                    size: 20,
-                  ),
-                  title: Text('From Camera'),
-                  onTap: () {
-                    selectImage1(ImageSource.camera);
-                    Navigator.of(context).pop(_image1);
-                  }),
-            ],
+        builder: (context) => GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Container(
+            height: 140,
+            child: Column(
+              children: <Widget>[
+                ListTile(
+                    leading: Icon(
+                      Icons.image,
+                      color: Colors.black,
+                      size: 20,
+                    ),
+                    title: Text('From Gallery'),
+                    onTap: () {
+                      Navigator.of(context).pop(_image1);
+                      selectImage1(ImageSource.gallery);
+                    }),
+                ListTile(
+                    leading: Icon(
+                      Icons.camera_alt,
+                      color: Colors.black,
+                      size: 20,
+                    ),
+                    title: Text('From Camera'),
+                    onTap: () {
+                      Navigator.of(context).pop(_image1);
+                      selectImage1(ImageSource.camera);
+                    }),
+              ],
+            ),
           ),
         ),
       );
 
   // bottom sheet 2
-  void showBottomMenu2() => showModalBottomSheet(
+  void _chooseimages02() => showModalBottomSheet(
         context: context,
-        builder: (context) => Container(
-          height: 140,
-          child: Column(
-            children: <Widget>[
-              ListTile(
-                  leading: Icon(
-                    Icons.image,
-                    color: Colors.black,
-                    size: 20,
-                  ),
-                  title: Text('From Gallery'),
-                  onTap: () {
-                    selectImage2(ImageSource.gallery);
-                    Navigator.of(context).pop(_image2);
-                  }),
-              ListTile(
-                  leading: Icon(
-                    Icons.camera_alt,
-                    color: Colors.black,
-                    size: 20,
-                  ),
-                  title: Text('From Camera'),
-                  onTap: () {
-                    selectImage2(ImageSource.camera);
-                    Navigator.of(context).pop(_image2);
-                  }),
-            ],
+        builder: (context) => GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Container(
+            height: 140,
+            child: Column(
+              children: <Widget>[
+                ListTile(
+                    leading: Icon(
+                      Icons.image,
+                      color: Colors.black,
+                      size: 20,
+                    ),
+                    title: Text('From Gallery'),
+                    onTap: () {
+                      Navigator.of(context).pop(_image2);
+                      selectImage2(ImageSource.gallery);
+                    }),
+                ListTile(
+                    leading: Icon(
+                      Icons.camera_alt,
+                      color: Colors.black,
+                      size: 20,
+                    ),
+                    title: Text('From Camera'),
+                    onTap: () {
+                      Navigator.of(context).pop(_image2);
+                      selectImage2(ImageSource.camera);
+                    }),
+              ],
+            ),
           ),
         ),
       );
 
-  // bottom sheet 3
-  void showBottomMenu3() => showModalBottomSheet(
+  // bottom sheet 3 : select image from camera or gallery
+  void _chooseimages03() => showModalBottomSheet(
         context: context,
-        builder: (context) => Container(
-          height: 140,
-          child: Column(
-            children: <Widget>[
-              ListTile(
-                  leading: Icon(
-                    Icons.image,
-                    color: Colors.black,
-                    size: 20,
-                  ),
-                  title: Text('From Gallery'),
-                  onTap: () {
-                    selectImage3(ImageSource.gallery);
-                    Navigator.of(context).pop(_image3);
-                  }),
-              ListTile(
-                  leading: Icon(
-                    Icons.camera_alt,
-                    color: Colors.black,
-                    size: 20,
-                  ),
-                  title: Text('From Camera'),
-                  onTap: () {
-                    selectImage3(ImageSource.camera);
-                    Navigator.of(context).pop(_image3);
-                  }),
-            ],
+        builder: (context) => GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Container(
+            height: 140,
+            child: Column(
+              children: <Widget>[
+                ListTile(
+                    leading: Icon(
+                      Icons.image,
+                      color: Colors.black,
+                      size: 20,
+                    ),
+                    title: Text('From Gallery'),
+                    onTap: () {
+                      Navigator.of(context).pop(_image3);
+                      selectImage3(ImageSource.gallery);
+                    }),
+                ListTile(
+                    leading: Icon(
+                      Icons.camera_alt,
+                      color: Colors.black,
+                      size: 20,
+                    ),
+                    title: Text('From Camera'),
+                    onTap: () {
+                      Navigator.of(context).pop(_image3);
+                      selectImage3(ImageSource.camera);
+                    }),
+              ],
+            ),
           ),
         ),
       );
 
   // bottom sheet 4
-  void showBottomMenu4() => showModalBottomSheet(
+  void _chooseimages04() => showModalBottomSheet(
         context: context,
-        builder: (context) => Container(
-          height: 140,
-          child: Column(
-            children: <Widget>[
-              ListTile(
-                  leading: Icon(
-                    Icons.image,
-                    color: Colors.black,
-                    size: 20,
-                  ),
-                  title: Text('From Gallery'),
-                  onTap: () {
-                    selectImage4(ImageSource.gallery);
-                    Navigator.of(context).pop(_image4);
-                  }),
-              ListTile(
-                  leading: Icon(
-                    Icons.camera_alt,
-                    color: Colors.black,
-                    size: 20,
-                  ),
-                  title: Text('From Camera'),
-                  onTap: () {
-                    selectImage4(ImageSource.camera);
-                    Navigator.of(context).pop(_image4);
-                  }),
-            ],
+        builder: (context) => GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Container(
+            height: 140,
+            child: Column(
+              children: <Widget>[
+                ListTile(
+                    leading: Icon(
+                      Icons.image,
+                      color: Colors.black,
+                      size: 20,
+                    ),
+                    title: Text('From Gallery'),
+                    onTap: () {
+                      Navigator.of(context).pop(_image4);
+                      selectImage4(ImageSource.gallery);
+                    }),
+                ListTile(
+                    leading: Icon(
+                      Icons.camera_alt,
+                      color: Colors.black,
+                      size: 20,
+                    ),
+                    title: Text('From Camera'),
+                    onTap: () {
+                      Navigator.of(context).pop(_image4);
+                      selectImage4(ImageSource.camera);
+                    }),
+              ],
+            ),
           ),
         ),
       );

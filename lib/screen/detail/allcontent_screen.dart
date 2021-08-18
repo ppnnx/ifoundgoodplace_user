@@ -31,6 +31,7 @@ class AllContents extends StatelessWidget {
                 size: 21,
               ),
             ),
+            // create two tabs
             bottom: TabBar(
               indicatorColor: Colors.black,
               unselectedLabelColor: Colors.black54,

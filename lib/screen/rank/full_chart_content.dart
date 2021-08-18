@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ifgpdemo/model/category_model.dart';
 import 'package:ifgpdemo/model/content_model.dart';
 import 'package:ifgpdemo/model/content_trending_model.dart';
+import 'package:ifgpdemo/screen/detail/detail_screen.dart';
 import 'package:ifgpdemo/service/api/all_category_ranking_api.dart';
 import 'package:http/http.dart' as http;
 import 'package:ifgpdemo/service/api/category_ranking_api.dart';
@@ -48,10 +50,6 @@ class _FullChartContentState extends State<FullChartContent> {
         backgroundColor: Colors.white,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.black),
-        // title: Text(
-        //   'all categories.',
-        //   style: TextStyle(color: Colors.black, fontSize: 14),
-        // ),
         leading: IconButton(
             icon: Icon(
               Icons.keyboard_backspace,
@@ -291,14 +289,30 @@ class FullChartWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Container(
-                    height: 80,
-                    width: 80,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: NetworkImage(
-                                'http://35.213.159.134/uploadimages/${data.images01}'),
-                            fit: BoxFit.cover)),
+                  ClipRRect(
+                    child: CachedNetworkImage(
+                      imageUrl:
+                          'http://35.213.159.134/uploadimages/${data.images01}',
+                      height: 80,
+                      width: 80,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                      errorWidget: (context, url, error) {
+                        return Container(
+                          height: 80,
+                          width: 80,
+                          color: Colors.black12,
+                          child: Icon(
+                            Icons.error,
+                            color: Colors.red,
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ],
               )),
