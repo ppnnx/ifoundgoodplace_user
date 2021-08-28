@@ -7,8 +7,10 @@ import 'package:ifgpdemo/db/db_provider.dart';
 import 'package:ifgpdemo/db/savemodel.dart';
 import 'package:ifgpdemo/model/comment_model.dart';
 import 'package:ifgpdemo/model/content_model.dart';
+import 'package:ifgpdemo/screen/author_profile/author_profile_screen.dart';
 import 'package:ifgpdemo/screen/detail/detail_map_scrn.dart';
 import 'package:ifgpdemo/screen/login/login_screen.dart';
+import 'package:ifgpdemo/screen/profile/profile_screen.dart';
 import 'package:share/share.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
@@ -119,7 +121,9 @@ class _DetailSCRNState extends State<DetailSCRN> {
       // print('report content id : ${widget.content.idcontent}');
 
       if (response.statusCode == 200) {
-        print(response.body);
+        print("Report this content already");
+      } else {
+        print("failed to report");
       }
     } catch (e) {}
   }
@@ -204,7 +208,7 @@ class _DetailSCRNState extends State<DetailSCRN> {
         print("API Failed");
       }
     } catch (e) {}
-    return null;
+    return [];
   }
 
   // fetch comment from api
@@ -293,16 +297,15 @@ class _DetailSCRNState extends State<DetailSCRN> {
                               getFavorite();
                             });
                           }
-                          // setState(() {
-                          //   favorited = !favorited;
-                          // });
                         },
                       ),
 
                       // bookmark
                       IconButton(
                         icon: Icon(
-                          CupertinoIcons.bookmark,
+                          bookmarked == true
+                              ? CupertinoIcons.bookmark_fill
+                              : CupertinoIcons.bookmark,
                           color: Colors.black,
                           size: 17,
                         ),
@@ -446,13 +449,41 @@ class _DetailSCRNState extends State<DetailSCRN> {
                                     ),
                                   ),
                                   // author
-                                  Text(
-                                    content.username,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 13,
-                                      fontStyle: FontStyle.italic,
-                                      decoration: TextDecoration.underline,
+                                  GestureDetector(
+                                    onTap: () {
+                                      if (widget.iduser != content.iduser) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AuthorProfileScreen(
+                                                      idauthor: content.iduser,
+                                                      profileid: widget.iduser,
+                                                      nameauthor:
+                                                          content.username,
+                                                      useremail:
+                                                          widget.emailuser,
+                                                    )));
+                                      } else if (widget.iduser ==
+                                          content.iduser) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ProfileScreen(
+                                                      id: widget.iduser,
+                                                      email: widget.emailuser,
+                                                    )));
+                                      }
+                                    },
+                                    child: Text(
+                                      content.username,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 13,
+                                        fontStyle: FontStyle.italic,
+                                        decoration: TextDecoration.underline,
+                                      ),
                                     ),
                                   ),
                                   // category
@@ -516,8 +547,10 @@ class _DetailSCRNState extends State<DetailSCRN> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   DetailMapScreen(
-                                                      lat: content.latitude,
-                                                      lng: content.longitude)));
+                                                    lat: content.latitude,
+                                                    lng: content.longitude,
+                                                    title: content.title,
+                                                  )));
                                     },
                                     child: Icon(
                                       CupertinoIcons.placemark,
@@ -525,7 +558,7 @@ class _DetailSCRNState extends State<DetailSCRN> {
                                       size: 21,
                                     ),
                                     style: ElevatedButton.styleFrom(
-                                        primary: Colors.black,
+                                        primary: Color(0xFF7EB5A6),
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(8.0),
@@ -546,7 +579,7 @@ class _DetailSCRNState extends State<DetailSCRN> {
                                             size: 21,
                                           ),
                                           style: ElevatedButton.styleFrom(
-                                              primary: Colors.black,
+                                              primary: Color(0xFFFF2442),
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(8.0),
@@ -1037,7 +1070,7 @@ class _DetailSCRNState extends State<DetailSCRN> {
               RadioListTile(
                   value: 'pornography and nudity', // ภาพอนาจาร
                   groupValue: statement,
-                  title: Text('รูปภาพอนาจาร'),
+                  title: Text('ใช้ภาพประกอบที่ไม่เหมาะสม'),
                   subtitle: Text('รูปภาพเชิง 18+'),
                   onChanged: (value) {
                     setState(() {
@@ -1071,29 +1104,27 @@ class _DetailSCRNState extends State<DetailSCRN> {
                     SizedBox(width: 14),
                     ElevatedButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(context)
-                          ..removeCurrentSnackBar()
-                          ..showSnackBar(
-                            SnackBar(
-                              duration: Duration(milliseconds: 1800),
-                              content: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    'ส่งรายงานปัญหาแล้ว',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  Icon(
-                                    CupertinoIcons.checkmark_alt_circle_fill,
-                                    color: Colors.white,
-                                  ),
-                                ],
-                              ),
-                              backgroundColor: Colors.teal.shade400,
-                            ),
-                          );
                         getReport();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration: Duration(milliseconds: 1800),
+                            content: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Text(
+                                  'ส่งรายงานปัญหาแล้ว',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                Icon(
+                                  CupertinoIcons.checkmark_alt_circle_fill,
+                                  color: Colors.white,
+                                ),
+                              ],
+                            ),
+                            backgroundColor: Colors.teal.shade400,
+                          ),
+                        );
+
                         Navigator.of(context).pop(true);
                       },
                       child: Text(

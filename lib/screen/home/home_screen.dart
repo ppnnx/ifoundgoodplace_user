@@ -6,7 +6,10 @@ import 'package:ifgpdemo/screen/bookmark/bookmark_screen.dart';
 import 'package:ifgpdemo/screen/bookmark/second_screen.dart';
 import 'package:ifgpdemo/screen/detail/allcontent_screen.dart';
 import 'package:ifgpdemo/screen/favorite/favorite_screen.dart';
-import 'package:ifgpdemo/screen/home/drawer_components/drawer_header.dart';
+import 'package:ifgpdemo/screen/home/drawer/drawer_guest_header.dart';
+import 'package:ifgpdemo/screen/home/drawer/drawer_guest_menu.dart';
+import 'package:ifgpdemo/screen/home/drawer/drawer_header.dart';
+import 'package:ifgpdemo/screen/home/drawer/drawer_menu.dart';
 import 'package:ifgpdemo/screen/login/login_screen.dart';
 import 'package:ifgpdemo/screen/map/map_nd_scrn.dart';
 import 'package:ifgpdemo/screen/map/map_screen.dart';
@@ -17,8 +20,6 @@ import 'package:ifgpdemo/widget/home/author_widget.dart';
 import 'package:ifgpdemo/widget/home/categories_widget.dart';
 import 'package:ifgpdemo/widget/home/contents_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'drawer_components/drawer_bottom.dart';
 
 class HomeScreen extends StatefulWidget {
   final email;
@@ -77,80 +78,24 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         drawer: Drawer(
-          child: ListView(
-            children: [
-              // header
-              widget.email == "Guest" ||
-                      widget.image == null ||
-                      widget.image == " "
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 180,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 30),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CircleAvatar(
-                                  backgroundImage:
-                                      AssetImage('assets/second.png'),
-                                  radius: 40,
-                                ),
-                                SizedBox(height: 18),
-                                Container(
-                                  padding: EdgeInsets.only(left: 18),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Guest',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                      SizedBox(height: 5),
-                                      // Text(
-                                      //   widget.email,
-                                      //   style: TextStyle(
-                                      //     fontSize: 14,
-                                      //   ),
-                                      // ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Divider(),
-                        ListTile(
-                          leading: Icon(
-                            CupertinoIcons.person_crop_circle,
-                            color: Colors.black,
-                          ),
-                          title: Text(
-                            'Login',
-                            style: TextStyle(color: Colors.black, fontSize: 14),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LoginScreen()));
-                          },
+          child: SingleChildScrollView(
+            child: Container(
+              child: Column(
+                children: [
+                  HeaderDrawer(
+                    email: widget.email,
+                    useridlogin: widget.iduser,
+                  ),
+                  widget.email == "Guest"
+                      ? MenuGuestDrawer()
+                      : MenuDrawer(
+                          iduser: widget.iduser,
+                          emailuser: widget.email,
+                          username: widget.username,
                         )
-                      ],
-                    )
-                  : Header(
-                      useridlogin: widget.iduser,
-                    ),
-              widget.email == "Guest" ? Container() : Bottom(),
-            ],
+                ],
+              ),
+            ),
           ),
         ),
         body: ListView(
@@ -192,8 +137,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ElevatedButton(
-                    onPressed: () => Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => MapSCRN())),
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MapSCRN(
+                                  idlogin: widget.iduser,
+                                  email: widget.email,
+                                ))),
                     child: Icon(
                       CupertinoIcons.map,
                       color: Colors.black,

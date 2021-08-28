@@ -7,6 +7,7 @@ import 'package:ifgpdemo/model/category_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:ifgpdemo/model/content_model.dart';
 import 'package:ifgpdemo/model/content_trending_model.dart';
+import 'package:ifgpdemo/screen/detail/detail_nd_screen.dart';
 import 'package:ifgpdemo/screen/detail/detail_screen.dart';
 
 class CategoryScreen extends StatefulWidget {
@@ -52,7 +53,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     return null;
   }
 
-  Future<List<TrendingModel>> getTrendingContentbyCategory() async {
+  Future<List<Contents>> getTrendingContentbyCategory() async {
     var url = Uri.parse(
         'http://35.213.159.134/rankingbycategory.php?rankbycategory=${widget.idcategory}');
     try {
@@ -62,7 +63,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         final List trendingcontentbycate = json.decode(response.body);
 
         return trendingcontentbycate
-            .map((data) => TrendingModel.fromJson(data))
+            .map((data) => Contents.fromJson(data))
             .toList();
       }
     } catch (e) {}
@@ -187,34 +188,55 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 26, vertical: 10),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(24.0),
-                                border: Border.all(color: Colors.black)),
-                            child: Text('Top Chart',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 21,
-                                    fontWeight: FontWeight.bold))),
-                        SizedBox(height: 24.0),
+                        // Container(
+                        //     padding: EdgeInsets.symmetric(
+                        //         horizontal: 26, vertical: 10),
+                        //     decoration: BoxDecoration(
+                        //         color: Colors.white,
+                        //         borderRadius: BorderRadius.circular(24.0),
+                        //         border: Border.all(color: Colors.black)),
+                        //     child: Text('Top Chart',
+                        //         style: TextStyle(
+                        //             color: Colors.black,
+                        //             fontSize: 21,
+                        //             fontWeight: FontWeight.bold))),
+                        // SizedBox(height: 24.0),
 
                         // fetch data from api
                         FutureBuilder(
                             future: getTrendingContentbyCategory(),
                             builder: (BuildContext context,
-                                AsyncSnapshot<List<TrendingModel>> snapshot) {
+                                AsyncSnapshot<List<Contents>> snapshot) {
                               if (snapshot.hasData) {
                                 return ListView.builder(
                                     shrinkWrap: true,
                                     physics: BouncingScrollPhysics(),
                                     itemCount: snapshot.data.length,
                                     itemBuilder: (BuildContext _, int index) {
-                                      return TrendingWidget(
-                                        rank: index + 1,
-                                        data: snapshot.data[index],
+                                      return GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      DetailSCRN(
+                                                        contents: snapshot
+                                                            .data[index],
+                                                        iduser: widget.userid,
+                                                        emailuser:
+                                                            widget.useremail,
+                                                        idcontent: snapshot
+                                                            .data[index]
+                                                            .idcontent,
+                                                        count: snapshot
+                                                            .data[index]
+                                                            .counterread++,
+                                                      )));
+                                        },
+                                        child: TrendingWidget(
+                                          rank: index + 1,
+                                          data: snapshot.data[index],
+                                        ),
                                       );
                                     });
                               }
@@ -250,19 +272,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
             padding: EdgeInsets.only(left: 18, right: 18, top: 10),
             child: Row(
               children: [
-                // image
-                // Container(
-                //   height: 80,
-                //   width: 80,
-                //   decoration: BoxDecoration(
-                //     image: DecorationImage(
-                //         image: NetworkImage(
-                //             'http://35.213.159.134/uploadimages/${contents.image01}'),
-                //         fit: BoxFit.cover),
-                //   ),
-                // ),
-
-                // use cached network to check network
                 ClipRRect(
                   child: CachedNetworkImage(
                     imageUrl:
@@ -295,34 +304,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // catergory
-                      // Container(
-                      //   padding:
-                      //       EdgeInsets.only(left: 8, right: 8, top: 6, bottom: 6),
-                      //   decoration: BoxDecoration(
-                      //     color: Colors.black,
-                      //     borderRadius: BorderRadius.circular(14.0),
-                      //     // border: Border.all(color: Colors.black),
-                      //   ),
-                      //   child: Text(
-                      //     contents.category,
-                      //     style: TextStyle(color: Colors.white, fontSize: 10),
-                      //   ),
-                      // ),
-                      // SizedBox(height: 8),
-
                       // title
                       Text(
                         contents.title,
                         style: TextStyle(color: Colors.black, fontSize: 16),
                       ),
                       SizedBox(height: 10),
-
-                      // date
-                      // Text(
-                      //   contents.dateContent,
-                      //   style: TextStyle(color: Colors.black.withOpacity(0.7)),
-                      // ),
 
                       // counter read + author(username)
                       Row(
@@ -347,23 +334,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
                               ],
                             ),
                           ),
-                          // Container(
-                          //   child: Row(
-                          //   children: [
-                          //     Icon(
-                          //       CupertinoIcons.eye_fill,
-                          //       color: Colors.black.withOpacity(0.8),
-                          //       size: 19,
-                          //     ),
-                          //     SizedBox(width: 5),
-                          //     Text(
-                          //       contents.counterread.toString(),
-                          //       style: TextStyle(
-                          //           color: Colors.black.withOpacity(0.8),
-                          //           fontSize: 14),
-                          //     )
-                          //   ],
-                          // )),
                         ],
                       ),
                       SizedBox(height: 10),
@@ -396,7 +366,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
 class TrendingWidget extends StatelessWidget {
   final int rank;
-  final TrendingModel data;
+  final Contents data;
 
   const TrendingWidget({Key key, this.rank, this.data}) : super(key: key);
 
@@ -452,7 +422,7 @@ class TrendingWidget extends StatelessWidget {
                       ),
                       SizedBox(width: 8),
                       Text(
-                        data.counterRead.toString(),
+                        data.counterread.toString(),
                         style: TextStyle(color: Colors.black, fontSize: 12),
                       ),
                     ],
@@ -469,7 +439,7 @@ class TrendingWidget extends StatelessWidget {
                   ClipRRect(
                     child: CachedNetworkImage(
                       imageUrl:
-                          'http://35.213.159.134/uploadimages/${data.images01}',
+                          'http://35.213.159.134/uploadimages/${data.image01}',
                       height: 80,
                       width: 80,
                       fit: BoxFit.cover,

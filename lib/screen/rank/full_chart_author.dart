@@ -78,7 +78,6 @@ class _FullChartAuthorState extends State<FullChartAuthor> {
                                                 snapshot.data[index].username,
                                             profileid: widget.userid,
                                             useremail: widget.useremail,
-                                            userimage: widget.userimage,
                                           )));
                             } else if (widget.userid ==
                                 snapshot.data[index].iduser) {
@@ -88,7 +87,6 @@ class _FullChartAuthorState extends State<FullChartAuthor> {
                                       builder: (context) => ProfileScreen(
                                             id: widget.userid,
                                             email: widget.useremail,
-                                            image: widget.userimage,
                                           )));
                             }
                           },
@@ -160,6 +158,7 @@ class AuthorChartWidget extends StatelessWidget {
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 14,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       SizedBox(width: 7),
@@ -168,7 +167,6 @@ class AuthorChartWidget extends StatelessWidget {
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 14,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],

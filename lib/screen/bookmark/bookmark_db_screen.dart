@@ -37,7 +37,7 @@ class _BookMarkDBScreenState extends State<BookMarkDBScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          'Save.',
+          'Bookmark.',
           style: TextStyle(color: Colors.black, fontSize: 12),
         ),
         elevation: 0.0,

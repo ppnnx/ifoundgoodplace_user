@@ -360,8 +360,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w500,
-                                    // decoration: TextDecoration.combine(
-                                    //     [TextDecoration.underline]),
                                   ))),
                         ],
                       ),

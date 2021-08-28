@@ -484,14 +484,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
               backgroundColor: Colors.blue.shade900,
             ),
           );
-        await delay(1200);
-        // Navigator.pushAndRemoveUntil(
-        //   context,
-        //   MaterialPageRoute(builder: (context) {
-        //     return MainScreen();
-        //   }),
-        //   (route) => false,
-        // );
+        await delay(1700);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) {
+            return LoginScreen();
+          }),
+          (route) => false,
+        );
       }
 
       return result;

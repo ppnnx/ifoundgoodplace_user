@@ -40,7 +40,6 @@ class _AuthorWidgetState extends State<AuthorWidget> {
                           MaterialPageRoute(
                               builder: (context) => AuthorProfileScreen(
                                     useremail: widget.useremail,
-                                    userimage: widget.userimg,
                                     profileid: widget.userid,
                                     idauthor: author.iduser,
                                     nameauthor: author.username,
@@ -52,7 +51,6 @@ class _AuthorWidgetState extends State<AuthorWidget> {
                               builder: (context) => ProfileScreen(
                                     id: widget.userid,
                                     email: widget.useremail,
-                                    image: widget.userimg,
                                   )));
                     }
                   },

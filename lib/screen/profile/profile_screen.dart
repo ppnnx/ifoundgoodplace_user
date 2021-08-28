@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,13 +11,11 @@ import 'package:ifgpdemo/screen/profile/detail_second_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final id;
-  final image;
   final email;
 
   const ProfileScreen({
     Key key,
     this.id,
-    this.image,
     this.email,
   }) : super(key: key);
 
@@ -46,7 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<List<MyContent>> getContents() async {
     var url =
-        Uri.parse('http://35.213.159.134/mycontent.php?iduser=${widget.id}');
+        Uri.parse('http://35.213.159.134/mycontent2.php?iduser=${widget.id}');
     try {
       var response = await http.get(url);
 
@@ -265,7 +262,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 mycontent: snapshot.data[index],
                                                 userid: widget.id,
                                                 useremail: widget.email,
-                                                userimg: widget.image,
                                               )));
                                 }
                               },
@@ -281,6 +277,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
                                     // image
+
                                     ClipRRect(
                                       child: CachedNetworkImage(
                                         imageUrl:

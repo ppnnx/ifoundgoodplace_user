@@ -558,7 +558,6 @@ class _DetailScreenState extends State<DetailScreen> {
                                           profileid: widget.userId,
                                           nameauthor: widget.content.username,
                                           useremail: widget.userEmail,
-                                          userimage: widget.userImage,
                                         )));
                           } else if (widget.userId == widget.content.iduser) {
                             Navigator.push(
@@ -567,7 +566,6 @@ class _DetailScreenState extends State<DetailScreen> {
                                     builder: (context) => ProfileScreen(
                                           id: widget.userId,
                                           email: widget.userEmail,
-                                          image: widget.userImage,
                                         )));
                           }
                         },

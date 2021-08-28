@@ -7,8 +7,14 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:ifgpdemo/model/content_model.dart';
+import 'package:ifgpdemo/screen/detail/detail_nd_screen.dart';
 
 class MapSCRN extends StatefulWidget {
+  final idlogin;
+  final email;
+
+  const MapSCRN({Key key, this.idlogin, this.email}) : super(key: key);
+
   @override
   _MapSCRNState createState() => _MapSCRNState();
 }
@@ -112,6 +118,15 @@ class _MapSCRNState extends State<MapSCRN> {
       child: InkWell(
         onTap: () {
           // moveCamera();
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => DetailSCRN(
+                        contents: content,
+                        idcontent: content.idcontent,
+                        iduser: widget.idlogin,
+                        emailuser: widget.email,
+                      )));
         },
         child: Stack(
           children: [
@@ -265,19 +280,25 @@ class _MapSCRNState extends State<MapSCRN> {
       body: Stack(
         children: <Widget>[
           // components
-          Container(
-            height: MediaQuery.of(context).size.height - 50.0,
-            width: MediaQuery.of(context).size.width,
-            child: GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: LatLng(lat, lng),
-                zoom: 7.0,
-              ),
-              mapType: MapType.normal,
-              markers: Set.from(allmarkers),
-              onMapCreated: mapcreated,
-            ),
-          ),
+          lat == null
+              ? Container(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              : Container(
+                  height: MediaQuery.of(context).size.height - 50.0,
+                  width: MediaQuery.of(context).size.width,
+                  child: GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(lat, lng),
+                      zoom: 7.0,
+                    ),
+                    mapType: MapType.normal,
+                    markers: Set.from(allmarkers),
+                    onMapCreated: mapcreated,
+                  ),
+                ),
           Positioned(
               bottom: 20.0,
               child: Container(

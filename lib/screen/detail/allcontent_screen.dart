@@ -4,12 +4,17 @@ import 'package:ifgpdemo/screen/rank/full_chart_content.dart';
 import 'package:ifgpdemo/service/api/all_category_ranking_api.dart';
 import 'package:ifgpdemo/widget/home/all_contents_widget.dart';
 
-class AllContents extends StatelessWidget {
+class AllContents extends StatefulWidget {
   final emailuser;
   final iduser;
 
   const AllContents({Key key, this.emailuser, this.iduser}) : super(key: key);
 
+  @override
+  _AllContentsState createState() => _AllContentsState();
+}
+
+class _AllContentsState extends State<AllContents> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,6 +26,10 @@ class AllContents extends StatelessWidget {
           appBar: AppBar(
             backgroundColor: Colors.white,
             elevation: 0,
+            title: Text(
+              "All",
+              style: TextStyle(color: Colors.black, fontSize: 14),
+            ),
             leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -70,7 +79,8 @@ class AllContents extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 32),
-                child: AllContentsWidget(iduser: iduser, emailuser: emailuser),
+                child: AllContentsWidget(
+                    iduser: widget.iduser, emailuser: widget.emailuser),
               ),
 
               // tab 2 : chart

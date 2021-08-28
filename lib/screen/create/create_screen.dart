@@ -357,272 +357,281 @@ class _CreateScreenState extends State<CreateScreen> {
             Navigator.pop(context);
           },
         ),
+        // PUBLISH BUTTON
+        actions: <Widget>[
+          TextButton(
+              onPressed: () {
+                // check null of images
+                if (_image1 == null ||
+                    _image2 == null ||
+                    _image3 == null ||
+                    _image4 == null) {
+                  // if some of images is null -> show alert box
+                  return _showalertImages();
+                } else if (_formKey.currentState.validate()) {
+                  addPost();
+                  print("_________# published");
+                }
+              },
+              child: Text(
+                "Publish",
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              ))
+        ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          // check null of images
-          if (_image1 == null ||
-              _image2 == null ||
-              _image3 == null ||
-              _image4 == null) {
-            // if some of images is null -> show alert box
-            return _showalertImages();
-          } else if (_formKey.currentState.validate()) {
-            addPost();
-          }
-        },
-        label: Text('Publish'),
-        backgroundColor: Colors.black,
-        elevation: 1.0,
-      ),
+      // floatingActionButton: FloatingActionButton.extended(
+      //   onPressed: () {
+      //     // check null of images
+      //     if (_image1 == null ||
+      //         _image2 == null ||
+      //         _image3 == null ||
+      //         _image4 == null) {
+      //       // if some of images is null -> show alert box
+      //       return _showalertImages();
+      //     } else if (_formKey.currentState.validate()) {
+      //       addPost();
+      //     }
+      //   },
+      //   label: Text('Publish'),
+      //   backgroundColor: Colors.black,
+      //   elevation: 1.0,
+      // ),
       body: Form(
         key: _formKey,
         child: ListView(
           children: [
-            Container(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                children: <Widget>[
-                  TextFormField(
-                    controller: titlecontroller,
-                    keyboardType: TextInputType.text,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        showAlertTitle();
-                      }
-                      return null;
-                    },
-                    style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
-                    cursorColor: Colors.black,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                        hintText: 'Title',
-                        hintStyle: TextStyle(fontSize: 18),
-                        border: InputBorder.none),
-                    autocorrect: false,
-                  ),
-                  SizedBox(height: 10),
-
-////////////////////////////////// category ///////////////////////////////////
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Category',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+              child: Container(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  children: <Widget>[
+                    TextFormField(
+                      controller: titlecontroller,
+                      keyboardType: TextInputType.text,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          showAlertTitle();
+                        }
+                        return null;
+                      },
+                      style:
+                          TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+                      cursorColor: Colors.black,
+                      maxLines: 3,
+                      decoration: InputDecoration(
+                          hintText: 'Title',
+                          hintStyle: TextStyle(fontSize: 18),
+                          border: InputBorder.none),
+                      autocorrect: false,
                     ),
-                  ),
-                  SizedBox(height: 8),
-                  DropdownButtonHideUnderline(
-                      child: ButtonTheme(
-                    alignedDropdown: true,
-                    child: DropdownButton<String>(
-                        isExpanded: true,
-                        value: selectedCategory,
-                        iconSize: 30,
-                        icon: (null),
-                        hint: Text('category'),
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 15,
-                        ),
-                        onChanged: (String newValue) {
-                          setState(() {
-                            selectedCategory = newValue;
-                            getCategory();
-                            print(selectedCategory);
-                          });
-                        },
-                        items: categoryItem.map((item) {
-                          return DropdownMenuItem(
-                            child: Text(item['Category']),
-                            value: item['ID_Category'].toString(),
-                          );
-                        }).toList()),
-                  )),
+                    SizedBox(height: 10),
 
-                  // DropdownButton(
-                  //   isExpanded: true,
-                  //   value: selectedCategory,
-                  //   hint: Text('category'),
-                  //   items: categoryItem.map((category) {
-                  //     return DropdownMenuItem(
-                  //       value: category['Category'],
-                  //       child: Text(category['Category']),
-                  //     );
-                  //   }).toList(),
-                  //   onChanged: (newValue) {
-                  //     setState(() {
-                  //       selectedCategory = newValue;
-                  //     });
-                  //   },
-                  // ),
-                  SizedBox(height: 26),
-
-//////////////////////////////// image ///////////////////////////////////
-                  Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          'Photos',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        SizedBox(height: 16),
-                        GridView.count(
-                          padding: EdgeInsets.all(16.0),
-                          shrinkWrap: true,
-                          physics: BouncingScrollPhysics(),
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                          crossAxisCount: 2,
-                          children: <Widget>[
-                            GestureDetector(
-                              onTap: _chooseimages01,
-                              child: Container(
-                                color: Colors.black12,
-                                child: _image1 == null
-                                    ? Icon(CupertinoIcons.add)
-                                    : Image.file(
-                                        _image1,
-                                        fit: BoxFit.cover,
-                                      ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: _chooseimages02,
-                              child: Container(
-                                color: Colors.black12,
-                                child: _image2 == null
-                                    ? Icon(CupertinoIcons.add)
-                                    : Image.file(
-                                        _image2,
-                                        fit: BoxFit.cover,
-                                      ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: _chooseimages03,
-                              child: Container(
-                                color: Colors.black12,
-                                child: _image3 == null
-                                    ? Icon(CupertinoIcons.add)
-                                    : Image.file(
-                                        _image3,
-                                        fit: BoxFit.cover,
-                                      ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: _chooseimages04,
-                              child: Container(
-                                color: Colors.black12,
-                                child: _image4 == null
-                                    ? Icon(CupertinoIcons.add)
-                                    : Image.file(
-                                        _image4,
-                                        fit: BoxFit.cover,
-                                      ),
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 30),
-
-//////////////////////////////// image end ///////////////////////////////////
-
-                  // url
-                  TextFormField(
-                    controller: urlcontroller,
-                    keyboardType: TextInputType.url,
-                    cursorColor: Colors.black,
-                    decoration: InputDecoration(
-                        hintText: 'youtube.com/yourvideo',
-                        hintStyle: TextStyle(fontSize: 14),
-                        border: InputBorder.none,
-                        prefixIcon: Icon(
-                          CupertinoIcons.arrowtriangle_right_square,
-                          color: Colors.black,
-                          size: 26,
-                        )),
-                  ),
-                  SizedBox(height: 30),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(
-                        CupertinoIcons.location,
-                        color: Colors.black,
-                        size: 24,
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        'Location',
+                    // category
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Category',
                         style: TextStyle(
                             color: Colors.black,
                             fontSize: 15,
                             fontWeight: FontWeight.w500),
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 16),
-                  Container(
-                    height: 350,
-                    child: _lat == null
-                        ? Center(child: CircularProgressIndicator())
-                        : GoogleMap(
-                            initialCameraPosition: CameraPosition(
-                                target: LatLng(_lat, _lng), zoom: 16.0),
-                            mapType: MapType.normal,
-                            myLocationButtonEnabled: false,
-                            zoomControlsEnabled: false,
-                            onMapCreated: (controller) {},
-                            markers: setMarker(),
+                    ),
+                    SizedBox(height: 8),
+                    DropdownButtonHideUnderline(
+                        child: ButtonTheme(
+                      alignedDropdown: true,
+                      child: DropdownButton<String>(
+                          isExpanded: true,
+                          value: selectedCategory,
+                          iconSize: 30,
+                          icon: (null),
+                          hint: Text('category'),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 15,
                           ),
-                  ),
+                          onChanged: (String newValue) {
+                            setState(() {
+                              selectedCategory = newValue;
+                              getCategory();
+                              print(selectedCategory);
+                            });
+                          },
+                          items: categoryItem.map((item) {
+                            return DropdownMenuItem(
+                              child: Text(item['Category']),
+                              value: item['ID_Category'].toString(),
+                            );
+                          }).toList()),
+                    )),
+                    SizedBox(height: 26),
 
-                  SizedBox(height: 60),
+                    // image
+                    Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Photos',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500),
+                          ),
+                          SizedBox(height: 16),
+                          GridView.count(
+                            padding: EdgeInsets.all(16.0),
+                            shrinkWrap: true,
+                            physics: BouncingScrollPhysics(),
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                            crossAxisCount: 2,
+                            children: <Widget>[
+                              GestureDetector(
+                                onTap: _chooseimages01,
+                                child: Container(
+                                  color: Colors.black12,
+                                  child: _image1 == null
+                                      ? Icon(CupertinoIcons.add)
+                                      : Image.file(
+                                          _image1,
+                                          fit: BoxFit.cover,
+                                        ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: _chooseimages02,
+                                child: Container(
+                                  color: Colors.black12,
+                                  child: _image2 == null
+                                      ? Icon(CupertinoIcons.add)
+                                      : Image.file(
+                                          _image2,
+                                          fit: BoxFit.cover,
+                                        ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: _chooseimages03,
+                                child: Container(
+                                  color: Colors.black12,
+                                  child: _image3 == null
+                                      ? Icon(CupertinoIcons.add)
+                                      : Image.file(
+                                          _image3,
+                                          fit: BoxFit.cover,
+                                        ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: _chooseimages04,
+                                child: Container(
+                                  color: Colors.black12,
+                                  child: _image4 == null
+                                      ? Icon(CupertinoIcons.add)
+                                      : Image.file(
+                                          _image4,
+                                          fit: BoxFit.cover,
+                                        ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 30),
 
-                  // story
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Icon(
-                      Icons.edit,
-                      color: Colors.black,
-                      size: 19,
+                    // url
+                    TextFormField(
+                      controller: urlcontroller,
+                      keyboardType: TextInputType.url,
+                      cursorColor: Colors.black,
+                      decoration: InputDecoration(
+                          hintText: 'youtube.com/yourvideo',
+                          hintStyle: TextStyle(fontSize: 14),
+                          border: InputBorder.none,
+                          prefixIcon: Icon(
+                            CupertinoIcons.arrowtriangle_right_square,
+                            color: Colors.black,
+                            size: 26,
+                          )),
                     ),
-                  ),
-                  SizedBox(height: 12),
-                  TextFormField(
-                    controller: storycontroller,
-                    keyboardType: TextInputType.multiline,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        showAlertStory();
-                      }
-                      return null;
-                    },
-                    style: TextStyle(
-                      fontSize: 16,
+                    SizedBox(height: 30),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(
+                          CupertinoIcons.location,
+                          color: Colors.black,
+                          size: 24,
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          'Location',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ],
                     ),
-                    maxLines: null,
-                    cursorColor: Colors.black,
-                    decoration: InputDecoration(
-                        hintText: 'type your story this here . .',
-                        hintStyle: TextStyle(fontSize: 16),
-                        border: InputBorder.none),
-                  ),
-                  SizedBox(height: 30),
-                ],
+                    SizedBox(height: 16),
+                    Container(
+                      height: 350,
+                      child: _lat == null
+                          ? Center(child: CircularProgressIndicator())
+                          : GoogleMap(
+                              initialCameraPosition: CameraPosition(
+                                  target: LatLng(_lat, _lng), zoom: 16.0),
+                              mapType: MapType.normal,
+                              myLocationButtonEnabled: false,
+                              zoomControlsEnabled: false,
+                              onMapCreated: (controller) {},
+                              markers: setMarker(),
+                            ),
+                    ),
+
+                    SizedBox(height: 60),
+
+                    // story
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Icon(
+                        Icons.edit,
+                        color: Colors.black,
+                        size: 19,
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    TextFormField(
+                      controller: storycontroller,
+                      keyboardType: TextInputType.multiline,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          showAlertStory();
+                        }
+                        return null;
+                      },
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                      maxLines: null,
+                      cursorColor: Colors.black,
+                      decoration: InputDecoration(
+                          hintText: 'type your story this here . .',
+                          hintStyle: TextStyle(fontSize: 16),
+                          border: InputBorder.none),
+                    ),
+                    SizedBox(height: 300),
+                  ],
+                ),
               ),
             ),
           ],

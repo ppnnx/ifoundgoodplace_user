@@ -13,10 +13,8 @@ class DetailSecond extends StatefulWidget {
   final MyContent mycontent;
   final userid;
   final useremail;
-  final userimg;
 
-  const DetailSecond(
-      {Key key, this.userid, this.useremail, this.userimg, this.mycontent})
+  const DetailSecond({Key key, this.userid, this.useremail, this.mycontent})
       : super(key: key);
 
   @override

@@ -6,13 +6,18 @@ import 'package:ifgpdemo/screen/detail/detail_nd_screen.dart';
 import 'package:ifgpdemo/screen/detail/detail_screen.dart';
 import 'package:ifgpdemo/service/api/content_api.dart';
 
-class AllContentsWidget extends StatelessWidget {
+class AllContentsWidget extends StatefulWidget {
   final emailuser;
   final iduser;
 
   const AllContentsWidget({Key key, this.emailuser = "Guest", this.iduser})
       : super(key: key);
 
+  @override
+  _AllContentsWidgetState createState() => _AllContentsWidgetState();
+}
+
+class _AllContentsWidgetState extends State<AllContentsWidget> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Contents>>(
@@ -35,8 +40,8 @@ class AllContentsWidget extends StatelessWidget {
                           MaterialPageRoute(
                               builder: (context) => DetailSCRN(
                                     contents: snapshot.data[index],
-                                    emailuser: emailuser,
-                                    iduser: iduser,
+                                    emailuser: widget.emailuser,
+                                    iduser: widget.iduser,
                                     idcontent: listcontent.idcontent,
                                     count: listcontent.counterread++,
                                   )));

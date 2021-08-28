@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:ifgpdemo/model/content_model.dart';
 import 'package:ifgpdemo/model/user_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:ifgpdemo/screen/detail/detail_nd_screen.dart';
 import 'package:ifgpdemo/screen/detail/detail_screen.dart';
 
 class AuthorProfileScreen extends StatefulWidget {
@@ -13,15 +14,9 @@ class AuthorProfileScreen extends StatefulWidget {
   final profileid;
   final nameauthor;
   final useremail;
-  final userimage;
 
   const AuthorProfileScreen(
-      {Key key,
-      this.idauthor,
-      this.profileid,
-      this.nameauthor,
-      this.useremail,
-      this.userimage})
+      {Key key, this.idauthor, this.profileid, this.nameauthor, this.useremail})
       : super(key: key);
 
   @override
@@ -96,6 +91,19 @@ class _AuthorProfileScreenState extends State<AuthorProfileScreen> {
       }
     } catch (e) {}
   }
+
+  // checkFollow() async {
+  //   try {
+  //     final url = Uri.parse(
+  //         "http://35.213.159.134/followlist.php?followerlist=&followinglist=${widget.profileid}");
+  //     final response = await http.get(url);
+
+  //     if (response.statusCode == 200) {
+  //       final List following = json.decode(response.body);
+  //       return following.map((e) => User.fromJson(e)).toList();
+  //     }
+  //   } catch (e) {}
+  // }
 
   @override
   void initState() {
@@ -263,13 +271,13 @@ class _AuthorProfileScreenState extends State<AuthorProfileScreen> {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => DetailScreen(
-                                                  content: snapshot.data[index],
-                                                  userEmail: widget.useremail,
-                                                  userId: widget.profileid,
-                                                  userImage: widget.userimage,
-                                                  count: snapshot.data[index]
-                                                      .counterread++,
+                                            builder: (context) => DetailSCRN(
+                                                  contents:
+                                                      snapshot.data[index],
+                                                  emailuser: widget.useremail,
+                                                  iduser: widget.profileid,
+                                                  count:
+                                                      mycontent.counterread++,
                                                 )));
                                   },
                                   child: Container(
