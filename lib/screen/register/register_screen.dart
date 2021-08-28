@@ -450,7 +450,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    'username or email already exists',
+                    'Username or Email already exists',
                     style: TextStyle(color: Colors.white),
                   ),
                   Icon(

@@ -1019,7 +1019,7 @@ class _DetailSCRNState extends State<DetailSCRN> {
       case 0:
         insertShare();
         Share.share(
-            'https://ifgp.com/content${widget.idcontent}/${widget.contents.title}');
+            'http://ifoundgoodplaces/content${widget.idcontent}/${widget.contents.title}.fp');
         print('share');
         break;
       case 1:
