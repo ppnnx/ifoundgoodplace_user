@@ -11,7 +11,7 @@ class CommentWidget extends StatefulWidget {
   final emailuser;
 
   const CommentWidget(
-      {Key key, this.idcontent, this.iduser, this.emailuser = "Guest"})
+      {Key? key, this.idcontent, this.iduser, this.emailuser = "Guest"})
       : super(key: key);
 
   @override
@@ -21,7 +21,7 @@ class CommentWidget extends StatefulWidget {
 class _CommentWidgetState extends State<CommentWidget> {
   List<CommentModel> commentModel = [];
 
-  Future<List<CommentModel>> getComment() async {
+  Future<List<CommentModel>?> getComment() async {
     var url = Uri.parse('http://35.213.159.134/comshow.php');
 
     try {
@@ -50,14 +50,14 @@ class _CommentWidgetState extends State<CommentWidget> {
     return FutureBuilder(
         future: getComment(),
         builder:
-            (BuildContext context, AsyncSnapshot<List<CommentModel>> snapshot) {
+            (BuildContext context, AsyncSnapshot<List<CommentModel>?> snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
                 shrinkWrap: true,
                 physics: BouncingScrollPhysics(),
-                itemCount: snapshot.data.length,
+                itemCount: snapshot.data!.length,
                 itemBuilder: (BuildContext _, int index) {
-                  final comment = snapshot.data[index];
+                  final comment = snapshot.data![index];
 
                   return Container(
                     decoration: BoxDecoration(
@@ -126,11 +126,11 @@ class _CommentWidgetState extends State<CommentWidget> {
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
-                                          comment.username,
+                                          comment.username!,
                                         ),
                                         SizedBox(height: 3),
                                         Text(
-                                          comment.dateComment,
+                                          comment.dateComment!,
                                           style: TextStyle(
                                               color: Colors.black45,
                                               fontSize: 12),
@@ -157,7 +157,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                               SizedBox(height: 16),
                               // comment part
                               Text(
-                                comment.comment,
+                                comment.comment!,
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,

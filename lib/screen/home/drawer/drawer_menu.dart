@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ifgpdemo/screen/bookmark/bookmark_db_screen.dart';
+import 'package:ifgpdemo/screen/new_bookmark/second_screen.dart';
 import 'package:ifgpdemo/screen/favorite/favorite_screen.dart';
 import 'package:ifgpdemo/screen/profile/profile_screen.dart';
 
@@ -11,7 +11,7 @@ class MenuDrawer extends StatefulWidget {
   final emailuser;
   final username;
 
-  const MenuDrawer({Key key, this.iduser, this.emailuser, this.username})
+  const MenuDrawer({Key? key, this.iduser, this.emailuser, this.username})
       : super(key: key);
 
   @override
@@ -23,20 +23,26 @@ class _MenuDrawerState extends State<MenuDrawer> {
   Widget build(BuildContext context) {
     return Container(
       child: Column(
-        children: [
+        children: <Widget>[
+          // list menu
           Container(
-            padding: EdgeInsets.only(left: 16.0, bottom: 16.0),
+            padding: EdgeInsets.only(
+              left: 16.0,
+              bottom: 16.0,
+            ),
             child: Column(
-              children: [
+              children: <Widget>[
                 ListTile(
                   onTap: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProfileScreen(
-                                  id: widget.iduser,
-                                  email: widget.emailuser,
-                                )));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProfileScreen(
+                          id: widget.iduser,
+                          email: widget.emailuser,
+                        ),
+                      ),
+                    );
                   },
                   leading: Icon(
                     Icons.face,
@@ -56,12 +62,13 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 ListTile(
                   onTap: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => BookMarkDBScreen(
-                                  iduser: widget.iduser,
-                                  username: widget.username,
-                                )));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SecondScreen(
+                          userid: widget.iduser,
+                        ),
+                      ),
+                    );
                   },
                   leading: Icon(
                     CupertinoIcons.bookmark,
@@ -81,11 +88,13 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 ListTile(
                   onTap: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => FavoriteScreen(
-                                  iduser: widget.iduser,
-                                )));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FavoriteScreen(
+                          iduser: widget.iduser,
+                        ),
+                      ),
+                    );
                   },
                   leading: Icon(
                     CupertinoIcons.heart,
@@ -105,6 +114,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             ),
           ),
           Divider(color: Colors.black),
+          // log out button
           Container(
             padding: EdgeInsets.all(14.0),
             child: ListTile(

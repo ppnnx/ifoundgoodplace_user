@@ -11,7 +11,7 @@ class HeaderDrawer extends StatefulWidget {
   final email;
 
   const HeaderDrawer({
-    Key key,
+    Key? key,
     this.useridlogin,
     this.email = "Guest",
   }) : super(key: key);
@@ -80,9 +80,9 @@ class _MenuState extends State<HeaderDrawer> {
               if (snapshot.hasData) {
                 return ListView.builder(
                     shrinkWrap: true,
-                    itemCount: snapshot.data.length,
+                    itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
-                      User user = snapshot.data[index];
+                      User user = snapshot.data![index];
 
                       return Container(
                         child: Column(
@@ -144,7 +144,7 @@ class _MenuState extends State<HeaderDrawer> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              user.username,
+                                              user.username!,
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 14,
@@ -152,7 +152,7 @@ class _MenuState extends State<HeaderDrawer> {
                                             ),
                                             SizedBox(height: 5),
                                             Text(
-                                              user.email,
+                                              user.email!,
                                               style: TextStyle(
                                                 fontSize: 12,
                                               ),

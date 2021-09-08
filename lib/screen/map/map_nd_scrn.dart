@@ -13,22 +13,22 @@ class MapSCRN extends StatefulWidget {
   final idlogin;
   final email;
 
-  const MapSCRN({Key key, this.idlogin, this.email}) : super(key: key);
+  const MapSCRN({Key? key, this.idlogin, this.email}) : super(key: key);
 
   @override
   _MapSCRNState createState() => _MapSCRNState();
 }
 
 class _MapSCRNState extends State<MapSCRN> {
-  GoogleMapController _controller;
-  PageController _pagecontroller;
-  double lat;
-  double lng;
+  late GoogleMapController _controller;
+  PageController? _pagecontroller;
+  double? lat;
+  late double lng;
 
   List<Marker> allmarkers = [];
   List<Contents> contents = [];
 
-  int prevPage;
+  int? prevPage;
 
   // fetch lat/lng from api
   Future<List<Contents>> fetchLatLng() async {
@@ -48,15 +48,15 @@ class _MapSCRNState extends State<MapSCRN> {
 
   Future<Null> findLatLng() async {
     // print('findLatLng is work!');
-    Position position = await findPosition();
+    Position? position = await findPosition();
     setState(() {
-      lat = position.latitude;
+      lat = position!.latitude;
       lng = position.longitude;
       print('Your Location : Lat = $lat , Lng = $lng');
     });
   }
 
-  Future<Position> findPosition() async {
+  Future<Position?> findPosition() async {
     Position position;
     try {
       position = await Geolocator.getCurrentPosition();
@@ -78,7 +78,7 @@ class _MapSCRNState extends State<MapSCRN> {
         allmarkers.add(Marker(
             markerId: MarkerId(element.idcontent.toString()),
             draggable: false,
-            position: LatLng(element.latitude, element.longitude),
+            position: LatLng(element.latitude!, element.longitude!),
             infoWindow: InfoWindow(
               title: element.title,
               snippet: element.username,
@@ -91,8 +91,8 @@ class _MapSCRNState extends State<MapSCRN> {
   }
 
   void _onScroll() {
-    if (_pagecontroller.page.toInt() != prevPage) {
-      prevPage = _pagecontroller.page.toInt();
+    if (_pagecontroller!.page!.toInt() != prevPage) {
+      prevPage = _pagecontroller!.page!.toInt();
       moveCamera();
     }
   }
@@ -100,11 +100,11 @@ class _MapSCRNState extends State<MapSCRN> {
   _contentList(index) {
     var content = contents[index];
     return AnimatedBuilder(
-      animation: _pagecontroller,
-      builder: (BuildContext context, Widget widget) {
+      animation: _pagecontroller!,
+      builder: (BuildContext context, Widget? widget) {
         double value = 1;
-        if (_pagecontroller.position.haveDimensions) {
-          value = _pagecontroller.page - index;
+        if (_pagecontroller!.position.haveDimensions) {
+          value = _pagecontroller!.page! - index;
           value = (1 - (value.abs() * 0.3) + 0.06).clamp(0.0, 1.0);
         }
         return Center(
@@ -177,7 +177,7 @@ class _MapSCRNState extends State<MapSCRN> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              content.title,
+                              content.title!,
                               style: TextStyle(
                                 fontSize: 12.5,
                                 fontWeight: FontWeight.bold,
@@ -185,7 +185,7 @@ class _MapSCRNState extends State<MapSCRN> {
                               overflow: TextOverflow.ellipsis,
                             ),
                             Text(
-                              content.username,
+                              content.username!,
                               style: TextStyle(
                                 fontSize: 12.0,
                                 fontWeight: FontWeight.w500,
@@ -291,7 +291,7 @@ class _MapSCRNState extends State<MapSCRN> {
                   width: MediaQuery.of(context).size.width,
                   child: GoogleMap(
                     initialCameraPosition: CameraPosition(
-                      target: LatLng(lat, lng),
+                      target: LatLng(lat!, lng),
                       zoom: 7.0,
                     ),
                     mapType: MapType.normal,
@@ -326,8 +326,8 @@ class _MapSCRNState extends State<MapSCRN> {
   moveCamera() {
     _controller.animateCamera(CameraUpdate.newCameraPosition(
       CameraPosition(
-          target: LatLng(contents[_pagecontroller.page.toInt()].latitude,
-              contents[_pagecontroller.page.toInt()].longitude),
+          target: LatLng(contents[_pagecontroller!.page!.toInt()].latitude!,
+              contents[_pagecontroller!.page!.toInt()].longitude!),
           zoom: 14.0,
           bearing: 45.0,
           tilt: 45.0),

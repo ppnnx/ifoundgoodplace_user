@@ -1,11 +1,11 @@
 class CommentModel {
-  int idComment;
-  int idUser;
-  String username;
-  String image;
-  String comment;
-  String dateComment;
-  String timeComment;
+  int? idComment;
+  int? idUser;
+  String? username;
+  String? image;
+  String? comment;
+  String? dateComment;
+  String? timeComment;
 
   CommentModel(
       {this.idComment,

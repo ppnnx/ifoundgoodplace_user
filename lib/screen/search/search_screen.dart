@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ifgpdemo/model/content_model.dart';
+import 'package:ifgpdemo/screen/detail/detail_nd_screen.dart';
 import 'package:ifgpdemo/screen/detail/detail_screen.dart';
 import 'package:ifgpdemo/service/api/search_api.dart';
 import 'package:ifgpdemo/widget/home/contents_widget.dart';
@@ -9,7 +10,7 @@ class SearchScreen extends StatefulWidget {
   final iduser;
   final emailuser;
 
-  const SearchScreen({Key key, this.iduser, this.emailuser}) : super(key: key);
+  const SearchScreen({Key? key, this.iduser, this.emailuser}) : super(key: key);
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
@@ -65,11 +66,11 @@ class _SearchScreenState extends State<SearchScreen> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => DetailScreen(
-                                              content: content,
-                                              userId: widget.iduser,
-                                              userEmail: widget.emailuser,
-                                              count: content.counterread++,
+                                        builder: (context) => DetailSCRN(
+                                              contents: content,
+                                              iduser: widget.iduser,
+                                              emailuser: widget.emailuser,
+                                              count: content.counterread! + 1,
                                             )));
                               },
                             );
@@ -98,8 +99,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
 class BuildItems extends StatelessWidget {
   const BuildItems({
-    Key key,
-    @required this.content,
+    Key? key,
+    required this.content,
   }) : super(key: key);
 
   final Contents content;
@@ -115,12 +116,12 @@ class BuildItems extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    content.title,
+                    content.title!,
                     style: TextStyle(fontSize: 16, fontFamily: 'Kanit'),
                   ),
                   SizedBox(height: 10),
                   Text(
-                    content.username,
+                    content.username!,
                     style: TextStyle(fontSize: 14),
                   ),
                   SizedBox(height: 14),

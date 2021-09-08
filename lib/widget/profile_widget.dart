@@ -4,7 +4,7 @@ import 'package:ifgpdemo/screen/login/login_screen.dart';
 class ProfileWidget extends StatelessWidget {
   final username;
 
-  const ProfileWidget({Key key, this.username = "Guest"}) : super(key: key);
+  const ProfileWidget({Key? key, this.username = "Guest"}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

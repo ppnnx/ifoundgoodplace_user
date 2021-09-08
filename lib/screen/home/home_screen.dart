@@ -1,25 +1,15 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ifgpdemo/model/content_model.dart';
-import 'package:ifgpdemo/screen/bookmark/bookmark_screen.dart';
-import 'package:ifgpdemo/screen/bookmark/second_screen.dart';
 import 'package:ifgpdemo/screen/detail/allcontent_screen.dart';
-import 'package:ifgpdemo/screen/favorite/favorite_screen.dart';
-import 'package:ifgpdemo/screen/home/drawer/drawer_guest_header.dart';
 import 'package:ifgpdemo/screen/home/drawer/drawer_guest_menu.dart';
 import 'package:ifgpdemo/screen/home/drawer/drawer_header.dart';
 import 'package:ifgpdemo/screen/home/drawer/drawer_menu.dart';
-import 'package:ifgpdemo/screen/login/login_screen.dart';
 import 'package:ifgpdemo/screen/map/map_nd_scrn.dart';
-import 'package:ifgpdemo/screen/map/map_screen.dart';
-import 'package:ifgpdemo/screen/profile/profile_screen.dart';
 import 'package:ifgpdemo/screen/rank/full_chart_author.dart';
 import 'package:ifgpdemo/screen/search/search_screen.dart';
 import 'package:ifgpdemo/widget/home/author_widget.dart';
 import 'package:ifgpdemo/widget/home/categories_widget.dart';
 import 'package:ifgpdemo/widget/home/contents_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   final email;
@@ -28,7 +18,7 @@ class HomeScreen extends StatefulWidget {
   final image;
 
   const HomeScreen(
-      {Key key,
+      {Key? key,
       this.email = "Guest",
       this.username = " ",
       this.iduser,
@@ -81,7 +71,8 @@ class _HomeScreenState extends State<HomeScreen> {
           child: SingleChildScrollView(
             child: Container(
               child: Column(
-                children: [
+                children: <Widget>[
+                  SizedBox(height: 16.0),
                   HeaderDrawer(
                     email: widget.email,
                     useridlogin: widget.iduser,

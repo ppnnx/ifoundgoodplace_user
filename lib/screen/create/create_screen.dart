@@ -14,31 +14,31 @@ import 'package:image_picker/image_picker.dart';
 class CreateScreen extends StatefulWidget {
   final idauthor;
 
-  const CreateScreen({Key key, this.idauthor}) : super(key: key);
+  const CreateScreen({Key? key, this.idauthor}) : super(key: key);
 
   @override
   _CreateScreenState createState() => _CreateScreenState();
 }
 
 class _CreateScreenState extends State<CreateScreen> {
-  double _lat;
-  double _lng;
+  double? _lat;
+  late double _lng;
 
-  Timer _timer;
-  double _progress;
+  Timer? _timer;
+  late double _progress;
 
-  File _image1;
-  File _image2;
-  File _image3;
-  File _image4;
+  File? _image1;
+  File? _image2;
+  File? _image3;
+  File? _image4;
 
-  List<File> files = [];
-  File file;
+  List<File?> files = [];
+  File? file;
 
   final picker = ImagePicker();
 
-  List categoryItem = List();
-  String selectedCategory;
+  List? categoryItem;
+  String? selectedCategory;
 
   final _formKey = GlobalKey<FormState>();
   TextEditingController titlecontroller = TextEditingController();
@@ -83,15 +83,15 @@ class _CreateScreenState extends State<CreateScreen> {
 
   Future<Null> findLatLng() async {
     print('findLatLng is work!');
-    Position position = await findPosition();
+    Position? position = await findPosition();
     setState(() {
-      _lat = position.latitude;
+      _lat = position!.latitude;
       _lng = position.longitude;
       print('Lat = $_lat , Lng = $_lng');
     });
   }
 
-  Future<Position> findPosition() async {
+  Future<Position?> findPosition() async {
     Position position;
     try {
       position = await Geolocator.getCurrentPosition();
@@ -103,7 +103,7 @@ class _CreateScreenState extends State<CreateScreen> {
   Set<Marker> setMarker() => <Marker>[
         Marker(
           markerId: MarkerId('id'),
-          position: LatLng(_lat, _lng),
+          position: LatLng(_lat!, _lng),
           infoWindow: InfoWindow(
               title: 'you are here.', snippet: 'Lat = $_lat, Lng = $_lng'),
         ),
@@ -155,56 +155,56 @@ class _CreateScreenState extends State<CreateScreen> {
 
   Future selectImage1(ImageSource imageSource) async {
     try {
-      var pickedImage = await picker.getImage(
+      var pickedImage = await picker.pickImage(
         source: imageSource,
         imageQuality: 80,
         maxWidth: 800,
         maxHeight: 800,
       );
       setState(() {
-        _image1 = File(pickedImage.path);
+        _image1 = File(pickedImage!.path);
       });
     } catch (e) {}
   }
 
   Future selectImage2(ImageSource imageSource) async {
     try {
-      var pickedImage = await picker.getImage(
+      var pickedImage = await picker.pickImage(
         source: imageSource,
         imageQuality: 80,
         maxWidth: 800,
         maxHeight: 800,
       );
       setState(() {
-        _image2 = File(pickedImage.path);
+        _image2 = File(pickedImage!.path);
       });
     } catch (e) {}
   }
 
   Future selectImage3(ImageSource imageSource) async {
     try {
-      var pickedImage = await picker.getImage(
+      var pickedImage = await picker.pickImage(
         source: imageSource,
         imageQuality: 80,
         maxWidth: 800,
         maxHeight: 800,
       );
       setState(() {
-        _image3 = File(pickedImage.path);
+        _image3 = File(pickedImage!.path);
       });
     } catch (e) {}
   }
 
   Future selectImage4(ImageSource imageSource) async {
     try {
-      var pickedImage = await picker.getImage(
+      var pickedImage = await picker.pickImage(
         source: imageSource,
         imageQuality: 80,
         maxWidth: 800,
         maxHeight: 800,
       );
       setState(() {
-        _image4 = File(pickedImage.path);
+        _image4 = File(pickedImage!.path);
       });
     } catch (e) {}
   }
@@ -235,33 +235,33 @@ class _CreateScreenState extends State<CreateScreen> {
       request.fields['Title'] = titlecontroller.text;
       request.fields['Content'] = storycontroller.text;
       request.fields['Link_VDO'] = urlcontroller.text;
-      request.fields['ID_Category'] = selectedCategory;
+      request.fields['ID_Category'] = selectedCategory!;
       request.fields['Latitude'] = _lat.toString();
       request.fields['Longitude'] = _lng.toString();
 
-      int i = Random().nextInt(1000000);
-      String nameFile = 'image$i.jpg';
+      // int i = Random().nextInt(1000000);
+      // String nameFile = 'image$i.jpg';
 
       // photo 1
       var photo01 = await http.MultipartFile.fromPath(
         'Images01',
-        _image1.path,
-        filename: _image1.path,
+        _image1!.path,
+        filename: _image1!.path,
       );
       request.files.add(photo01);
       // photo 2
-      var photo02 = await http.MultipartFile.fromPath('Images02', _image2.path,
-          filename: _image2.path);
+      var photo02 = await http.MultipartFile.fromPath('Images02', _image2!.path,
+          filename: _image2!.path);
       request.files.add(photo02);
 
       // photo 3
-      var photo03 = await http.MultipartFile.fromPath('Images03', _image3.path,
-          filename: _image3.path);
+      var photo03 = await http.MultipartFile.fromPath('Images03', _image3!.path,
+          filename: _image3!.path);
       request.files.add(photo03);
 
       // photo 4
-      var photo04 = await http.MultipartFile.fromPath('Images04', _image4.path,
-          filename: _image4.path);
+      var photo04 = await http.MultipartFile.fromPath('Images04', _image4!.path,
+          filename: _image4!.path);
       request.files.add(photo04);
 
       request.headers.addAll(headers);
@@ -302,7 +302,7 @@ class _CreateScreenState extends State<CreateScreen> {
 
   // check validate textfiled + null from image path
   void processaddstory() {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       bool checkFile = true;
       for (var item in files) {
         if (item == null) {
@@ -368,7 +368,7 @@ class _CreateScreenState extends State<CreateScreen> {
                     _image4 == null) {
                   // if some of images is null -> show alert box
                   return _showalertImages();
-                } else if (_formKey.currentState.validate()) {
+                } else if (_formKey.currentState!.validate()) {
                   addPost();
                   print("_________# published");
                 }
@@ -413,7 +413,7 @@ class _CreateScreenState extends State<CreateScreen> {
                       controller: titlecontroller,
                       keyboardType: TextInputType.text,
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (value!.isEmpty) {
                           showAlertTitle();
                         }
                         return null;
@@ -455,14 +455,14 @@ class _CreateScreenState extends State<CreateScreen> {
                             color: Colors.black,
                             fontSize: 15,
                           ),
-                          onChanged: (String newValue) {
+                          onChanged: (String? newValue) {
                             setState(() {
                               selectedCategory = newValue;
                               getCategory();
                               print(selectedCategory);
                             });
                           },
-                          items: categoryItem.map((item) {
+                          items: categoryItem!.map((item) {
                             return DropdownMenuItem(
                               child: Text(item['Category']),
                               value: item['ID_Category'].toString(),
@@ -497,9 +497,9 @@ class _CreateScreenState extends State<CreateScreen> {
                                 child: Container(
                                   color: Colors.black12,
                                   child: _image1 == null
-                                      ? Icon(CupertinoIcons.add)
+                                      ? Image.asset('assets/default.png')
                                       : Image.file(
-                                          _image1,
+                                          _image1!,
                                           fit: BoxFit.cover,
                                         ),
                                 ),
@@ -509,9 +509,9 @@ class _CreateScreenState extends State<CreateScreen> {
                                 child: Container(
                                   color: Colors.black12,
                                   child: _image2 == null
-                                      ? Icon(CupertinoIcons.add)
+                                      ? Image.asset('assets/default.png')
                                       : Image.file(
-                                          _image2,
+                                          _image2!,
                                           fit: BoxFit.cover,
                                         ),
                                 ),
@@ -521,9 +521,9 @@ class _CreateScreenState extends State<CreateScreen> {
                                 child: Container(
                                   color: Colors.black12,
                                   child: _image3 == null
-                                      ? Icon(CupertinoIcons.add)
+                                      ? Image.asset('assets/default.png')
                                       : Image.file(
-                                          _image3,
+                                          _image3!,
                                           fit: BoxFit.cover,
                                         ),
                                 ),
@@ -533,9 +533,9 @@ class _CreateScreenState extends State<CreateScreen> {
                                 child: Container(
                                   color: Colors.black12,
                                   child: _image4 == null
-                                      ? Icon(CupertinoIcons.add)
+                                      ? Image.asset('assets/default.png')
                                       : Image.file(
-                                          _image4,
+                                          _image4!,
                                           fit: BoxFit.cover,
                                         ),
                                 ),
@@ -589,7 +589,7 @@ class _CreateScreenState extends State<CreateScreen> {
                           ? Center(child: CircularProgressIndicator())
                           : GoogleMap(
                               initialCameraPosition: CameraPosition(
-                                  target: LatLng(_lat, _lng), zoom: 16.0),
+                                  target: LatLng(_lat!, _lng), zoom: 16.0),
                               mapType: MapType.normal,
                               myLocationButtonEnabled: false,
                               zoomControlsEnabled: false,
@@ -614,7 +614,7 @@ class _CreateScreenState extends State<CreateScreen> {
                       controller: storycontroller,
                       keyboardType: TextInputType.multiline,
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (value!.isEmpty) {
                           showAlertStory();
                         }
                         return null;
@@ -640,7 +640,7 @@ class _CreateScreenState extends State<CreateScreen> {
     );
   }
 
-  Future<void> _showalertImages() async {
+  _showalertImages() async {
     return showDialog(
         context: context,
         builder: (context) {

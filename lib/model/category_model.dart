@@ -1,6 +1,6 @@
 class Categories {
-  int id;
-  String name;
+  int? id;
+  String? name;
 
   Categories({this.id, this.name});
 

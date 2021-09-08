@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:ifgpdemo/model/content_trending_model.dart';
 
 class ChartContent extends StatelessWidget {
-  final int rank;
-  final TrendingModel data;
+  final int? rank;
+  final TrendingModel? data;
 
-  const ChartContent({Key key, this.rank, this.data}) : super(key: key);
+  const ChartContent({Key? key, this.rank, this.data}) : super(key: key);
   
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class ChartContent extends StatelessWidget {
                         color: Colors.black,
                         borderRadius: BorderRadius.circular(15.0)),
                     child: Text(
-                      data.category,
+                      data!.category!,
                       style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w500,
@@ -52,12 +52,12 @@ class ChartContent extends StatelessWidget {
                   ),
                 SizedBox(height: 6),
                   Text(
-                    data.title,
+                    data!.title!,
                     style: TextStyle(color: Colors.black, fontSize: 14),
                   ),
                   SizedBox(height: 6),
                   Text(
-                    data.username,
+                    data!.username!,
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 12,
@@ -74,7 +74,7 @@ class ChartContent extends StatelessWidget {
                       ),
                       SizedBox(width: 8),
                       Text(
-                        data.counterRead.toString(),
+                        data!.counterRead.toString(),
                         style: TextStyle(color: Colors.black, fontSize: 15),
                       ),
                     ],

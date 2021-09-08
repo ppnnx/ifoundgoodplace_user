@@ -31,7 +31,7 @@ class ShowContent extends StatefulWidget {
   final share;
 
   const ShowContent(
-      {Key key,
+      {Key? key,
       this.id,
       this.iduser,
       this.idauthor,
@@ -120,7 +120,7 @@ class _ShowContentState extends State<ShowContent> {
                     print('failed');
                   }
                 } catch (e) {}
-                DatabaseProvider.db.deleteBookmark(widget.id);
+                DatabaseProvider.db.delete(widget.id);
                 Navigator.of(context).pop();
               })
         ],

@@ -3,33 +3,36 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ifgpdemo/db/db_provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:ifgpdemo/db/savemodel.dart';
 import 'package:ifgpdemo/screen/bookmark/show_content.dart';
 
 class BookMarkDBScreen extends StatefulWidget {
   final iduser;
   final username;
 
-  const BookMarkDBScreen({Key key, this.iduser, this.username})
+  const BookMarkDBScreen({Key? key, this.iduser, this.username})
       : super(key: key);
   @override
   _BookMarkDBScreenState createState() => _BookMarkDBScreenState();
 }
 
 class _BookMarkDBScreenState extends State<BookMarkDBScreen> {
+  late List<Save> saved;
+
   // getting all bookmark
   saveContent() async {
-    final saves = await DatabaseProvider.db.savedList();
-    return saves;
+    await DatabaseProvider.db.savedList();
   }
 
   // Future refreshBookmark() async {
   //   this._save = await DatabaseProvider.db.savedList();
   // }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    saveContent();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +56,7 @@ class _BookMarkDBScreenState extends State<BookMarkDBScreen> {
       body: FutureBuilder(
         future: saveContent(),
         // ignore: missing_return
-        builder: (context, bookmark) {
+        builder: (context, AsyncSnapshot<List<Save>> bookmark) {
           switch (bookmark.connectionState) {
             case ConnectionState.waiting:
               {
@@ -61,10 +64,10 @@ class _BookMarkDBScreenState extends State<BookMarkDBScreen> {
                   child: CircularProgressIndicator(),
                 );
               }
-            case ConnectionState.done:
+            default:
               {
                 // check that we didn't get a null
-                if (bookmark.data == Null) {
+                if (bookmark.data == null) {
                   return Center(
                     child: Text(
                       "You don't have Save List.",
@@ -73,34 +76,34 @@ class _BookMarkDBScreenState extends State<BookMarkDBScreen> {
                   );
                 } else {
                   return ListView.builder(
-                    itemCount: bookmark.data.length,
+                    itemCount: bookmark.data!.length,
                     itemBuilder: (context, index) {
                       // setting items
-                      int id = bookmark.data[index]['id'];
-                      int iduser = bookmark.data[index]['iduser'];
-                      int idauthor = bookmark.data[index]['idauthor'];
-                      String author = bookmark.data[index]['author'];
-                      int idcontent = bookmark.data[index]['idcontent'];
-                      String datecontent = bookmark.data[index]['datecontent'];
-                      String title = bookmark.data[index]['title'];
-                      String category = bookmark.data[index]['category'];
-                      String story = bookmark.data[index]['story'];
-                      String link = bookmark.data[index]['link'];
-                      double lat = bookmark.data[index]['latitude'];
-                      double lng = bookmark.data[index]['longitude'];
-                      int read = bookmark.data[index]['counterread'];
-                      String image01 = bookmark.data[index]['image01'];
-                      String image02 = bookmark.data[index]['image02'];
-                      String image03 = bookmark.data[index]['image03'];
-                      String image04 = bookmark.data[index]['image04'];
-                      int favorite = bookmark.data[index]['favorite'];
-                      int save = bookmark.data[index]['save'];
-                      int comments = bookmark.data[index]['comments'];
-                      int share = bookmark.data[index]['share'];
+                      int? id = bookmark.data![index].id;
+                      int? iduser = bookmark.data![index].iduser;
+                      int? idauthor = bookmark.data![index].idauthor;
+                      String? author = bookmark.data![index].author;
+                      int? idcontent = bookmark.data![index].idcontent;
+                      String? datecontent = bookmark.data![index].datecontent;
+                      String? title = bookmark.data![index].title;
+                      String? category = bookmark.data![index].category;
+                      String? story = bookmark.data![index].story;
+                      String? link = bookmark.data![index].link;
+                      double? lat = bookmark.data![index].latitude;
+                      double? lng = bookmark.data![index].longitude;
+                      int? read = bookmark.data![index].counterread;
+                      String? image01 = bookmark.data![index].image01;
+                      String? image02 = bookmark.data![index].image02;
+                      String? image03 = bookmark.data![index].image03;
+                      String? image04 = bookmark.data![index].image04;
+                      int? favorite = bookmark.data![index].favorite;
+                      int? save = bookmark.data![index].save;
+                      int? comments = bookmark.data![index].comments;
+                      int? share = bookmark.data![index].share;
 
                       return widget.iduser != iduser
                           ? Container(
-                              child: bookmark.data.length == 0
+                              child: bookmark.data!.length == 0
                                   ? Text("You don't have Save List.")
                                   : null)
                           : GestureDetector(
@@ -171,46 +174,47 @@ class _BookMarkDBScreenState extends State<BookMarkDBScreen> {
 
                                     // title + category + author
                                     Expanded(
-                                        child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        // category
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 5, vertical: 3),
-                                          decoration: BoxDecoration(
-                                              color: Colors.black,
-                                              borderRadius:
-                                                  BorderRadius.circular(2.0)),
-                                          child: Text(
-                                            category,
-                                            style: TextStyle(
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.white),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          // category
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 5, vertical: 3),
+                                            decoration: BoxDecoration(
+                                                color: Colors.black,
+                                                borderRadius:
+                                                    BorderRadius.circular(2.0)),
+                                            child: Text(
+                                              category!,
+                                              style: TextStyle(
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.white),
+                                            ),
                                           ),
-                                        ),
-                                        SizedBox(height: 7),
-                                        // title
-                                        Text(
-                                          title,
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 14),
-                                        ),
-                                        SizedBox(height: 7),
-                                        // author
-                                        Text(
-                                          author,
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 12),
-                                        ),
-                                      ],
-                                    )),
+                                          SizedBox(height: 7),
+                                          // title
+                                          Text(
+                                            title!,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 14),
+                                          ),
+                                          SizedBox(height: 7),
+                                          // author
+                                          Text(
+                                            author!,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 12),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                     SizedBox(width: 15),
 
                                     GestureDetector(
@@ -230,7 +234,7 @@ class _BookMarkDBScreenState extends State<BookMarkDBScreen> {
                                             print('failed');
                                           }
                                         } catch (e) {}
-                                        DatabaseProvider.db.deleteBookmark(id);
+                                        DatabaseProvider.db.delete(id);
                                         // print('delete bookmarked content');
                                       },
                                       child: Icon(
@@ -247,19 +251,6 @@ class _BookMarkDBScreenState extends State<BookMarkDBScreen> {
                   );
                 }
               }
-              break;
-            case ConnectionState.none:
-              {
-                return Center(
-                  child: Text("Can't connect with local database."),
-                );
-              }
-              break;
-            case ConnectionState.active:
-              {
-                return null;
-              }
-              break;
           }
         },
       ),

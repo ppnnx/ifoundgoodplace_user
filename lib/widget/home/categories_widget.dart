@@ -9,7 +9,7 @@ class CategoriesWidget extends StatefulWidget {
   final emailuser;
   final imguser;
 
-  const CategoriesWidget({Key key, this.iduser, this.emailuser, this.imguser})
+  const CategoriesWidget({Key? key, this.iduser, this.emailuser, this.imguser})
       : super(key: key);
 
   @override
@@ -28,9 +28,9 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
                 physics: BouncingScrollPhysics(),
-                itemCount: snapshot.data.length,
+                itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
-                  final category = snapshot.data[index];
+                  final category = snapshot.data![index];
 
                   return GestureDetector(
                     onTap: () {
@@ -55,7 +55,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              category.name,
+                              category.name!,
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 18,

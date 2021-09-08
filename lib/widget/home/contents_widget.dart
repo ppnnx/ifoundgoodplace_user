@@ -12,7 +12,7 @@ class ContentsWidget extends StatefulWidget {
   final userid;
   final userimg;
 
-  const ContentsWidget({Key key, this.email, this.userid, this.userimg})
+  const ContentsWidget({Key? key, this.email, this.userid, this.userimg})
       : super(key: key);
 
   @override
@@ -46,10 +46,10 @@ class _ContentsWidgetState extends State<ContentsWidget> {
                 physics: BouncingScrollPhysics(),
                 itemCount: 4,
                 itemBuilder: (context, index) {
-                  final listcontent = snapshot.data[index];
+                  final listcontent = snapshot.data![index];
 
                   return GestureDetector(
-                    child: BuildContents(contents: snapshot.data[index]),
+                    child: BuildContents(contents: snapshot.data![index]),
                     onTap: () {
                       // listcontent.counterread+1;
                       // Navigator.push(
@@ -66,11 +66,11 @@ class _ContentsWidgetState extends State<ContentsWidget> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => DetailSCRN(
-                                    contents: snapshot.data[index],
+                                    contents: snapshot.data![index],
                                     iduser: widget.userid,
                                     emailuser: widget.email,
                                     idcontent: listcontent.idcontent,
-                                    count: listcontent.counterread++,
+                                    count: listcontent.counterread! + 1,
                                   )));
                     },
                   );
@@ -88,8 +88,8 @@ class _ContentsWidgetState extends State<ContentsWidget> {
 
 class BuildContents extends StatelessWidget {
   const BuildContents({
-    Key key,
-    @required this.contents,
+    Key? key,
+    required this.contents,
   }) : super(key: key);
 
   final Contents contents;
@@ -152,7 +152,7 @@ class BuildContents extends StatelessWidget {
                           // border: Border.all(color: Colors.black),
                         ),
                         child: Text(
-                          contents.category,
+                          contents.category!,
                           style: TextStyle(color: Colors.white, fontSize: 10),
                         ),
                       ),
@@ -160,7 +160,7 @@ class BuildContents extends StatelessWidget {
 
                       // title
                       Text(
-                        contents.title,
+                        contents.title!,
                         style: TextStyle(color: Colors.black, fontSize: 16),
                       ),
                       SizedBox(height: 10),
@@ -184,7 +184,7 @@ class BuildContents extends StatelessWidget {
                                 // ),
                                 // SizedBox(width: 10),
                                 Text(
-                                  contents.username,
+                                  contents.username!,
                                   style: TextStyle(
                                       color: Colors.black87,
                                       fontSize: 12,

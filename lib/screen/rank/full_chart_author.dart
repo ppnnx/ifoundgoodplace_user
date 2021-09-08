@@ -10,7 +10,7 @@ class FullChartAuthor extends StatefulWidget {
   final userid;
   final userimage;
 
-  const FullChartAuthor({Key key, this.useremail, this.userid, this.userimage})
+  const FullChartAuthor({Key? key, this.useremail, this.userid, this.userimage})
       : super(key: key);
 
   @override
@@ -58,29 +58,29 @@ class _FullChartAuthorState extends State<FullChartAuthor> {
           FutureBuilder(
               future: AuthorTrendingAPI.getTrendingAuthor(),
               builder: (BuildContext context,
-                  AsyncSnapshot<List<AuthorTrendingModel>> snapshot) {
+                  AsyncSnapshot<List<AuthorTrendingModel>?> snapshot) {
                 if (snapshot.hasData) {
                   return ListView.builder(
                       shrinkWrap: true,
                       physics: BouncingScrollPhysics(),
-                      itemCount: snapshot.data.length,
+                      itemCount: snapshot.data!.length,
                       itemBuilder: (BuildContext _, int index) {
                         return GestureDetector(
                           onTap: () {
-                            if (widget.userid != snapshot.data[index].iduser) {
+                            if (widget.userid != snapshot.data![index].iduser) {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => AuthorProfileScreen(
                                             idauthor:
-                                                snapshot.data[index].iduser,
+                                                snapshot.data![index].iduser,
                                             nameauthor:
-                                                snapshot.data[index].username,
+                                                snapshot.data![index].username,
                                             profileid: widget.userid,
                                             useremail: widget.useremail,
                                           )));
                             } else if (widget.userid ==
-                                snapshot.data[index].iduser) {
+                                snapshot.data![index].iduser) {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -92,7 +92,7 @@ class _FullChartAuthorState extends State<FullChartAuthor> {
                           },
                           child: AuthorChartWidget(
                             rank: index + 1,
-                            data: snapshot.data[index],
+                            data: snapshot.data![index],
                           ),
                         );
                       });
@@ -109,10 +109,10 @@ class _FullChartAuthorState extends State<FullChartAuthor> {
 }
 
 class AuthorChartWidget extends StatelessWidget {
-  final int rank;
-  final AuthorTrendingModel data;
+  final int? rank;
+  final AuthorTrendingModel? data;
 
-  const AuthorChartWidget({Key key, this.rank, this.data}) : super(key: key);
+  const AuthorChartWidget({Key? key, this.rank, this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +144,7 @@ class AuthorChartWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    data.username,
+                    data!.username!,
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 15,
@@ -154,7 +154,7 @@ class AuthorChartWidget extends StatelessWidget {
                   Row(
                     children: <Widget>[
                       Text(
-                        data.sumread.toString(),
+                        data!.sumread.toString(),
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 14,
@@ -182,7 +182,7 @@ class AuthorChartWidget extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10000.0),
                     child: CachedNetworkImage(
-                      imageUrl: 'http://35.213.159.134/avatar/${data.image}',
+                      imageUrl: 'http://35.213.159.134/avatar/${data!.image}',
                       width: 70,
                       height: 70,
                       fit: BoxFit.cover,

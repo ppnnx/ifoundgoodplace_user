@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CategoryLabel extends StatelessWidget {
   final String nameCategory;
 
-  const CategoryLabel({Key key, this.nameCategory = ""}) : super(key: key);
+  const CategoryLabel({Key? key, this.nameCategory = ""}) : super(key: key);
   
 
   @override

@@ -10,7 +10,7 @@ class AuthorWidget extends StatefulWidget {
   final useremail;
   final userimg;
 
-  const AuthorWidget({Key key, this.userid, this.useremail, this.userimg})
+  const AuthorWidget({Key? key, this.userid, this.useremail, this.userimg})
       : super(key: key);
 
   @override
@@ -23,14 +23,14 @@ class _AuthorWidgetState extends State<AuthorWidget> {
     return FutureBuilder(
       future: AuthorTrendingAPI.getTrendingAuthor(),
       builder: (BuildContext context,
-          AsyncSnapshot<List<AuthorTrendingModel>> snapshot) {
+          AsyncSnapshot<List<AuthorTrendingModel>?> snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
-              itemCount: snapshot.data.length,
+              itemCount: snapshot.data!.length,
               itemBuilder: (BuildContext _, int index) {
-                final author = snapshot.data[index];
+                final author = snapshot.data![index];
 
                 return GestureDetector(
                   onTap: () {
@@ -87,7 +87,7 @@ class _AuthorWidgetState extends State<AuthorWidget> {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          author.username,
+                          author.username!,
                           style: TextStyle(color: Colors.black, fontSize: 13),
                           textAlign: TextAlign.center,
                         ),

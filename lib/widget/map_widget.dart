@@ -3,9 +3,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ifgpdemo/model/content_model.dart';
 
 class MapWidget extends StatefulWidget {
-  final Contents contents;
+  final Contents? contents;
 
-  const MapWidget({Key key, this.contents}) : super(key: key);
+  const MapWidget({Key? key, this.contents}) : super(key: key);
   @override
   _MapWidgetState createState() => _MapWidgetState();
 }

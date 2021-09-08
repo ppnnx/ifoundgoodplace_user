@@ -99,7 +99,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     // username
                     TextFormField(
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (value!.isEmpty) {
                           return "please enter your email";
                         } else if (value.length < 4) {
                           return "Username must be at least 4 characters";
@@ -167,7 +167,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)';
                         final regExp = RegExp(pattern);
 
-                        if (value.isEmpty) {
+                        if (value!.isEmpty) {
                           return "please enter your email";
                         } else if (!regExp.hasMatch(value)) {
                           return "please enter a valid email";
@@ -230,7 +230,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     // password
                     TextFormField(
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (value!.isEmpty) {
                           return "please enter your password";
                         }
                         return null;
@@ -358,7 +358,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     // regis button
                     ElevatedButton(
                       onPressed: () async {
-                        if (_formKey.currentState.validate()) {
+                        if (_formKey.currentState!.validate()) {
                           register();
                           // UserDB userDB = UserDB(
                           //   email: emailcontroller.text.trim(),

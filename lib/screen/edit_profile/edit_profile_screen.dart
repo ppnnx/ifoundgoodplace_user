@@ -10,10 +10,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 
 class EditProfileScreen extends StatefulWidget {
-  final User user;
+  final User? user;
 
   const EditProfileScreen({
-    Key key,
+    Key? key,
     this.user,
   }) : super(key: key);
 
@@ -22,12 +22,12 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  TextEditingController usernamecontroller;
-  TextEditingController email;
+  TextEditingController? usernamecontroller;
+  TextEditingController? email;
   bool editMode = false;
-  Timer _timer;
-  double _progress;
-  File _profilepic;
+  Timer? _timer;
+  late double _progress;
+  File? _profilepic;
   String profileimg = " ";
   final picker = ImagePicker();
 
@@ -71,11 +71,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     try {
       var request = http.MultipartRequest("POST", url);
-      request.fields['ID_User'] = widget.user.iduser.toString();
-      request.fields['Username'] = usernamecontroller.text;
+      request.fields['ID_User'] = widget.user!.iduser.toString();
+      request.fields['Username'] = usernamecontroller!.text;
 
       request.files.add(await http.MultipartFile.fromPath(
-          'Image', _profilepic.path,
+          'Image', _profilepic!.path,
           filename: nameAvatar));
 
       var response = await request.send();
@@ -123,11 +123,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     usernamecontroller = TextEditingController();
     email = TextEditingController(text: '');
     if (widget.user != null) {
-      usernamecontroller.text = widget.user.username;
-      email.text = widget.user.email;
+      usernamecontroller!.text = widget.user!.username!;
+      email!.text = widget.user!.email!;
     } else {
-      widget.user.username = widget.user.username;
-      widget.user.email = widget.user.email;
+      widget.user!.username = widget.user!.username;
+      widget.user!.email = widget.user!.email;
     }
     super.initState();
     EasyLoading.addStatusCallback((status) {
@@ -184,19 +184,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               Center(
                 child: Column(
                   children: [
-                    widget.user.image == null
+                    widget.user!.image == null
                         ? CircleAvatar(
                             radius: 50,
-                            backgroundImage: _profilepic == null
+                            backgroundImage: (_profilepic == null
                                 ? AssetImage('assets/second.png')
-                                : FileImage(File(_profilepic.path)),
+                                : FileImage(File(_profilepic!.path))) as ImageProvider<Object>?,
                           )
                         : CircleAvatar(
                             radius: 50,
-                            backgroundImage: _profilepic == null
+                            backgroundImage: (_profilepic == null
                                 ? NetworkImage(
-                                    'http://35.213.159.134/avatar/${widget.user.image}')
-                                : FileImage(File(_profilepic.path)),
+                                    'http://35.213.159.134/avatar/${widget.user!.image}')
+                                : FileImage(File(_profilepic!.path))) as ImageProvider<Object>?,
                           ),
                     TextButton(
                       onPressed: () {

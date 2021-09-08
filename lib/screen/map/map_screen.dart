@@ -10,8 +10,8 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  double lat;
-  double lng;
+  double? lat;
+  late double lng;
 
   Future<Null> checkPermission() async {
     bool locationService;
@@ -50,15 +50,15 @@ class _MapScreenState extends State<MapScreen> {
 
   Future<Null> findLatLng() async {
     print('findLatLng is work!');
-    Position position = await findPosition();
+    Position? position = await findPosition();
     setState(() {
-      lat = position.latitude;
+      lat = position!.latitude;
       lng = position.longitude;
       print('Lat = $lat , Lng = $lng');
     });
   }
 
-  Future<Position> findPosition() async {
+  Future<Position?> findPosition() async {
     Position position;
     try {
       position = await Geolocator.getCurrentPosition();
@@ -70,7 +70,7 @@ class _MapScreenState extends State<MapScreen> {
   Set<Marker> setMarker() => <Marker>[
         Marker(
           markerId: MarkerId('id'),
-          position: LatLng(lat, lng),
+          position: LatLng(lat!, lng),
           infoWindow: InfoWindow(
               title: 'you are here.', snippet: 'Lat = $lat, Lng = $lng'),
         ),
@@ -106,7 +106,7 @@ class _MapScreenState extends State<MapScreen> {
           ? Center(child: CircularProgressIndicator())
           : GoogleMap(
               initialCameraPosition:
-                  CameraPosition(target: LatLng(lat, lng), zoom: 16.0),
+                  CameraPosition(target: LatLng(lat!, lng), zoom: 16.0),
               mapType: MapType.normal,
               myLocationButtonEnabled: false,
               zoomControlsEnabled: false,

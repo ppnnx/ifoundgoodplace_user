@@ -1,18 +1,18 @@
 class FavoriteModel {
-  String statusFav;
-  String dateFav;
-  String timeFav;
-  int idcontent;
-  String author;
-  String dateContent;
-  String statusContent;
-  String title;
-  String images01;
-  String images02;
-  String images03;
-  String images04;
-  int idcategory;
-  String category;
+  String? statusFav;
+  String? dateFav;
+  String? timeFav;
+  int? idcontent;
+  String? author;
+  String? dateContent;
+  String? statusContent;
+  String? title;
+  String? images01;
+  String? images02;
+  String? images03;
+  String? images04;
+  int? idcategory;
+  String? category;
 
   FavoriteModel(
       {this.statusFav,

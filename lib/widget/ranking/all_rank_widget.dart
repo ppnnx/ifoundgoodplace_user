@@ -63,7 +63,7 @@ class AllRankWidget extends StatelessWidget {
                                       itemBuilder: (BuildContext _, int index) {
                                         return ChartContent(
                                           rank: index + 1,
-                                          data: snapshot.data[index],
+                                          data: snapshot.data![index],
                                         );
                                       });
                                 }
@@ -113,7 +113,7 @@ class AllRankWidget extends StatelessWidget {
                           child: FutureBuilder(
                               future: AuthorTrendingAPI.getTrendingAuthor(),
                               builder: (BuildContext context,
-                                  AsyncSnapshot<List<AuthorTrendingModel>>
+                                  AsyncSnapshot<List<AuthorTrendingModel>?>
                                       snapshot) {
                                 if (snapshot.hasData) {
                                   return ListView.builder(
@@ -123,7 +123,7 @@ class AllRankWidget extends StatelessWidget {
                                       itemBuilder: (BuildContext _, int index) {
                                         return ChartAuthor(
                                           rank: index + 1,
-                                          data: snapshot.data[index],
+                                          data: snapshot.data![index],
                                         );
                                       });
                                 }

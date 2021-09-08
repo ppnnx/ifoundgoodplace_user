@@ -10,11 +10,11 @@ import 'package:ifgpdemo/widget/comment_widget.dart';
 import 'package:http/http.dart' as http;
 
 class DetailSecond extends StatefulWidget {
-  final MyContent mycontent;
+  final MyContent? mycontent;
   final userid;
   final useremail;
 
-  const DetailSecond({Key key, this.userid, this.useremail, this.mycontent})
+  const DetailSecond({Key? key, this.userid, this.useremail, this.mycontent})
       : super(key: key);
 
   @override
@@ -23,8 +23,8 @@ class DetailSecond extends StatefulWidget {
 
 class _DetailSecondState extends State<DetailSecond> {
   int _current = 0;
-  Timer _timer;
-  double _progress;
+  Timer? _timer;
+  late double _progress;
 
   // api delete content
   Future deletecontent() async {
@@ -32,7 +32,7 @@ class _DetailSecondState extends State<DetailSecond> {
       final url = Uri.parse('http://35.213.159.134/ctdelete.php');
       final response = await http.post(url, body: {
         "ID_User": widget.userid.toString(),
-        "ID_Contentdl": widget.mycontent.idcontent.toString(),
+        "ID_Contentdl": widget.mycontent!.idcontent.toString(),
       });
 
       if (response.statusCode == 200) {
@@ -128,7 +128,7 @@ class _DetailSecondState extends State<DetailSecond> {
                     children: [
                       // date
                       Text(
-                        widget.mycontent.dateContent,
+                        widget.mycontent!.dateContent!,
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w500,
@@ -137,7 +137,7 @@ class _DetailSecondState extends State<DetailSecond> {
                       ),
                       // author
                       Text(
-                        widget.mycontent.username,
+                        widget.mycontent!.username!,
                         style: TextStyle(
                             color: Colors.black,
                             fontSize: 13,
@@ -153,14 +153,14 @@ class _DetailSecondState extends State<DetailSecond> {
                             borderRadius: BorderRadius.circular(0.0),
                             border: Border.all(color: Colors.black)),
                         child: Text(
-                          widget.mycontent.category,
+                          widget.mycontent!.category!,
                           style: TextStyle(color: Colors.black, fontSize: 12),
                         ),
                       ),
                     ],
                   ),
                 ),
-                widget.mycontent.statusReport == "reported"
+                widget.mycontent!.statusReport == "reported"
                     ? Container(
                         height: 60,
                         width: double.infinity,
@@ -200,19 +200,19 @@ class _DetailSecondState extends State<DetailSecond> {
                 Container(
                   padding: EdgeInsets.all(21.0),
                   child: Text(
-                    widget.mycontent.title,
+                    widget.mycontent!.title!,
                     style: TextStyle(fontFamily: 'Kanit', fontSize: 22),
                   ),
                 ),
                 // images
-                imageSlide(widget.mycontent),
+                imageSlide(widget.mycontent!),
                 SizedBox(height: 60),
 
                 // story
                 Container(
                   padding: EdgeInsets.all(21.0),
                   child: Text(
-                    widget.mycontent.content,
+                    widget.mycontent!.content!,
                     style: TextStyle(color: Colors.black, fontSize: 16),
                   ),
                 ),
@@ -236,7 +236,7 @@ class _DetailSecondState extends State<DetailSecond> {
                             ),
                             SizedBox(width: 7),
                             Text(
-                              widget.mycontent.favorited.toString(),
+                              widget.mycontent!.favorited.toString(),
                               style: TextStyle(
                                 fontSize: 14,
                               ),
@@ -254,7 +254,7 @@ class _DetailSecondState extends State<DetailSecond> {
                               size: 16,
                             ),
                             SizedBox(width: 7),
-                            Text(widget.mycontent.saved.toString()),
+                            Text(widget.mycontent!.saved.toString()),
                           ],
                         ),
                       ),
@@ -268,7 +268,7 @@ class _DetailSecondState extends State<DetailSecond> {
                               size: 16,
                             ),
                             SizedBox(width: 7),
-                            Text(widget.mycontent.shared.toString()),
+                            Text(widget.mycontent!.shared.toString()),
                           ],
                         ),
                       ),
@@ -282,7 +282,7 @@ class _DetailSecondState extends State<DetailSecond> {
                               size: 16,
                             ),
                             SizedBox(width: 7),
-                            Text(widget.mycontent.counterread.toString()),
+                            Text(widget.mycontent!.counterread.toString()),
                           ],
                         ),
                       ),
@@ -303,7 +303,7 @@ class _DetailSecondState extends State<DetailSecond> {
                         padding: EdgeInsets.only(top: 30, left: 21, bottom: 20),
                         child: Text(
                           'Comments (' +
-                              widget.mycontent.comment.toString() +
+                              widget.mycontent!.comment.toString() +
                               ')',
                           style: TextStyle(
                             color: Colors.black,
@@ -319,7 +319,7 @@ class _DetailSecondState extends State<DetailSecond> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           CommentWidget(
-                            idcontent: widget.mycontent.idcontent,
+                            idcontent: widget.mycontent!.idcontent,
                             iduser: widget.userid,
                             emailuser: widget.useremail,
                           ),

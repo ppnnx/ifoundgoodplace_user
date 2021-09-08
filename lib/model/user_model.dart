@@ -1,12 +1,12 @@
 class User {
-  int iduser;
-  String username;
-  String image;
-  String status;
-  int follower;
-  int following;
-  String createdate;
-  String email;
+  int? iduser;
+  String? username;
+  String? image;
+  String? status;
+  int? follower;
+  int? following;
+  String? createdate;
+  String? email;
 
   User(
       {this.iduser,

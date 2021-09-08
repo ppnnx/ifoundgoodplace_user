@@ -9,7 +9,6 @@ import 'package:ifgpdemo/screen/main/main_screen.dart';
 import 'package:ifgpdemo/screen/profile/profile_screen.dart';
 import 'package:ifgpdemo/screen/register/register_screen.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -185,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)';
                               final regExp = RegExp(pattern);
 
-                              if (value.isEmpty) {
+                              if (value!.isEmpty) {
                                 return "please enter your email";
                               } else if (!regExp.hasMatch(value)) {
                                 return "please enter a valid email";
@@ -248,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           // password
                           TextFormField(
                             validator: (value) {
-                              if (value.isEmpty) {
+                              if (value!.isEmpty) {
                                 return "please enter your password";
                               }
                               return null;
@@ -312,7 +311,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           // login button
                           ElevatedButton(
                             onPressed: () {
-                              if (_formKey.currentState.validate()) {
+                              if (_formKey.currentState!.validate()) {
                                 login();
                               }
 

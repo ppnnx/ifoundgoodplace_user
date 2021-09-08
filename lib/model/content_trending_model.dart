@@ -1,14 +1,14 @@
 class TrendingModel {
-  int counterRead;
-  int idcontent;
-  String dateContent;
-  String statusContent;
-  String title;
-  String content;
-  String username;
-  String images01;
-  int idcategory;
-  String category;
+  int? counterRead;
+  int? idcontent;
+  String? dateContent;
+  String? statusContent;
+  String? title;
+  String? content;
+  String? username;
+  String? images01;
+  int? idcategory;
+  String? category;
 
   TrendingModel(
       {this.counterRead,

@@ -7,7 +7,6 @@ import 'package:ifgpdemo/model/content_model.dart';
 import 'package:ifgpdemo/model/user_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:ifgpdemo/screen/detail/detail_nd_screen.dart';
-import 'package:ifgpdemo/screen/detail/detail_screen.dart';
 
 class AuthorProfileScreen extends StatefulWidget {
   final idauthor;
@@ -16,7 +15,11 @@ class AuthorProfileScreen extends StatefulWidget {
   final useremail;
 
   const AuthorProfileScreen(
-      {Key key, this.idauthor, this.profileid, this.nameauthor, this.useremail})
+      {Key? key,
+      this.idauthor,
+      this.profileid,
+      this.nameauthor,
+      this.useremail})
       : super(key: key);
 
   @override
@@ -28,7 +31,7 @@ class _AuthorProfileScreenState extends State<AuthorProfileScreen> {
   bool isFollowing = false;
 
   // fetch author's data from api by author's id
-  Future<List<User>> getAuthorData() async {
+  Future<List<User>?> getAuthorData() async {
     var url = Uri.parse(
         'http://35.213.159.134/myprofile.php?profile=${widget.idauthor}');
     try {
@@ -47,7 +50,7 @@ class _AuthorProfileScreenState extends State<AuthorProfileScreen> {
   }
 
   // fetch author's contents from api
-  Future<List<Contents>> getContents() async {
+  Future<List<Contents>?> getContents() async {
     var url = Uri.parse(
         'http://35.213.159.134/mycontent.php?iduser=${widget.idauthor}');
     try {
@@ -134,15 +137,15 @@ class _AuthorProfileScreenState extends State<AuthorProfileScreen> {
           children: <Widget>[
             FutureBuilder(
                 future: getAuthorData(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<List<User>> snapshot) {
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<User>?> snapshot) {
                   if (snapshot.hasData) {
                     return ListView.builder(
                         shrinkWrap: true,
                         physics: BouncingScrollPhysics(),
-                        itemCount: snapshot.data.length,
+                        itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
-                          final user = snapshot.data[index];
+                          final user = snapshot.data![index];
 
                           return Center(
                             child: Container(
@@ -186,7 +189,7 @@ class _AuthorProfileScreenState extends State<AuthorProfileScreen> {
 
                                   // author's username
                                   Text(
-                                    user.username,
+                                    user.username!,
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500),
@@ -258,14 +261,14 @@ class _AuthorProfileScreenState extends State<AuthorProfileScreen> {
                   FutureBuilder(
                       future: getContents(),
                       builder:
-                          (context, AsyncSnapshot<List<Contents>> snapshot) {
+                          (context, AsyncSnapshot<List<Contents>?> snapshot) {
                         if (snapshot.hasData) {
                           return ListView.builder(
                               shrinkWrap: true,
                               physics: BouncingScrollPhysics(),
-                              itemCount: snapshot.data.length,
+                              itemCount: snapshot.data!.length,
                               itemBuilder: (context, index) {
-                                final mycontent = snapshot.data[index];
+                                final mycontent = snapshot.data![index];
                                 return GestureDetector(
                                   onTap: () {
                                     Navigator.push(
@@ -273,11 +276,12 @@ class _AuthorProfileScreenState extends State<AuthorProfileScreen> {
                                         MaterialPageRoute(
                                             builder: (context) => DetailSCRN(
                                                   contents:
-                                                      snapshot.data[index],
+                                                      snapshot.data![index],
                                                   emailuser: widget.useremail,
                                                   iduser: widget.profileid,
                                                   count:
-                                                      mycontent.counterread++,
+                                                      mycontent.counterread! +
+                                                          1,
                                                 )));
                                   },
                                   child: Container(
@@ -346,7 +350,7 @@ class _AuthorProfileScreenState extends State<AuthorProfileScreen> {
                                                     ),
                                                   ),
                                                   child: Text(
-                                                    mycontent.category,
+                                                    mycontent.category!,
                                                     style: TextStyle(
                                                       fontSize: 12,
                                                       color: Colors.black,
@@ -356,7 +360,7 @@ class _AuthorProfileScreenState extends State<AuthorProfileScreen> {
                                                 SizedBox(height: 10),
                                                 // title
                                                 Text(
-                                                  mycontent.title,
+                                                  mycontent.title!,
                                                   style: TextStyle(
                                                       color: Colors.black,
                                                       fontFamily: 'Kanit',
@@ -601,7 +605,7 @@ class _AuthorProfileScreenState extends State<AuthorProfileScreen> {
     );
   }
 
-  Future<void> showAlertLogin() async {
+  showAlertLogin() async {
     return showDialog(
         context: context,
         builder: (context) {

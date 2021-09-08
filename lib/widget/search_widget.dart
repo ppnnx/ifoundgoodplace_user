@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 
 class SearchWidget extends StatefulWidget {
-  final String text;
-  final ValueChanged<String> onChanged;
+  final String? text;
+  final ValueChanged<String>? onChanged;
 
-  const SearchWidget({Key key, this.text, this.onChanged}) : super(key: key);
+  const SearchWidget({Key? key, this.text, this.onChanged}) : super(key: key);
   
   @override
   _SearchWidgetState createState() => _SearchWidgetState();
@@ -49,7 +49,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                       color: Colors.black45,
                       size: 20,
                     ),
-                    suffixIcon: widget.text.isNotEmpty
+                    suffixIcon: widget.text!.isNotEmpty
                         ? GestureDetector(
                             child: Icon(
                               Icons.close,
@@ -58,7 +58,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                             ),
                             onTap: () {
                               searchcontroller.clear();
-                              widget.onChanged('');
+                              widget.onChanged!('');
                               FocusScope.of(context).requestFocus(FocusNode());
                             },
                           )

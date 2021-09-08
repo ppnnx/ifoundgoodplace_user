@@ -1,18 +1,18 @@
 class SaveModel {
-  String statusSave;
-  String dateSave;
-  String timeSave;
-  int idcontent;
-  String author;
-  String dateContent;
-  String statusContent;
-  String title;
-  String images01;
-  String images02;
-  String images03;
-  String images04;
-  int idcategory;
-  String category;
+  String? statusSave;
+  String? dateSave;
+  String? timeSave;
+  int? idcontent;
+  String? author;
+  String? dateContent;
+  String? statusContent;
+  String? title;
+  String? images01;
+  String? images02;
+  String? images03;
+  String? images04;
+  int? idcategory;
+  String? category;
 
   SaveModel(
       {this.statusSave,

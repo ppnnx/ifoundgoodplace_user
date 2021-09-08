@@ -8,14 +8,14 @@ class SaveDBSCRN extends StatefulWidget {
   final iduser;
   final username;
 
-  const SaveDBSCRN({Key key, this.iduser, this.username}) : super(key: key);
+  const SaveDBSCRN({Key? key, this.iduser, this.username}) : super(key: key);
 
   @override
   _SaveDBSCRNState createState() => _SaveDBSCRNState();
 }
 
 class _SaveDBSCRNState extends State<SaveDBSCRN> {
-  List<Save> saved;
+  List<Save>? saved;
 
   Future refreshSaveList() async {
     this.saved = await DatabaseProvider.db.getSaveList();
@@ -48,12 +48,12 @@ class _SaveDBSCRNState extends State<SaveDBSCRN> {
                 child: Text("Loading . . ."),
               );
             }
-            return snapshot.data.isEmpty
+            return snapshot.data!.isEmpty
                 ? Center(
                     child: Text("You don't have Save List."),
                   )
                 : ListView(
-                    children: snapshot.data.map((saved) {
+                    children: snapshot.data!.map((saved) {
                       return Container(
                         height: 130,
                         width: 375,
@@ -105,7 +105,7 @@ class _SaveDBSCRNState extends State<SaveDBSCRN> {
                                       color: Colors.black,
                                       borderRadius: BorderRadius.circular(2.0)),
                                   child: Text(
-                                    saved.category,
+                                    saved.category!,
                                     style: TextStyle(
                                         fontSize: 11,
                                         fontWeight: FontWeight.w500,
@@ -115,14 +115,14 @@ class _SaveDBSCRNState extends State<SaveDBSCRN> {
                                 SizedBox(height: 7),
                                 // title
                                 Text(
-                                  saved.title,
+                                  saved.title!,
                                   style: TextStyle(
                                       color: Colors.black, fontSize: 14),
                                 ),
                                 SizedBox(height: 7),
                                 // author
                                 Text(
-                                  saved.author,
+                                  saved.author!,
                                   style: TextStyle(
                                       color: Colors.black, fontSize: 12),
                                 ),

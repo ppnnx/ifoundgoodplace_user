@@ -1,8 +1,8 @@
 class AuthorTrendingModel {
-  int iduser;
-  String username;
-  int sumread;
-  String image;
+  int? iduser;
+  String? username;
+  int? sumread;
+  String? image;
 
   AuthorTrendingModel({this.iduser, this.username, this.sumread, this.image});
 

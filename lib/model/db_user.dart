@@ -11,18 +11,18 @@ class UserFields {
 }
 
 class UserDB {
-  int iduser;
-  String email;
+  int? iduser;
+  String? email;
 
   UserDB({this.iduser, this.email});
 
-  Map<String, Object> toJson() => {
+  Map<String, Object?> toJson() => {
         UserFields.iduser: iduser,
         UserFields.email: email,
       };
 
   static UserDB fromJson(Map<String, Object> json) => UserDB(
-        iduser: json[UserFields.iduser] as int,
-        email: json[UserFields.email] as String,
+        iduser: json[UserFields.iduser] as int?,
+        email: json[UserFields.email] as String?,
       );
 }

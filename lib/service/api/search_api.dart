@@ -14,8 +14,8 @@ class SearchAPI {
         final List contents = json.decode(response.body);
 
         return contents.map((json) => Contents.fromJson(json)).where((content) {
-          final searchtitle = content.title.toLowerCase();
-          final searchauthor = content.username.toLowerCase();
+          final searchtitle = content.title!.toLowerCase();
+          final searchauthor = content.username!.toLowerCase();
           final searchquery = query.toLowerCase();
 
           return searchtitle.contains(searchquery) ||

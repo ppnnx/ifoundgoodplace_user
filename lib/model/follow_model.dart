@@ -1,7 +1,7 @@
 class Follow {
-  int iduser;
-  String username;
-  String image;
+  int? iduser;
+  String? username;
+  String? image;
 
   Follow({this.iduser, this.username, this.image});
 

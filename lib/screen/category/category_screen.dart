@@ -18,7 +18,7 @@ class CategoryScreen extends StatefulWidget {
   final userimg;
 
   const CategoryScreen(
-      {Key key,
+      {Key? key,
       this.idcategory,
       this.name,
       this.userid,
@@ -35,7 +35,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   List<Contents> content = [];
   List<TrendingModel> trending = [];
 
-  Future<List<Contents>> getContentbyCate() async {
+  Future<List<Contents>?> getContentbyCate() async {
     var url = Uri.parse(
         'http://35.213.159.134/searchbycategory.php?searchbycategory=${widget.idcategory}');
     try {
@@ -53,7 +53,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     return null;
   }
 
-  Future<List<Contents>> getTrendingContentbyCategory() async {
+  Future<List<Contents>?> getTrendingContentbyCategory() async {
     var url = Uri.parse(
         'http://35.213.159.134/rankingbycategory.php?rankbycategory=${widget.idcategory}');
     try {
@@ -145,14 +145,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 child: FutureBuilder(
                     future: getContentbyCate(),
                     builder: (BuildContext context,
-                        AsyncSnapshot<List<Contents>> snapshot) {
+                        AsyncSnapshot<List<Contents>?> snapshot) {
                       if (snapshot.hasData) {
                         return ListView.builder(
                             shrinkWrap: true,
                             physics: BouncingScrollPhysics(),
-                            itemCount: snapshot.data.length,
+                            itemCount: snapshot.data!.length,
                             itemBuilder: (context, index) {
-                              final catecont = snapshot.data[index];
+                              final catecont = snapshot.data![index];
 
                               return GestureDetector(
                                 child: buildContentbyCate(catecont),
@@ -160,12 +160,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => DetailScreen(
-                                                content: catecont,
-                                                userId: widget.userid,
-                                                userEmail: widget.useremail,
-                                                userImage: widget.userimg,
-                                                count: catecont.counterread++,
+                                          builder: (context) => DetailSCRN(
+                                                contents: catecont,
+                                                iduser: widget.userid,
+                                                emailuser: widget.useremail,
+                                                count:
+                                                    catecont.counterread! + 1,
                                               )));
                                 },
                               );
@@ -206,12 +206,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
                         FutureBuilder(
                             future: getTrendingContentbyCategory(),
                             builder: (BuildContext context,
-                                AsyncSnapshot<List<Contents>> snapshot) {
+                                AsyncSnapshot<List<Contents>?> snapshot) {
                               if (snapshot.hasData) {
                                 return ListView.builder(
                                     shrinkWrap: true,
                                     physics: BouncingScrollPhysics(),
-                                    itemCount: snapshot.data.length,
+                                    itemCount: snapshot.data!.length,
                                     itemBuilder: (BuildContext _, int index) {
                                       return GestureDetector(
                                         onTap: () {
@@ -221,21 +221,22 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                   builder: (context) =>
                                                       DetailSCRN(
                                                         contents: snapshot
-                                                            .data[index],
+                                                            .data![index],
                                                         iduser: widget.userid,
                                                         emailuser:
                                                             widget.useremail,
                                                         idcontent: snapshot
-                                                            .data[index]
+                                                            .data![index]
                                                             .idcontent,
                                                         count: snapshot
-                                                            .data[index]
-                                                            .counterread++,
+                                                                .data![index]
+                                                                .counterread! +
+                                                            1,
                                                       )));
                                         },
                                         child: TrendingWidget(
                                           rank: index + 1,
-                                          data: snapshot.data[index],
+                                          data: snapshot.data![index],
                                         ),
                                       );
                                     });
@@ -306,7 +307,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     children: [
                       // title
                       Text(
-                        contents.title,
+                        contents.title!,
                         style: TextStyle(color: Colors.black, fontSize: 16),
                       ),
                       SizedBox(height: 10),
@@ -324,7 +325,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                 // ),
                                 // SizedBox(width: 10),
                                 Text(
-                                  contents.username,
+                                  contents.username!,
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 14,
@@ -365,10 +366,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
 }
 
 class TrendingWidget extends StatelessWidget {
-  final int rank;
-  final Contents data;
+  final int? rank;
+  final Contents? data;
 
-  const TrendingWidget({Key key, this.rank, this.data}) : super(key: key);
+  const TrendingWidget({Key? key, this.rank, this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -400,12 +401,12 @@ class TrendingWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    data.title,
+                    data!.title!,
                     style: TextStyle(color: Colors.black, fontSize: 14),
                   ),
                   SizedBox(height: 7),
                   Text(
-                    data.username,
+                    data!.username!,
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 12,
@@ -422,7 +423,7 @@ class TrendingWidget extends StatelessWidget {
                       ),
                       SizedBox(width: 8),
                       Text(
-                        data.counterread.toString(),
+                        data!.counterread.toString(),
                         style: TextStyle(color: Colors.black, fontSize: 12),
                       ),
                     ],
@@ -439,7 +440,7 @@ class TrendingWidget extends StatelessWidget {
                   ClipRRect(
                     child: CachedNetworkImage(
                       imageUrl:
-                          'http://35.213.159.134/uploadimages/${data.image01}',
+                          'http://35.213.159.134/uploadimages/${data!.image01}',
                       height: 80,
                       width: 80,
                       fit: BoxFit.cover,

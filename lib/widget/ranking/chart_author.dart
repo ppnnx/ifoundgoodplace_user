@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:ifgpdemo/model/author_trending_model.dart';
 
 class ChartAuthor extends StatelessWidget {
-  final int rank;
-  final AuthorTrendingModel data;
+  final int? rank;
+  final AuthorTrendingModel? data;
 
-  const ChartAuthor({Key key, this.rank, this.data}) : super(key: key);
+  const ChartAuthor({Key? key, this.rank, this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class ChartAuthor extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    data.username,
+                    data!.username!,
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 15,
@@ -47,7 +47,7 @@ class ChartAuthor extends StatelessWidget {
                   Row(
                     children: <Widget>[
                       Text(
-                        data.sumread.toString(),
+                        data!.sumread.toString(),
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 14,
@@ -75,7 +75,7 @@ class ChartAuthor extends StatelessWidget {
                   CircleAvatar(
                     radius: 35,
                     backgroundImage: NetworkImage(
-                        'http://35.213.159.134/uploadimages/${data.image}'),
+                        'http://35.213.159.134/uploadimages/${data!.image}'),
                   ),
                 ],
               )

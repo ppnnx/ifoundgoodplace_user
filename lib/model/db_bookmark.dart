@@ -23,14 +23,14 @@ class BookMarkFields {
 }
 
 class BookMarkDB {
-  int iduser;
-  String email;
-  int idcontent;
-  String author;
-  String bookmarkDate;
-  String title;
-  String category;
-  String content;
+  int? iduser;
+  String? email;
+  int? idcontent;
+  String? author;
+  String? bookmarkDate;
+  String? title;
+  String? category;
+  String? content;
 
   BookMarkDB({
     this.iduser,
@@ -43,7 +43,7 @@ class BookMarkDB {
     this.content,
   });
 
-  Map<String, Object> toJson() => {
+  Map<String, Object?> toJson() => {
         BookMarkFields.iduser: iduser,
         BookMarkFields.author: author,
         BookMarkFields.email: email,
@@ -55,13 +55,13 @@ class BookMarkDB {
       };
 
   static BookMarkDB fromJson(Map<String, Object> json) => BookMarkDB(
-        iduser: json[BookMarkFields.iduser] as int,
-        author: json[BookMarkFields.author] as String,
-        email: json[BookMarkFields.email] as String,
-        idcontent: json[BookMarkFields.idcontent] as int,
-        bookmarkDate: json[BookMarkFields.bookmarkDate] as String,
-        title: json[BookMarkFields.title] as String,
-        category: json[BookMarkFields.category] as String,
-        content: json[BookMarkFields.content] as String,
+        iduser: json[BookMarkFields.iduser] as int?,
+        author: json[BookMarkFields.author] as String?,
+        email: json[BookMarkFields.email] as String?,
+        idcontent: json[BookMarkFields.idcontent] as int?,
+        bookmarkDate: json[BookMarkFields.bookmarkDate] as String?,
+        title: json[BookMarkFields.title] as String?,
+        category: json[BookMarkFields.category] as String?,
+        content: json[BookMarkFields.content] as String?,
       );
 }

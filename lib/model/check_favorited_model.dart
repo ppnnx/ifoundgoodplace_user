@@ -1,7 +1,7 @@
 class CheckFavorited {
-  int iduser;
-  int idcontent;
-  String statusFav;
+  int? iduser;
+  int? idcontent;
+  String? statusFav;
 
   CheckFavorited({this.iduser, this.idcontent, this.statusFav});
 

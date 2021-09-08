@@ -1,24 +1,24 @@
 class Contents {
-  int iduser;
-  String username;
-  String statuspost;
-  int idcontent;
-  String dateContent;
-  String title;
-  String category;
-  String content;
-  String link;
-  double latitude;
-  double longitude;
-  int counterread;
-  String image01;
-  String image02;
-  String image03;
-  String image04;
-  int favorite;
-  int save;
-  int comments;
-  int share;
+  int? iduser;
+  String? username;
+  String? statuspost;
+  int? idcontent;
+  String? dateContent;
+  String? title;
+  String? category;
+  String? content;
+  String? link;
+  double? latitude;
+  double? longitude;
+  int? counterread;
+  String? image01;
+  String? image02;
+  String? image03;
+  String? image04;
+  int? favorite;
+  int? save;
+  int? comments;
+  int? share;
 
   Contents({
     this.iduser,

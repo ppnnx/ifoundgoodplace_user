@@ -11,19 +11,20 @@ import 'package:ifgpdemo/screen/author_profile/author_profile_screen.dart';
 import 'package:ifgpdemo/screen/detail/detail_map_scrn.dart';
 import 'package:ifgpdemo/screen/login/login_screen.dart';
 import 'package:ifgpdemo/screen/profile/profile_screen.dart';
+import 'package:ifgpdemo/widget/refresh/refresh_widget.dart';
 import 'package:share/share.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailSCRN extends StatefulWidget {
-  final Contents contents;
+  final Contents? contents;
   final iduser;
   final emailuser;
   final idcontent;
-  final int count;
+  final int? count;
 
   const DetailSCRN(
-      {Key key,
+      {Key? key,
       this.iduser,
       this.emailuser = "Guest",
       this.idcontent,
@@ -37,33 +38,43 @@ class DetailSCRN extends StatefulWidget {
 
 class _DetailSCRNState extends State<DetailSCRN> {
   TextEditingController commentcontroller = TextEditingController();
-  String statement; // for keep statement from report
+  String? statement; // for keep statement from report
   int _current = 0; // for dot
   bool favorited = false;
   bool bookmarked = false;
 
-  // db's parameter
-  int iduser;
-  int idauthor;
-  String author;
-  int idcontent;
-  String datecontent;
-  String title;
-  String category;
-  String story;
-  String link;
-  double latitude;
-  double longitude;
-  int counterread;
-  String image01;
-  String image02;
-  String image03;
-  String image04;
-  int favorite;
-  int save;
-  int comments;
-  int share;
-  //
+  // db'parameter
+  int? iduser;
+  int? idauthor;
+  String? author;
+  int? idcontent;
+  String? datecontent;
+  String? title;
+  String? category;
+  String? story;
+  String? link;
+  double? latitude;
+  double? longitude;
+  String? image01;
+  String? image02;
+  String? image03;
+  String? image04;
+  int? counterread;
+  int? favorite;
+  int? comments;
+  int? share;
+  int? save;
+
+  // refresh all
+  Future loadList() async {
+    await Future.delayed(Duration(milliseconds: 3000));
+    getComment().then((value) {
+      setState(() {});
+    });
+    getStory().then((value) {
+      setState(() {});
+    });
+  }
 
   // api add bookmark content to db
   Future getBookmark() async {
@@ -82,10 +93,9 @@ class _DetailSCRNState extends State<DetailSCRN> {
     } catch (e) {}
   }
 
-  // db bookmark
-  saveContent(Save saved) async {
-    DatabaseProvider.db.addBookmark(saved);
-    print("content added to bookmark store successfully");
+  // add bookmark to db
+  Future addbookmark(Save save) async {
+    DatabaseProvider.db.addBookmark(save);
   }
 
   // api add favorite content to db
@@ -212,7 +222,7 @@ class _DetailSCRNState extends State<DetailSCRN> {
   }
 
   // fetch comment from api
-  Future<List<CommentModel>> getComment() async {
+  Future<List<CommentModel>?> getComment() async {
     var url = Uri.parse('http://35.213.159.134/comshow.php');
 
     try {
@@ -244,6 +254,7 @@ class _DetailSCRNState extends State<DetailSCRN> {
   void initState() {
     super.initState();
     getStory();
+    loadList();
   }
 
   @override
@@ -258,10 +269,6 @@ class _DetailSCRNState extends State<DetailSCRN> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.0,
-        // title: Text(
-        //   widget.idcontent.toString(),
-        //   style: TextStyle(fontSize: 12),
-        // ),
         leading: IconButton(
           icon: Icon(
             Icons.keyboard_backspace,
@@ -309,115 +316,117 @@ class _DetailSCRNState extends State<DetailSCRN> {
                           color: Colors.black,
                           size: 17,
                         ),
-                        onPressed: () {
+                        onPressed: () async {
                           if (bookmarked) {
                             setState(() {
                               bookmarked = false;
                             });
                           } else {
-                            setState(() {
-                              bookmarked = true;
-                              getBookmark();
+                            setState(
+                              () {
+                                bookmarked = true;
+                                getBookmark();
 
-                              // db bookmark
-                              iduser = widget.iduser;
-                              idauthor = widget.contents.iduser;
-                              author = widget.contents.username;
-                              idcontent = widget.contents.idcontent;
-                              datecontent = widget.contents.dateContent;
-                              title = widget.contents.title;
-                              category = widget.contents.category;
-                              story = widget.contents.content;
-                              link = widget.contents.link;
-                              latitude = widget.contents.latitude;
-                              longitude = widget.contents.longitude;
-                              counterread = widget.contents.counterread;
-                              image01 = widget.contents.image01;
-                              image02 = widget.contents.image02;
-                              image03 = widget.contents.image03;
-                              image04 = widget.contents.image04;
-                              favorite = widget.contents.favorite;
-                              save = widget.contents.save;
-                              comments = widget.contents.comments;
-                              share = widget.contents.share;
-
-                              Save saved = Save(
-                                  iduser: iduser,
-                                  idauthor: idauthor,
-                                  author: author,
-                                  idcontent: idcontent,
-                                  datecontent: datecontent,
-                                  title: title,
-                                  category: category,
-                                  story: story,
-                                  link: link,
-                                  latitude: latitude,
-                                  longitude: longitude,
-                                  counterread: counterread,
-                                  image01: image01,
-                                  image02: image02,
-                                  image03: image03,
-                                  image04: image04,
-                                  favorite: favorite,
-                                  save: save,
-                                  comments: comments,
-                                  share: share);
-
-                              saveContent(saved);
-                              print(
-                                  "user : ${saved.iduser} saved content : ${saved.idcontent}");
-                            });
+                                // db zone
+                                iduser = widget.iduser;
+                                idauthor = widget.contents!.iduser;
+                                idcontent = widget.idcontent;
+                                title = widget.contents!.title;
+                                author = widget.contents!.username;
+                                category = widget.contents!.category;
+                                story = widget.contents!.content;
+                                datecontent = widget.contents!.dateContent;
+                                link = widget.contents!.link;
+                                latitude = widget.contents!.latitude;
+                                longitude = widget.contents!.longitude;
+                                image01 = widget.contents!.image01;
+                                image02 = widget.contents!.image02;
+                                image03 = widget.contents!.image03;
+                                image04 = widget.contents!.image04;
+                                counterread = widget.contents!.counterread;
+                                favorite = widget.contents!.favorite;
+                                comments = widget.contents!.comments;
+                                share = widget.contents!.share;
+                                save = widget.contents!.save;
+                              },
+                            );
+                            Save saved = Save(
+                              iduser: iduser,
+                              idcontent: idcontent,
+                              idauthor: idauthor,
+                              title: title,
+                              author: author,
+                              category: category,
+                              story: story,
+                              datecontent: datecontent,
+                              link: link,
+                              latitude: latitude,
+                              longitude: longitude,
+                              image01: image01,
+                              image02: image02,
+                              image03: image03,
+                              image04: image04,
+                              counterread: counterread,
+                              favorite: favorite,
+                              comments: comments,
+                              share: share,
+                              save: save,
+                            );
+                            addbookmark(saved);
                           }
                         },
                       ),
 
                       // report + share
                       PopupMenuButton<int>(
-                          icon: Icon(
-                            CupertinoIcons.ellipsis_vertical,
-                            color: Colors.black,
-                            size: 19,
-                          ),
-                          onSelected: (item) => onSelected(context, item),
-                          itemBuilder: (context) => [
-                                PopupMenuItem<int>(
-                                  value: 0,
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.share,
-                                        color: Colors.black,
-                                        size: 16,
-                                      ),
-                                      SizedBox(width: 10),
-                                      Text('Share'),
-                                    ],
-                                  ),
+                        icon: Icon(
+                          CupertinoIcons.ellipsis_vertical,
+                          color: Colors.black,
+                          size: 19,
+                        ),
+                        onSelected: (item) => onSelected(context, item),
+                        itemBuilder: (context) => [
+                          PopupMenuItem<int>(
+                            value: 0,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.share,
+                                  color: Colors.black,
+                                  size: 16,
                                 ),
-                                PopupMenuDivider(),
-                                PopupMenuItem<int>(
-                                  value: 1,
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        CupertinoIcons.exclamationmark_triangle,
-                                        color: Colors.black,
-                                        size: 18,
-                                      ),
-                                      SizedBox(width: 10),
-                                      Text('Report'),
-                                    ],
-                                  ),
-                                )
-                              ]),
+                                SizedBox(width: 10),
+                                Text('Share'),
+                              ],
+                            ),
+                          ),
+                          PopupMenuDivider(),
+                          PopupMenuItem<int>(
+                            value: 1,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  CupertinoIcons.exclamationmark_triangle,
+                                  color: Colors.black,
+                                  size: 18,
+                                ),
+                                SizedBox(width: 10),
+                                Text('Report'),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ],
                   ),
                 ),
         ],
       ),
-      body: ListView(
-        children: <Widget>[
-          FutureBuilder(
+      body: RefreshWidget(
+        onRefresh: loadList,
+        child: ListView(
+          children: <Widget>[
+            FutureBuilder(
               future: getStory(),
               builder: (BuildContext context,
                   AsyncSnapshot<List<Contents>> snapshot) {
@@ -425,9 +434,9 @@ class _DetailSCRNState extends State<DetailSCRN> {
                   return ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: snapshot.data.length,
+                    itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
-                      final content = snapshot.data[index];
+                      final content = snapshot.data![index];
 
                       return Container(
                         child: Column(
@@ -442,7 +451,7 @@ class _DetailSCRNState extends State<DetailSCRN> {
                                 children: [
                                   // date
                                   Text(
-                                    content.dateContent,
+                                    content.dateContent!,
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 13,
@@ -453,31 +462,32 @@ class _DetailSCRNState extends State<DetailSCRN> {
                                     onTap: () {
                                       if (widget.iduser != content.iduser) {
                                         Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    AuthorProfileScreen(
-                                                      idauthor: content.iduser,
-                                                      profileid: widget.iduser,
-                                                      nameauthor:
-                                                          content.username,
-                                                      useremail:
-                                                          widget.emailuser,
-                                                    )));
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                AuthorProfileScreen(
+                                              idauthor: content.iduser,
+                                              profileid: widget.iduser,
+                                              nameauthor: content.username,
+                                              useremail: widget.emailuser,
+                                            ),
+                                          ),
+                                        );
                                       } else if (widget.iduser ==
                                           content.iduser) {
                                         Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ProfileScreen(
-                                                      id: widget.iduser,
-                                                      email: widget.emailuser,
-                                                    )));
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => ProfileScreen(
+                                              id: widget.iduser,
+                                              email: widget.emailuser,
+                                            ),
+                                          ),
+                                        );
                                       }
                                     },
                                     child: Text(
-                                      content.username,
+                                      content.username!,
                                       style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 13,
@@ -497,7 +507,7 @@ class _DetailSCRNState extends State<DetailSCRN> {
                                       ),
                                     ),
                                     child: Text(
-                                      content.category.toLowerCase(),
+                                      content.category!.toLowerCase(),
                                       style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 13,
@@ -514,7 +524,7 @@ class _DetailSCRNState extends State<DetailSCRN> {
                             Container(
                               padding: EdgeInsets.all(21.0),
                               child: Text(
-                                content.title,
+                                content.title!,
                                 style: TextStyle(
                                     fontFamily: 'Kanit', fontSize: 24),
                               ),
@@ -528,7 +538,7 @@ class _DetailSCRNState extends State<DetailSCRN> {
                             Container(
                               padding: EdgeInsets.all(21.0),
                               child: Text(
-                                content.content,
+                                content.content!,
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 16),
                               ),
@@ -571,7 +581,7 @@ class _DetailSCRNState extends State<DetailSCRN> {
                                       ? Text('')
                                       : ElevatedButton(
                                           onPressed: () {
-                                            _launchURL(content.link);
+                                            _launchURL(content.link!);
                                           },
                                           child: Icon(
                                             CupertinoIcons.play_fill,
@@ -804,134 +814,135 @@ class _DetailSCRNState extends State<DetailSCRN> {
                     child: CircularProgressIndicator(),
                   );
                 }
-              }),
+              },
+            ),
 
-          // show comment
-          FutureBuilder(
+            // show comment
+            FutureBuilder(
               future: getComment(),
               builder: (BuildContext context,
-                  AsyncSnapshot<List<CommentModel>> snapshot) {
+                  AsyncSnapshot<List<CommentModel>?> snapshot) {
                 if (snapshot.hasData) {
                   return ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (BuildContext _, int index) {
-                        final comment = snapshot.data[index];
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (BuildContext _, int index) {
+                      final comment = snapshot.data![index];
 
-                        return Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4.0),
-                          ),
-                          margin:
-                              EdgeInsets.only(left: 10, right: 10, bottom: 0),
-                          padding: EdgeInsets.only(
-                              top: 10, left: 20, right: 16, bottom: 10),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              // image
-                              comment.image == null || comment.image == ''
-                                  ? CircleAvatar(
-                                      radius: 22,
-                                      backgroundImage:
-                                          AssetImage('assets/second.png'),
-                                    )
-                                  : ClipRRect(
-                                      borderRadius:
-                                          BorderRadius.circular(10000.0),
-                                      child: CachedNetworkImage(
-                                        imageUrl:
-                                            'http://35.213.159.134/avatar/${comment.image}',
-                                        width: 44,
-                                        height: 44,
-                                        fit: BoxFit.cover,
-                                        placeholder: (context, url) {
-                                          return Center(
-                                            child: CircularProgressIndicator(),
-                                          );
-                                        },
-                                        errorWidget: (context, url, error) {
-                                          return CircleAvatar(
-                                            radius: 22,
-                                            backgroundColor: Colors.black12,
-                                            child: Icon(
-                                              Icons.error,
-                                              color: Colors.red,
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                              SizedBox(width: 10),
-                              // comment box
-                              Container(
-                                color: Colors.white,
-                                constraints: BoxConstraints(
-                                  maxWidth: 280,
-                                  maxHeight: 120,
-                                  minHeight: 110,
-                                ),
-                                padding: EdgeInsets.only(
-                                    top: 10, bottom: 10, left: 16, right: 10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // username + datecomment + delete btn
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text(
-                                                comment.username,
-                                              ),
-                                              SizedBox(height: 3),
-                                              Text(
-                                                comment.dateComment,
-                                                style: TextStyle(
-                                                    color: Colors.black45,
-                                                    fontSize: 12),
-                                              ),
-                                            ],
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4.0),
+                        ),
+                        margin: EdgeInsets.only(left: 10, right: 10, bottom: 0),
+                        padding: EdgeInsets.only(
+                            top: 10, left: 20, right: 16, bottom: 10),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            // image
+                            comment.image == null || comment.image == ''
+                                ? CircleAvatar(
+                                    radius: 22,
+                                    backgroundImage:
+                                        AssetImage('assets/second.png'),
+                                  )
+                                : ClipRRect(
+                                    borderRadius:
+                                        BorderRadius.circular(10000.0),
+                                    child: CachedNetworkImage(
+                                      imageUrl:
+                                          'http://35.213.159.134/avatar/${comment.image}',
+                                      width: 44,
+                                      height: 44,
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) {
+                                        return Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      },
+                                      errorWidget: (context, url, error) {
+                                        return CircleAvatar(
+                                          radius: 22,
+                                          backgroundColor: Colors.black12,
+                                          child: Icon(
+                                            Icons.error,
+                                            color: Colors.red,
                                           ),
-                                        ),
-                                        widget.emailuser == "Guest" ||
-                                                widget.iduser != comment.idUser
-                                            ? Text('')
-                                            : IconButton(
-                                                icon: Icon(
-                                                  CupertinoIcons.minus,
-                                                  color: Colors.black54,
-                                                  size: 18,
-                                                ),
-                                                onPressed: () {
-                                                  deleteComment(comment).then(
-                                                      (value) => getComment());
-                                                },
-                                              )
-                                      ],
+                                        );
+                                      },
                                     ),
-                                    SizedBox(height: 16),
-                                    // comment part
-                                    Text(
-                                      comment.comment,
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                      ),
-                                    )
-                                  ],
-                                ),
+                                  ),
+                            SizedBox(width: 10),
+                            // comment box
+                            Container(
+                              color: Colors.white,
+                              constraints: BoxConstraints(
+                                maxWidth: 280,
+                                maxHeight: 120,
+                                minHeight: 110,
                               ),
-                            ],
-                          ),
-                        );
-                      });
+                              padding: EdgeInsets.only(
+                                  top: 10, bottom: 10, left: 16, right: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // username + datecomment + delete btn
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(
+                                              comment.username!,
+                                            ),
+                                            SizedBox(height: 3),
+                                            Text(
+                                              comment.dateComment!,
+                                              style: TextStyle(
+                                                  color: Colors.black45,
+                                                  fontSize: 12),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      widget.emailuser == "Guest" ||
+                                              widget.iduser != comment.idUser
+                                          ? Text('')
+                                          : IconButton(
+                                              icon: Icon(
+                                                CupertinoIcons.minus,
+                                                color: Colors.black54,
+                                                size: 18,
+                                              ),
+                                              onPressed: () {
+                                                deleteComment(comment).then(
+                                                    (value) => getComment());
+                                              },
+                                            )
+                                    ],
+                                  ),
+                                  SizedBox(height: 16),
+                                  // comment part
+                                  Text(
+                                    comment.comment!,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
                 } else {
                   return Container(
                     alignment: Alignment.center,
@@ -939,9 +950,11 @@ class _DetailSCRNState extends State<DetailSCRN> {
                     child: Text('no comments.'),
                   );
                 }
-              }),
-          SizedBox(height: 30),
-        ],
+              },
+            ),
+            SizedBox(height: 30),
+          ],
+        ),
       ),
     );
   }
@@ -949,68 +962,70 @@ class _DetailSCRNState extends State<DetailSCRN> {
   // delete comment
   Future deleteComment(CommentModel commentModel) async {
     showDialog(
-        context: context,
-        builder: (context) => SimpleDialog(
-              title: Text(
-                'Delete comment ?',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15),
-                textAlign: TextAlign.center,
-              ),
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: Text(
+          'Delete comment ?',
+          style: TextStyle(
+              color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15),
+          textAlign: TextAlign.center,
+        ),
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(left: 30, right: 30),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(left: 30, right: 30),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      ElevatedButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text(
-                          'No',
-                          style: TextStyle(color: Colors.black87),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                            primary: Colors.grey.shade400,
-                            elevation: 0.0,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0)),
-                            minimumSize: Size(80, 30)),
-                      ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          Navigator.pop(context);
-
-                          final url =
-                              Uri.parse('http://35.213.159.134/comdelete.php');
-                          final response = await http.post(url, body: {
-                            "idusercomdel": commentModel.idUser.toString(),
-                            "idcomdel": commentModel.idComment.toString(),
-                            "Status_Comment": "unavailable",
-                          });
-                          if (response.statusCode == 200) {
-                            print('______# delete comment already');
-                          } else {
-                            print('______# failed to delete');
-                          }
-                        },
-                        child: Text(
-                          'Yes',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                            primary: Colors.red.shade900,
-                            elevation: 0.0,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0)),
-                            minimumSize: Size(80, 30)),
-                      )
-                    ],
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    'No',
+                    style: TextStyle(color: Colors.black87),
                   ),
+                  style: ElevatedButton.styleFrom(
+                      primary: Colors.grey.shade400,
+                      elevation: 0.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0)),
+                      minimumSize: Size(80, 30)),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    Navigator.pop(context);
+
+                    final url =
+                        Uri.parse('http://35.213.159.134/comdelete.php');
+                    final response = await http.post(
+                      url,
+                      body: {
+                        "idusercomdel": commentModel.idUser.toString(),
+                        "idcomdel": commentModel.idComment.toString(),
+                        "Status_Comment": "unavailable",
+                      },
+                    );
+                    if (response.statusCode == 200) {
+                      print('______# delete comment already');
+                    } else {
+                      print('______# failed to delete');
+                    }
+                  },
+                  child: Text(
+                    'Yes',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                      primary: Colors.red.shade900,
+                      elevation: 0.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0)),
+                      minimumSize: Size(80, 30)),
                 )
               ],
-            ));
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   // pop up menu function
@@ -1019,7 +1034,7 @@ class _DetailSCRNState extends State<DetailSCRN> {
       case 0:
         insertShare();
         Share.share(
-            'http://ifoundgoodplaces/content${widget.idcontent}/${widget.contents.title}.fp');
+            'http://ifoundgoodplaces/content${widget.idcontent}/${widget.contents!.title}.fp');
         print('share');
         break;
       case 1:
@@ -1031,123 +1046,137 @@ class _DetailSCRNState extends State<DetailSCRN> {
 
   // report part
   _showAlertReport(BuildContext context) => showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(builder: (context, setState) {
-          return SimpleDialog(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  'แจ้งบทความไม่เหมาะสม',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            children: <Widget>[
-              RadioListTile(
-                  value: 'copyright', // ละเมิดลิขสิทธิ์
-                  groupValue: statement,
-                  title: Text('ละเมิดลิขสิทธิ์'),
-                  subtitle: Text('ลอกเลียนแบบบทความผู้อื่น'),
-                  onChanged: (value) {
-                    setState(() {
-                      statement = value as String;
-                      print(value);
-                    });
-                  }),
-              RadioListTile(
-                  value: 'rude word', // คำหยาบ
-                  groupValue: statement,
-                  title: Text('ใช้ภาษาที่ไม่เหมาะสม'),
-                  subtitle: Text('ใช้คำหยาบคาย'),
-                  onChanged: (value) {
-                    setState(() {
-                      statement = value as String;
-                      print(value);
-                    });
-                  }),
-              RadioListTile(
-                  value: 'pornography and nudity', // ภาพอนาจาร
-                  groupValue: statement,
-                  title: Text('ใช้ภาพประกอบที่ไม่เหมาะสม'),
-                  subtitle: Text('รูปภาพเชิง 18+'),
-                  onChanged: (value) {
-                    setState(() {
-                      statement = value as String;
-                      print(value);
-                    });
-                  }),
-              Container(
-                padding:
-                    EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(true);
-                      },
-                      child: Text(
-                        'ยกเลิก',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.black,
-                          elevation: 0.0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          )),
-                    ),
-                    SizedBox(width: 14),
-                    ElevatedButton(
-                      onPressed: () {
-                        getReport();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            duration: Duration(milliseconds: 1800),
-                            content: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  'ส่งรายงานปัญหาแล้ว',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                Icon(
-                                  CupertinoIcons.checkmark_alt_circle_fill,
-                                  color: Colors.white,
-                                ),
-                              ],
-                            ),
-                            backgroundColor: Colors.teal.shade400,
-                          ),
-                        );
-
-                        Navigator.of(context).pop(true);
-                      },
-                      child: Text(
-                        'ส่งรายงานปัญหา',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.teal.shade400,
-                        elevation: 0.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return SimpleDialog(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      'แจ้งบทความไม่เหมาะสม',
+                      style:
+                          TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
-              ),
-            ],
+                children: <Widget>[
+                  RadioListTile(
+                    value: 'copyright', // ละเมิดลิขสิทธิ์
+                    groupValue: statement,
+                    title: Text('ละเมิดลิขสิทธิ์'),
+                    subtitle: Text('ลอกเลียนแบบบทความผู้อื่น'),
+                    onChanged: (dynamic value) {
+                      setState(
+                        () {
+                          statement = value as String?;
+                          print(value);
+                        },
+                      );
+                    },
+                  ),
+                  RadioListTile(
+                    value: 'rude word', // คำหยาบ
+                    groupValue: statement,
+                    title: Text('ใช้ภาษาที่ไม่เหมาะสม'),
+                    subtitle: Text('ใช้คำหยาบคาย'),
+                    onChanged: (dynamic value) {
+                      setState(
+                        () {
+                          statement = value as String?;
+                          print(value);
+                        },
+                      );
+                    },
+                  ),
+                  RadioListTile(
+                    value: 'pornography and nudity', // ภาพอนาจาร
+                    groupValue: statement,
+                    title: Text('ใช้ภาพประกอบที่ไม่เหมาะสม'),
+                    subtitle: Text('รูปภาพเชิง 18+'),
+                    onChanged: (dynamic value) {
+                      setState(
+                        () {
+                          statement = value as String?;
+                          print(value);
+                        },
+                      );
+                    },
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(
+                        top: 20, bottom: 20, left: 20, right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                          },
+                          child: Text(
+                            'ยกเลิก',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.black,
+                              elevation: 0.0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              )),
+                        ),
+                        SizedBox(width: 14),
+                        ElevatedButton(
+                          onPressed: () {
+                            getReport();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                duration: Duration(milliseconds: 1800),
+                                content: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'ส่งรายงานปัญหาแล้ว',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    Icon(
+                                      CupertinoIcons.checkmark_alt_circle_fill,
+                                      color: Colors.white,
+                                    ),
+                                  ],
+                                ),
+                                backgroundColor: Colors.teal.shade400,
+                              ),
+                            );
+
+                            Navigator.of(context).pop(true);
+                          },
+                          child: Text(
+                            'ส่งรายงานปัญหา',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.teal.shade400,
+                            elevation: 0.0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
           );
-        });
-      });
+        },
+      );
 
   // images
   Widget showimages(Contents contents) {
@@ -1162,7 +1191,8 @@ class _DetailSCRNState extends State<DetailSCRN> {
       child: Column(
         children: [
           CarouselSlider(
-              items: images.map((imgUrl) {
+            items: images.map(
+              (imgUrl) {
                 return Container(
                   width: MediaQuery.of(context).size.width,
                   child: CachedNetworkImage(
@@ -1185,39 +1215,43 @@ class _DetailSCRNState extends State<DetailSCRN> {
                     },
                   ),
                 );
-              }).toList(),
-              options: CarouselOptions(
-                height: 300.0,
-                initialPage: 0,
-                viewportFraction: 1.0,
-                enableInfiniteScroll: false,
-                autoPlay: false,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _current = index;
-                  });
-                },
-              )),
+              },
+            ).toList(),
+            options: CarouselOptions(
+              height: 300.0,
+              initialPage: 0,
+              viewportFraction: 1.0,
+              enableInfiniteScroll: false,
+              autoPlay: false,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  _current = index;
+                });
+              },
+            ),
+          ),
           SizedBox(height: 16),
 
           // dot (indicatior)
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: images.map((url) {
-              int index = images.indexOf(url);
+            children: images.map(
+              (url) {
+                int index = images.indexOf(url);
 
-              return Container(
-                width: 8.0,
-                height: 8.0,
-                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 3.0),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.black),
-                  color: _current == index ? Colors.black : Colors.white,
-                ),
-              );
-            }).toList(),
-          )
+                return Container(
+                  width: 8.0,
+                  height: 8.0,
+                  margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 3.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.black),
+                    color: _current == index ? Colors.black : Colors.white,
+                  ),
+                );
+              },
+            ).toList(),
+          ),
         ],
       ),
     );

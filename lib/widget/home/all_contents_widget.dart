@@ -10,7 +10,7 @@ class AllContentsWidget extends StatefulWidget {
   final emailuser;
   final iduser;
 
-  const AllContentsWidget({Key key, this.emailuser = "Guest", this.iduser})
+  const AllContentsWidget({Key? key, this.emailuser = "Guest", this.iduser})
       : super(key: key);
 
   @override
@@ -28,9 +28,9 @@ class _AllContentsWidgetState extends State<AllContentsWidget> {
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
                 physics: BouncingScrollPhysics(),
-                itemCount: snapshot.data.length,
+                itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
-                  final listcontent = snapshot.data[index];
+                  final listcontent = snapshot.data![index];
 
                   return GestureDetector(
                     child: buildContents(listcontent),
@@ -39,11 +39,11 @@ class _AllContentsWidgetState extends State<AllContentsWidget> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => DetailSCRN(
-                                    contents: snapshot.data[index],
+                                    contents: snapshot.data![index],
                                     emailuser: widget.emailuser,
                                     iduser: widget.iduser,
                                     idcontent: listcontent.idcontent,
-                                    count: listcontent.counterread++,
+                                    count: listcontent.counterread! + 1,
                                   )));
                     },
                   );
@@ -132,7 +132,7 @@ class _AllContentsWidgetState extends State<AllContentsWidget> {
                           // border: Border.all(color: Colors.black),
                         ),
                         child: Text(
-                          contents.category,
+                          contents.category!,
                           style: TextStyle(color: Colors.white, fontSize: 10),
                         ),
                       ),
@@ -140,7 +140,7 @@ class _AllContentsWidgetState extends State<AllContentsWidget> {
 
                       // title
                       Text(
-                        contents.title,
+                        contents.title!,
                         style: TextStyle(color: Colors.black, fontSize: 16),
                       ),
                       SizedBox(height: 10),
@@ -164,7 +164,7 @@ class _AllContentsWidgetState extends State<AllContentsWidget> {
                                 // ),
                                 // SizedBox(width: 10),
                                 Text(
-                                  contents.username,
+                                  contents.username!,
                                   style: TextStyle(
                                       color: Colors.black87,
                                       fontSize: 12,

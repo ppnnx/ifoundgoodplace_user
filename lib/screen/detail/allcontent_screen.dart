@@ -8,7 +8,7 @@ class AllContents extends StatefulWidget {
   final emailuser;
   final iduser;
 
-  const AllContents({Key key, this.emailuser, this.iduser}) : super(key: key);
+  const AllContents({Key? key, this.emailuser, this.iduser}) : super(key: key);
 
   @override
   _AllContentsState createState() => _AllContentsState();
@@ -112,11 +112,11 @@ class _AllContentsState extends State<AllContents> {
                                 return ListView.builder(
                                     shrinkWrap: true,
                                     physics: BouncingScrollPhysics(),
-                                    itemCount: snapshot.data.length,
+                                    itemCount: snapshot.data!.length,
                                     itemBuilder: (BuildContext _, int index) {
                                       return FullChartWidget(
                                         rank: index + 1,
-                                        data: snapshot.data[index],
+                                        data: snapshot.data![index],
                                       );
                                     });
                               }
