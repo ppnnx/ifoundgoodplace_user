@@ -4,6 +4,7 @@ import 'package:ifgpdemo/model/author_trending_model.dart';
 import 'package:ifgpdemo/screen/author_profile/author_profile_screen.dart';
 import 'package:ifgpdemo/screen/profile/profile_screen.dart';
 import 'package:ifgpdemo/service/api/author_ranking_api.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class FullChartAuthor extends StatefulWidget {
   final useremail;
@@ -174,37 +175,45 @@ class AuthorChartWidget extends StatelessWidget {
                 ],
               )),
           Expanded(
-              flex: 1,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10000.0),
-                    child: CachedNetworkImage(
-                      imageUrl: 'http://35.213.159.134/avatar/${data!.image}',
-                      width: 70,
-                      height: 70,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      },
-                      errorWidget: (context, url, error) {
-                        return CircleAvatar(
-                          radius: 35,
-                          backgroundColor: Colors.black12,
-                          child: Icon(
-                            Icons.error,
-                            color: Colors.red,
-                          ),
-                        );
-                      },
-                    ),
+            flex: 1,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                // ClipRRect(
+                //   borderRadius: BorderRadius.circular(10000.0),
+                //   child: CachedNetworkImage(
+                //     imageUrl: 'http://35.213.159.134/avatar/${data!.image}',
+                //     width: 70,
+                //     height: 70,
+                //     fit: BoxFit.cover,
+                //     placeholder: (context, url) {
+                //       return Center(
+                //         child: CircularProgressIndicator(),
+                //       );
+                //     },
+                //     errorWidget: (context, url, error) {
+                //       return CircleAvatar(
+                //         radius: 35,
+                //         backgroundColor: Colors.black12,
+                //         child: Icon(
+                //           Icons.error,
+                //           color: Colors.red,
+                //         ),
+                //       );
+                //     },
+                //   ),
+                // ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10000.0),
+                  child: FadeInImage.memoryNetwork(
+                    placeholder: kTransparentImage,
+                    image: "http://35.213.159.134/avatar/${data!.image}",
                   ),
-                ],
-              )),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

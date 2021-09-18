@@ -156,7 +156,21 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
                               return GestureDetector(
                                 child: buildContentbyCate(catecont),
-                                onTap: () {
+                                onTap: () async {
+                                  try {
+                                    final url = Uri.parse(
+                                        'http://35.213.159.134/counterread.php');
+                                    final response =
+                                        await http.post(url, body: {
+                                      "ID_Content":
+                                          catecont.idcontent.toString(),
+                                      "Click": '1',
+                                    });
+                                    if (response.statusCode == 200) {
+                                      print('success');
+                                    }
+                                  } catch (e) {}
+
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(

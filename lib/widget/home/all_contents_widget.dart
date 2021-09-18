@@ -3,8 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ifgpdemo/model/content_model.dart';
 import 'package:ifgpdemo/screen/detail/detail_nd_screen.dart';
-import 'package:ifgpdemo/screen/detail/detail_screen.dart';
 import 'package:ifgpdemo/service/api/content_api.dart';
+import 'package:http/http.dart' as http;
 
 class AllContentsWidget extends StatefulWidget {
   final emailuser;
@@ -34,7 +34,19 @@ class _AllContentsWidgetState extends State<AllContentsWidget> {
 
                   return GestureDetector(
                     child: buildContents(listcontent),
-                    onTap: () {
+                    onTap: () async {
+                      try {
+                        final url =
+                            Uri.parse('http://35.213.159.134/counterread.php');
+                        final response = await http.post(url, body: {
+                          "ID_Content": listcontent.idcontent.toString(),
+                          "Click": '1',
+                        });
+                        if (response.statusCode == 200) {
+                          print('success');
+                        }
+                      } catch (e) {}
+
                       Navigator.push(
                           context,
                           MaterialPageRoute(

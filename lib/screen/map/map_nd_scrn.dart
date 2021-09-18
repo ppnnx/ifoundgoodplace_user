@@ -116,8 +116,20 @@ class _MapSCRNState extends State<MapSCRN> {
         );
       },
       child: InkWell(
-        onTap: () {
+        onTap: () async {
           // moveCamera();
+
+          try {
+            final url = Uri.parse('http://35.213.159.134/counterread.php');
+            final response = await http.post(url, body: {
+              "ID_Content": content.idcontent.toString(),
+              "Click": '1',
+            });
+            if (response.statusCode == 200) {
+              print('success');
+            }
+          } catch (e) {}
+
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -135,12 +147,14 @@ class _MapSCRNState extends State<MapSCRN> {
                 margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
                 height: 160.0,
                 width: 275.0,
-                decoration: BoxDecoration(boxShadow: [
-                  BoxShadow(
-                      color: Colors.black54,
-                      offset: Offset(0.0, 4.0),
-                      blurRadius: 10.0)
-                ]),
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black54,
+                        offset: Offset(0.0, 4.0),
+                        blurRadius: 10.0)
+                  ],
+                ),
                 child: Container(
                   color: Colors.white,
                   child: Row(

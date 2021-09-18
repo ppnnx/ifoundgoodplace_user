@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -210,19 +209,23 @@ class _CreateScreenState extends State<CreateScreen> {
   }
 
   Future getCategory() async {
-    var url = Uri.parse('http://35.213.159.134/category.php?plus');
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body);
-      setState(() {
-        categoryItem = data;
-      });
-    }
+    try {
+      final url = Uri.parse('http://35.213.159.134/category.php?plus');
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          categoryItem = data;
+        });
+      } else {
+        print("API CATEGORY FAILED");
+      }
+    } catch (e) {}
     // print(categoryItem);
   }
 
   Future addPost() async {
-    var url = Uri.parse('http://35.213.159.134/ctcreate.php');
+    final url = Uri.parse('http://35.213.159.134/ctcreate.php');
 
     Map<String, String> headers = {
       "Accept": "*/*",
@@ -230,7 +233,7 @@ class _CreateScreenState extends State<CreateScreen> {
     };
 
     try {
-      var request = http.MultipartRequest("POST", url);
+      final request = http.MultipartRequest("POST", url);
       request.fields['ID_Userpost'] = widget.idauthor.toString();
       request.fields['Title'] = titlecontroller.text;
       request.fields['Content'] = storycontroller.text;
@@ -360,25 +363,26 @@ class _CreateScreenState extends State<CreateScreen> {
         // PUBLISH BUTTON
         actions: <Widget>[
           TextButton(
-              onPressed: () {
-                // check null of images
-                if (_image1 == null ||
-                    _image2 == null ||
-                    _image3 == null ||
-                    _image4 == null) {
-                  // if some of images is null -> show alert box
-                  return _showalertImages();
-                } else if (_formKey.currentState!.validate()) {
-                  addPost();
-                  print("_________# published");
-                }
-              },
-              child: Text(
-                "Publish",
-                style: TextStyle(
-                  color: Colors.black,
-                ),
-              ))
+            onPressed: () {
+              // check null of images
+              if (_image1 == null ||
+                  _image2 == null ||
+                  _image3 == null ||
+                  _image4 == null) {
+                // if some of images is null -> show alert box
+                return _showalertImages();
+              } else if (_formKey.currentState!.validate()) {
+                addPost();
+                print("_________# published");
+              }
+            },
+            child: Text(
+              "Publish",
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
+          ),
         ],
       ),
       // floatingActionButton: FloatingActionButton.extended(
@@ -553,14 +557,15 @@ class _CreateScreenState extends State<CreateScreen> {
                       keyboardType: TextInputType.url,
                       cursorColor: Colors.black,
                       decoration: InputDecoration(
-                          hintText: 'youtube.com/yourvideo',
-                          hintStyle: TextStyle(fontSize: 14),
-                          border: InputBorder.none,
-                          prefixIcon: Icon(
-                            CupertinoIcons.arrowtriangle_right_square,
-                            color: Colors.black,
-                            size: 26,
-                          )),
+                        hintText: 'youtube.com/yourvideo',
+                        hintStyle: TextStyle(fontSize: 14),
+                        border: InputBorder.none,
+                        prefixIcon: Icon(
+                          CupertinoIcons.arrowtriangle_right_square,
+                          color: Colors.black,
+                          size: 26,
+                        ),
+                      ),
                     ),
                     SizedBox(height: 30),
 

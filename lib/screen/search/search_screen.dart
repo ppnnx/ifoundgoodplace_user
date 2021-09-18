@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:ifgpdemo/model/content_model.dart';
 import 'package:ifgpdemo/screen/detail/detail_nd_screen.dart';
-import 'package:ifgpdemo/screen/detail/detail_screen.dart';
 import 'package:ifgpdemo/service/api/search_api.dart';
 import 'package:ifgpdemo/widget/home/contents_widget.dart';
 import 'package:ifgpdemo/widget/search_widget.dart';
+import 'package:http/http.dart' as http;
 
 class SearchScreen extends StatefulWidget {
   final iduser;
@@ -62,7 +62,19 @@ class _SearchScreenState extends State<SearchScreen> {
                               child: BuildContents(
                                 contents: content,
                               ),
-                              onTap: () {
+                              onTap: () async {
+                                try {
+                                  final url = Uri.parse(
+                                      'http://35.213.159.134/counterread.php');
+                                  final response = await http.post(url, body: {
+                                    "ID_Content": content.idcontent.toString(),
+                                    "Click": '1',
+                                  });
+                                  if (response.statusCode == 200) {
+                                    print('success');
+                                  }
+                                } catch (e) {}
+
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(

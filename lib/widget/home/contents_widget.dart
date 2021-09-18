@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ifgpdemo/model/content_model.dart';
 import 'package:ifgpdemo/screen/detail/detail_nd_screen.dart';
-import 'package:ifgpdemo/screen/detail/detail_screen.dart';
 import 'package:ifgpdemo/service/api/content_api.dart';
 import 'package:http/http.dart' as http;
 
@@ -50,28 +49,31 @@ class _ContentsWidgetState extends State<ContentsWidget> {
 
                   return GestureDetector(
                     child: BuildContents(contents: snapshot.data![index]),
-                    onTap: () {
-                      // listcontent.counterread+1;
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => DetailScreen(
-                      //               content: snapshot.data[index],
-                      //               userEmail: widget.email,
-                      //               userId: widget.userid,
-                      //               userImage: widget.userimg,
-                      //               count: listcontent.counterread++,
-                      //             )));
+                    onTap: () async {
+                      try {
+                        final url =
+                            Uri.parse('http://35.213.159.134/counterread.php');
+                        final response = await http.post(url, body: {
+                          "ID_Content": listcontent.idcontent.toString(),
+                          "Click": '1',
+                        });
+                        if (response.statusCode == 200) {
+                          print('success');
+                        }
+                      } catch (e) {}
+
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DetailSCRN(
-                                    contents: snapshot.data![index],
-                                    iduser: widget.userid,
-                                    emailuser: widget.email,
-                                    idcontent: listcontent.idcontent,
-                                    count: listcontent.counterread! + 1,
-                                  )));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailSCRN(
+                            contents: snapshot.data![index],
+                            iduser: widget.userid,
+                            emailuser: widget.email,
+                            idcontent: listcontent.idcontent,
+                            count: listcontent.counterread! + 1,
+                          ),
+                        ),
+                      );
                     },
                   );
                 });

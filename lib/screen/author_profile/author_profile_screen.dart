@@ -270,7 +270,21 @@ class _AuthorProfileScreenState extends State<AuthorProfileScreen> {
                               itemBuilder: (context, index) {
                                 final mycontent = snapshot.data![index];
                                 return GestureDetector(
-                                  onTap: () {
+                                  onTap: () async {
+                                    try {
+                                      final url = Uri.parse(
+                                          'http://35.213.159.134/counterread.php');
+                                      final response =
+                                          await http.post(url, body: {
+                                        "ID_Content":
+                                            mycontent.idcontent.toString(),
+                                        "Click": '1',
+                                      });
+                                      if (response.statusCode == 200) {
+                                        print('success');
+                                      }
+                                    } catch (e) {}
+
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(

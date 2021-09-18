@@ -78,7 +78,8 @@ dependencies:
   # geocoding
   geocoding: ^2.0.1
 
-
+  # for FadeinImage
+  transparent_image: ^2.0.0
   
 
 

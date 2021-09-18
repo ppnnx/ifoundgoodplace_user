@@ -60,11 +60,11 @@ class _DetailMapScreenState extends State<DetailMapScreen> {
   Future<Null> findLatLng() async {
     print('findLatLng is work!');
     Position? position = await findPosition();
-    setState(() {
-      lat = position!.latitude;
-      lng = position.longitude;
-      print('Lat = $lat , Lng = $lng');
-    });
+    //setState(() {
+    // lat = position!.latitude;
+    // lng = position.longitude;
+    // print('Lat = $lat , Lng = $lng');
+    //});
   }
 
   Future<Position?> findPosition() async {

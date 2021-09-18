@@ -76,6 +76,23 @@ class _DetailSCRNState extends State<DetailSCRN> {
     });
   }
 
+  // // api add counter read
+  // Future addcounterread() async {
+  //   try {
+  //     final url = Uri.parse("http://35.213.159.134/counterread.php");
+  //     final response = await http.post(url, body: {
+  //       "ID_Content": widget.idcontent.toString(),
+  //       "Click": 1,
+  //     });
+
+  //     if (response.statusCode == 200) {
+  //       print("add counter read already");
+  //     } else {
+  //       print("failed");
+  //     }
+  //   } catch (e) {}
+  // }
+
   // api add bookmark content to db
   Future getBookmark() async {
     try {
@@ -254,6 +271,7 @@ class _DetailSCRNState extends State<DetailSCRN> {
   void initState() {
     super.initState();
     getStory();
+
     loadList();
   }
 
@@ -540,7 +558,10 @@ class _DetailSCRNState extends State<DetailSCRN> {
                               child: Text(
                                 content.content!,
                                 style: TextStyle(
-                                    color: Colors.black, fontSize: 16),
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  height: 1.7,
+                                ),
                               ),
                             ),
                             SizedBox(height: 80),
@@ -553,14 +574,15 @@ class _DetailSCRNState extends State<DetailSCRN> {
                                   ElevatedButton(
                                     onPressed: () {
                                       Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  DetailMapScreen(
-                                                    lat: content.latitude,
-                                                    lng: content.longitude,
-                                                    title: content.title,
-                                                  )));
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => DetailMapScreen(
+                                            lat: content.latitude,
+                                            lng: content.longitude,
+                                            title: content.title,
+                                          ),
+                                        ),
+                                      );
                                     },
                                     child: Icon(
                                       CupertinoIcons.placemark,
@@ -577,7 +599,7 @@ class _DetailSCRNState extends State<DetailSCRN> {
                                   ),
                                   SizedBox(width: 10),
                                   // link
-                                  content.link == null || content.link == " "
+                                  content.link == "link"
                                       ? Text('')
                                       : ElevatedButton(
                                           onPressed: () {
@@ -1205,7 +1227,7 @@ class _DetailSCRNState extends State<DetailSCRN> {
                     },
                     errorWidget: (context, url, error) {
                       return Container(
-                        height: 300.0,
+                        height: 400.0,
                         color: Colors.black12,
                         child: Icon(
                           Icons.error,
@@ -1218,7 +1240,7 @@ class _DetailSCRNState extends State<DetailSCRN> {
               },
             ).toList(),
             options: CarouselOptions(
-              height: 300.0,
+              height: 400.0,
               initialPage: 0,
               viewportFraction: 1.0,
               enableInfiniteScroll: false,
