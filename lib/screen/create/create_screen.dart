@@ -23,6 +23,7 @@ class _CreateScreenState extends State<CreateScreen> {
   double? _lat;
   late double _lng;
 
+  // for loading
   Timer? _timer;
   late double _progress;
 
@@ -83,11 +84,13 @@ class _CreateScreenState extends State<CreateScreen> {
   Future<Null> findLatLng() async {
     print('findLatLng is work!');
     Position? position = await findPosition();
-    setState(() {
-      _lat = position!.latitude;
-      _lng = position.longitude;
-      print('Lat = $_lat , Lng = $_lng');
-    });
+    setState(
+      () {
+        _lat = position!.latitude;
+        _lng = position.longitude;
+        print('Lat = $_lat , Lng = $_lng');
+      },
+    );
   }
 
   Future<Position?> findPosition() async {
@@ -104,11 +107,17 @@ class _CreateScreenState extends State<CreateScreen> {
           markerId: MarkerId('id'),
           position: LatLng(_lat!, _lng),
           infoWindow: InfoWindow(
-              title: 'you are here.', snippet: 'Lat = $_lat, Lng = $_lng'),
+            title: 'you are here.',
+            snippet: 'Lat = $_lat, Lng = $_lng',
+          ),
         ),
       ].toSet();
 
-  alertLocationService(BuildContext context, String title, String subtitle) =>
+  alertLocationService(
+    BuildContext context,
+    String title,
+    String subtitle,
+  ) =>
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -118,12 +127,13 @@ class _CreateScreenState extends State<CreateScreen> {
           ),
           actions: [
             TextButton(
-                onPressed: () async {
-                  // Navigator.pop(context);
-                  await Geolocator.openLocationSettings();
-                  exit(0);
-                },
-                child: Text('OK'))
+              onPressed: () async {
+                // Navigator.pop(context);
+                await Geolocator.openLocationSettings();
+                exit(0);
+              },
+              child: Text('OK'),
+            )
           ],
         ),
       );
@@ -134,23 +144,6 @@ class _CreateScreenState extends State<CreateScreen> {
       files.add(null);
     }
   }
-
-  // pick image // don't ues !
-  // Future pickedImage(ImageSource source, int index) async {
-  //   try {
-  //     var pickedimage = await picker.getImage(
-  //       source: source,
-  //       imageQuality: 80,
-  //       maxWidth: 800,
-  //       maxHeight: 800,
-  //     );
-  //     setState(() {
-  //       file = File(pickedimage.path);
-  //       // determine to start file image 1 = file[0]
-  //       files[index] = file;
-  //     });
-  //   } catch (e) {}
-  // }
 
   Future selectImage1(ImageSource imageSource) async {
     try {
@@ -253,18 +246,27 @@ class _CreateScreenState extends State<CreateScreen> {
       );
       request.files.add(photo01);
       // photo 2
-      var photo02 = await http.MultipartFile.fromPath('Images02', _image2!.path,
-          filename: _image2!.path);
+      var photo02 = await http.MultipartFile.fromPath(
+        'Images02',
+        _image2!.path,
+        filename: _image2!.path,
+      );
       request.files.add(photo02);
 
       // photo 3
-      var photo03 = await http.MultipartFile.fromPath('Images03', _image3!.path,
-          filename: _image3!.path);
+      var photo03 = await http.MultipartFile.fromPath(
+        'Images03',
+        _image3!.path,
+        filename: _image3!.path,
+      );
       request.files.add(photo03);
 
       // photo 4
-      var photo04 = await http.MultipartFile.fromPath('Images04', _image4!.path,
-          filename: _image4!.path);
+      var photo04 = await http.MultipartFile.fromPath(
+        'Images04',
+        _image4!.path,
+        filename: _image4!.path,
+      );
       request.files.add(photo04);
 
       request.headers.addAll(headers);
@@ -275,32 +277,38 @@ class _CreateScreenState extends State<CreateScreen> {
         // progress between doing
         _progress = 0;
         _timer?.cancel();
-        _timer = Timer.periodic(const Duration(milliseconds: 100),
-            (Timer timer) async {
-          EasyLoading.showProgress(_progress,
-              status: '${(_progress * 100).toStringAsFixed(0)}%');
-          _progress += 0.03;
+        _timer = Timer.periodic(
+          const Duration(milliseconds: 100),
+          (Timer timer) async {
+            EasyLoading.showProgress(
+              _progress,
+              status: '${(_progress * 100).toStringAsFixed(0)}%',
+            );
+            _progress += 0.03;
 
-          if (_progress >= 1) {
-            EasyLoading.showSuccess('Done');
-            _timer?.cancel();
-            EasyLoading.dismiss();
-            await delayprogress();
-            Navigator.of(context).pop(true);
-          }
+            if (_progress >= 1) {
+              EasyLoading.showSuccess('Done');
+              _timer?.cancel();
+              EasyLoading.dismiss();
+              await delayprogress();
+              Navigator.of(context).pop(true);
+            }
 
-          // else {
-          //   EasyLoading.showError('Failed');
-          //   _timer?.cancel();
-          //   EasyLoading.dismiss();
-          // }
-        });
+            // else {
+            //   EasyLoading.showError('Failed');
+            //   _timer?.cancel();
+            //   EasyLoading.dismiss();
+            // }
+          },
+        );
       } else {}
     } catch (e) {}
   }
 
   Future delayprogress() async {
-    await Future.delayed(Duration(milliseconds: 2000));
+    await Future.delayed(
+      Duration(milliseconds: 2000),
+    );
   }
 
   // check validate textfiled + null from image path
@@ -324,12 +332,14 @@ class _CreateScreenState extends State<CreateScreen> {
   void initState() {
     super.initState();
     getCategory();
-    EasyLoading.addStatusCallback((status) {
-      print('EasyLoading Status $status');
-      if (status == EasyLoadingStatus.dismiss) {
-        _timer?.cancel();
-      }
-    });
+    EasyLoading.addStatusCallback(
+      (status) {
+        print('EasyLoading Status $status');
+        if (status == EasyLoadingStatus.dismiss) {
+          _timer?.cancel();
+        }
+      },
+    );
     initialFile();
     checkPermission();
   }
@@ -348,7 +358,10 @@ class _CreateScreenState extends State<CreateScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text("create.", style: Theme.of(context).textTheme.bodyText1),
+        title: Text(
+          "create.",
+          style: Theme.of(context).textTheme.bodyText1,
+        ),
         elevation: 0.0,
         leading: IconButton(
           icon: Icon(
@@ -385,30 +398,15 @@ class _CreateScreenState extends State<CreateScreen> {
           ),
         ],
       ),
-      // floatingActionButton: FloatingActionButton.extended(
-      //   onPressed: () {
-      //     // check null of images
-      //     if (_image1 == null ||
-      //         _image2 == null ||
-      //         _image3 == null ||
-      //         _image4 == null) {
-      //       // if some of images is null -> show alert box
-      //       return _showalertImages();
-      //     } else if (_formKey.currentState.validate()) {
-      //       addPost();
-      //     }
-      //   },
-      //   label: Text('Publish'),
-      //   backgroundColor: Colors.black,
-      //   elevation: 1.0,
-      // ),
       body: Form(
         key: _formKey,
         child: ListView(
           children: [
             GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+              onTap: () => FocusScope.of(context).requestFocus(
+                FocusNode(),
+              ),
               child: Container(
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
@@ -422,14 +420,19 @@ class _CreateScreenState extends State<CreateScreen> {
                         }
                         return null;
                       },
-                      style:
-                          TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 21,
+                        fontWeight: FontWeight.bold,
+                      ),
                       cursorColor: Colors.black,
                       maxLines: 3,
                       decoration: InputDecoration(
-                          hintText: 'Title',
-                          hintStyle: TextStyle(fontSize: 18),
-                          border: InputBorder.none),
+                        hintText: 'Title',
+                        hintStyle: TextStyle(
+                          fontSize: 18,
+                        ),
+                        border: InputBorder.none,
+                      ),
                       autocorrect: false,
                     ),
                     SizedBox(height: 10),
@@ -440,39 +443,45 @@ class _CreateScreenState extends State<CreateScreen> {
                       child: Text(
                         'Category',
                         style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500),
+                          color: Colors.black,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                     SizedBox(height: 8),
                     DropdownButtonHideUnderline(
-                        child: ButtonTheme(
-                      alignedDropdown: true,
-                      child: DropdownButton<String>(
-                          isExpanded: true,
-                          value: selectedCategory,
-                          iconSize: 30,
-                          icon: (null),
-                          hint: Text('category'),
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
-                          ),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              selectedCategory = newValue;
-                              getCategory();
-                              print(selectedCategory);
-                            });
-                          },
-                          items: categoryItem!.map((item) {
-                            return DropdownMenuItem(
-                              child: Text(item['Category']),
-                              value: item['ID_Category'].toString(),
-                            );
-                          }).toList()),
-                    )),
+                      child: ButtonTheme(
+                        alignedDropdown: true,
+                        child: DropdownButton<String>(
+                            isExpanded: true,
+                            value: selectedCategory,
+                            iconSize: 30,
+                            icon: (null),
+                            hint: Text('category'),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
+                            ),
+                            onChanged: (String? newValue) {
+                              setState(
+                                () {
+                                  selectedCategory = newValue;
+                                  getCategory();
+                                  print(selectedCategory);
+                                },
+                              );
+                            },
+                            items: categoryItem!.map(
+                              (item) {
+                                return DropdownMenuItem(
+                                  child: Text(item['Category']),
+                                  value: item['ID_Category'].toString(),
+                                );
+                              },
+                            ).toList()),
+                      ),
+                    ),
                     SizedBox(height: 26),
 
                     // image
@@ -483,9 +492,10 @@ class _CreateScreenState extends State<CreateScreen> {
                           Text(
                             'Photos',
                             style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500),
+                              color: Colors.black,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                           SizedBox(height: 16),
                           GridView.count(
@@ -581,9 +591,10 @@ class _CreateScreenState extends State<CreateScreen> {
                         Text(
                           'Location',
                           style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500),
+                            color: Colors.black,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ],
                     ),
@@ -591,10 +602,14 @@ class _CreateScreenState extends State<CreateScreen> {
                     Container(
                       height: 350,
                       child: _lat == null
-                          ? Center(child: CircularProgressIndicator())
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
                           : GoogleMap(
                               initialCameraPosition: CameraPosition(
-                                  target: LatLng(_lat!, _lng), zoom: 16.0),
+                                target: LatLng(_lat!, _lng),
+                                zoom: 16.0,
+                              ),
                               mapType: MapType.normal,
                               myLocationButtonEnabled: false,
                               zoomControlsEnabled: false,
@@ -630,9 +645,10 @@ class _CreateScreenState extends State<CreateScreen> {
                       maxLines: null,
                       cursorColor: Colors.black,
                       decoration: InputDecoration(
-                          hintText: 'type your story this here . .',
-                          hintStyle: TextStyle(fontSize: 16),
-                          border: InputBorder.none),
+                        hintText: 'type your story this here . .',
+                        hintStyle: TextStyle(fontSize: 16),
+                        border: InputBorder.none,
+                      ),
                     ),
                     SizedBox(height: 300),
                   ],
@@ -647,101 +663,120 @@ class _CreateScreenState extends State<CreateScreen> {
 
   _showalertImages() async {
     return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(8.0),
             ),
-            title: ListTile(
-              leading: Icon(
-                CupertinoIcons.rectangle_stack_person_crop,
-                color: Colors.black,
-                size: 21,
-              ),
-              title: Text('More images'),
-              subtitle: Text(
-                'Please choose more images.',
-                style: TextStyle(fontSize: 12),
-              ),
+          ),
+          title: ListTile(
+            leading: Icon(
+              CupertinoIcons.rectangle_stack_person_crop,
+              color: Colors.black,
+              size: 21,
             ),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "OK",
-                  style: TextStyle(color: Colors.black),
+            title: Text('More images'),
+            subtitle: Text(
+              'Please choose more images.',
+              style: TextStyle(fontSize: 12),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                "OK",
+                style: TextStyle(
+                  color: Colors.black,
                 ),
               ),
-            ],
-          );
-        });
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> showAlertTitle() async {
     return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(20),
             ),
-            title: Icon(CupertinoIcons.exclamationmark_circle,
-                color: Colors.red.shade900, size: 50),
-            content: Text(
-              "Please add your title",
-              textAlign: TextAlign.center,
-            ),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "cancel",
-                  style: TextStyle(color: Colors.black),
-                ),
+          ),
+          title: Icon(
+            CupertinoIcons.exclamationmark_circle,
+            color: Colors.red.shade900,
+            size: 50,
+          ),
+          content: Text(
+            "Please add your title",
+            textAlign: TextAlign.center,
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                "cancel",
+                style: TextStyle(color: Colors.black),
               ),
-            ],
-          );
-        });
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> showAlertStory() async {
     return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(20),
             ),
-            title: Icon(CupertinoIcons.exclamationmark_circle,
-                color: Colors.red.shade900, size: 50),
-            content: Text(
-              "plese add your story",
-              textAlign: TextAlign.center,
-            ),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "cancel",
-                  style: TextStyle(color: Colors.black),
-                ),
+          ),
+          title: Icon(
+            CupertinoIcons.exclamationmark_circle,
+            color: Colors.red.shade900,
+            size: 50,
+          ),
+          content: Text(
+            "plese add your story",
+            textAlign: TextAlign.center,
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                "cancel",
+                style: TextStyle(color: Colors.black),
               ),
-            ],
-          );
-        });
+            ),
+          ],
+        );
+      },
+    );
   }
 
   // delay
   Future<void> delay(int millisec) async {
     print('delay start');
-    await Future.delayed(Duration(milliseconds: millisec));
+    await Future.delayed(
+      Duration(milliseconds: millisec),
+    );
     print('delay end');
   }
 
@@ -759,27 +794,29 @@ class _CreateScreenState extends State<CreateScreen> {
             child: Column(
               children: <Widget>[
                 ListTile(
-                    leading: Icon(
-                      Icons.image,
-                      color: Colors.black,
-                      size: 20,
-                    ),
-                    title: Text('From Gallery'),
-                    onTap: () {
-                      Navigator.of(context).pop(_image1);
-                      selectImage1(ImageSource.gallery);
-                    }),
+                  leading: Icon(
+                    Icons.image,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                  title: Text('From Gallery'),
+                  onTap: () {
+                    Navigator.of(context).pop(_image1);
+                    selectImage1(ImageSource.gallery);
+                  },
+                ),
                 ListTile(
-                    leading: Icon(
-                      Icons.camera_alt,
-                      color: Colors.black,
-                      size: 20,
-                    ),
-                    title: Text('From Camera'),
-                    onTap: () {
-                      Navigator.of(context).pop(_image1);
-                      selectImage1(ImageSource.camera);
-                    }),
+                  leading: Icon(
+                    Icons.camera_alt,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                  title: Text('From Camera'),
+                  onTap: () {
+                    Navigator.of(context).pop(_image1);
+                    selectImage1(ImageSource.camera);
+                  },
+                ),
               ],
             ),
           ),
@@ -798,27 +835,29 @@ class _CreateScreenState extends State<CreateScreen> {
             child: Column(
               children: <Widget>[
                 ListTile(
-                    leading: Icon(
-                      Icons.image,
-                      color: Colors.black,
-                      size: 20,
-                    ),
-                    title: Text('From Gallery'),
-                    onTap: () {
-                      Navigator.of(context).pop(_image2);
-                      selectImage2(ImageSource.gallery);
-                    }),
+                  leading: Icon(
+                    Icons.image,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                  title: Text('From Gallery'),
+                  onTap: () {
+                    Navigator.of(context).pop(_image2);
+                    selectImage2(ImageSource.gallery);
+                  },
+                ),
                 ListTile(
-                    leading: Icon(
-                      Icons.camera_alt,
-                      color: Colors.black,
-                      size: 20,
-                    ),
-                    title: Text('From Camera'),
-                    onTap: () {
-                      Navigator.of(context).pop(_image2);
-                      selectImage2(ImageSource.camera);
-                    }),
+                  leading: Icon(
+                    Icons.camera_alt,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                  title: Text('From Camera'),
+                  onTap: () {
+                    Navigator.of(context).pop(_image2);
+                    selectImage2(ImageSource.camera);
+                  },
+                ),
               ],
             ),
           ),
@@ -837,27 +876,29 @@ class _CreateScreenState extends State<CreateScreen> {
             child: Column(
               children: <Widget>[
                 ListTile(
-                    leading: Icon(
-                      Icons.image,
-                      color: Colors.black,
-                      size: 20,
-                    ),
-                    title: Text('From Gallery'),
-                    onTap: () {
-                      Navigator.of(context).pop(_image3);
-                      selectImage3(ImageSource.gallery);
-                    }),
+                  leading: Icon(
+                    Icons.image,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                  title: Text('From Gallery'),
+                  onTap: () {
+                    Navigator.of(context).pop(_image3);
+                    selectImage3(ImageSource.gallery);
+                  },
+                ),
                 ListTile(
-                    leading: Icon(
-                      Icons.camera_alt,
-                      color: Colors.black,
-                      size: 20,
-                    ),
-                    title: Text('From Camera'),
-                    onTap: () {
-                      Navigator.of(context).pop(_image3);
-                      selectImage3(ImageSource.camera);
-                    }),
+                  leading: Icon(
+                    Icons.camera_alt,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                  title: Text('From Camera'),
+                  onTap: () {
+                    Navigator.of(context).pop(_image3);
+                    selectImage3(ImageSource.camera);
+                  },
+                ),
               ],
             ),
           ),
@@ -876,27 +917,29 @@ class _CreateScreenState extends State<CreateScreen> {
             child: Column(
               children: <Widget>[
                 ListTile(
-                    leading: Icon(
-                      Icons.image,
-                      color: Colors.black,
-                      size: 20,
-                    ),
-                    title: Text('From Gallery'),
-                    onTap: () {
-                      Navigator.of(context).pop(_image4);
-                      selectImage4(ImageSource.gallery);
-                    }),
+                  leading: Icon(
+                    Icons.image,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                  title: Text('From Gallery'),
+                  onTap: () {
+                    Navigator.of(context).pop(_image4);
+                    selectImage4(ImageSource.gallery);
+                  },
+                ),
                 ListTile(
-                    leading: Icon(
-                      Icons.camera_alt,
-                      color: Colors.black,
-                      size: 20,
-                    ),
-                    title: Text('From Camera'),
-                    onTap: () {
-                      Navigator.of(context).pop(_image4);
-                      selectImage4(ImageSource.camera);
-                    }),
+                  leading: Icon(
+                    Icons.camera_alt,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                  title: Text('From Camera'),
+                  onTap: () {
+                    Navigator.of(context).pop(_image4);
+                    selectImage4(ImageSource.camera);
+                  },
+                ),
               ],
             ),
           ),
