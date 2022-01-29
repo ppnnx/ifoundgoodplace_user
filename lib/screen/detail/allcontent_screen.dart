@@ -80,7 +80,9 @@ class _AllContentsState extends State<AllContents> {
               Padding(
                 padding: const EdgeInsets.only(top: 32),
                 child: AllContentsWidget(
-                    iduser: widget.iduser, emailuser: widget.emailuser),
+                  iduser: widget.iduser,
+                  emailuser: widget.emailuser,
+                ),
               ),
 
               // tab 2 : chart
@@ -92,39 +94,50 @@ class _AllContentsState extends State<AllContents> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 26, vertical: 10),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(24.0),
-                                border: Border.all(color: Colors.black)),
-                            child: Text('Top Chart',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 21,
-                                    fontWeight: FontWeight.bold))),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 26,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(24.0),
+                            border: Border.all(
+                              color: Colors.black,
+                            ),
+                          ),
+                          child: Text(
+                            'Top Chart',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 21,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                         SizedBox(height: 24.0),
                         FutureBuilder(
-                            future: TrendingAPI.getTrendingContent(),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<List<TrendingModel>> snapshot) {
-                              if (snapshot.hasData) {
-                                return ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: BouncingScrollPhysics(),
-                                    itemCount: snapshot.data!.length,
-                                    itemBuilder: (BuildContext _, int index) {
-                                      return FullChartWidget(
-                                        rank: index + 1,
-                                        data: snapshot.data![index],
-                                      );
-                                    });
-                              }
-
-                              return Center(
-                                child: CircularProgressIndicator(),
+                          future: TrendingAPI.getTrendingContent(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<List<TrendingModel>> snapshot) {
+                            if (snapshot.hasData) {
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                physics: BouncingScrollPhysics(),
+                                itemCount: snapshot.data!.length,
+                                itemBuilder: (BuildContext _, int index) {
+                                  return FullChartWidget(
+                                    rank: index + 1,
+                                    data: snapshot.data![index],
+                                  );
+                                },
                               );
-                            }),
+                            }
+
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          },
+                        ),
                       ],
                     ),
                   ),

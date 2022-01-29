@@ -23,14 +23,14 @@ class DetailSCRN extends StatefulWidget {
   final idcontent;
   final int? count;
 
-  const DetailSCRN(
-      {Key? key,
-      this.iduser,
-      this.emailuser = "Guest",
-      this.idcontent,
-      this.contents,
-      this.count})
-      : super(key: key);
+  const DetailSCRN({
+    Key? key,
+    this.iduser,
+    this.emailuser = "Guest",
+    this.idcontent,
+    this.contents,
+    this.count,
+  }) : super(key: key);
 
   @override
   _DetailSCRNState createState() => _DetailSCRNState();
@@ -67,13 +67,19 @@ class _DetailSCRNState extends State<DetailSCRN> {
 
   // refresh all
   Future loadList() async {
-    await Future.delayed(Duration(milliseconds: 3000));
-    getComment().then((value) {
-      setState(() {});
-    });
-    getStory().then((value) {
-      setState(() {});
-    });
+    await Future.delayed(
+      Duration(milliseconds: 3000),
+    );
+    getComment().then(
+      (value) {
+        setState(() {});
+      },
+    );
+    getStory().then(
+      (value) {
+        setState(() {});
+      },
+    );
   }
 
   // // api add counter read
@@ -97,11 +103,14 @@ class _DetailSCRNState extends State<DetailSCRN> {
   Future getBookmark() async {
     try {
       final url = Uri.parse('http://35.213.159.134/saveinsert.php');
-      final response = await http.post(url, body: {
-        "idusersave": widget.iduser.toString(),
-        "save": widget.idcontent.toString(),
-        "Status_Save": 'saved',
-      });
+      final response = await http.post(
+        url,
+        body: {
+          "idusersave": widget.iduser.toString(),
+          "save": widget.idcontent.toString(),
+          "Status_Save": 'saved',
+        },
+      );
       if (response.statusCode == 200) {
         print('bookmarked already!');
       } else {

@@ -8,7 +8,6 @@ import 'package:http/http.dart' as http;
 import 'package:ifgpdemo/model/content_model.dart';
 import 'package:ifgpdemo/model/content_trending_model.dart';
 import 'package:ifgpdemo/screen/detail/detail_nd_screen.dart';
-import 'package:ifgpdemo/screen/detail/detail_screen.dart';
 
 class CategoryScreen extends StatefulWidget {
   final name;
